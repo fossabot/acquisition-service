@@ -2,6 +2,8 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.CjDataSourceTabInfoExample;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,6 @@ import java.util.List;
 @Service
 public interface ICjDataSourceTabInfoService {
     List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll);
-    void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo);
+    String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example);
     String findAllByColsAndOds(String dataFlagForGetCols, String dataFlagForCrtOdsDll);
 }

@@ -14,11 +14,8 @@ import java.util.List;
  */
 @Service
 public interface ICjOdsCrtTabDdlInfoService {
-<<<<<<< HEAD
+
     String GetODSTableName(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
     String getODSTableInfo(List<CjDataSourceTabInfo> CjDataSourceTabInfos);
-
-=======
     String saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos);
->>>>>>> dev
 }

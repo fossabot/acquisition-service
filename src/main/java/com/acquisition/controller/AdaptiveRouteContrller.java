@@ -1,9 +1,14 @@
 package com.acquisition.controller;
 
+import com.acquisition.entity.CjDataSourceConnDefine;
+import com.acquisition.service.ICjDataSourceConnDefineService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author yxk
@@ -14,10 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 public class AdaptiveRouteContrller {
 
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
 
    @RequestMapping(value = "/{index}")
     public String index(@PathVariable("index") String index) {
         return index;
+    }
+
+
+    @RequestMapping(value = "/kp")
+    @ResponseBody
+    public List<CjDataSourceConnDefine> index() {
+        List<CjDataSourceConnDefine> ff= iCjDataSourceConnDefineService.selectByExample();
+        return ff;
     }
 
 

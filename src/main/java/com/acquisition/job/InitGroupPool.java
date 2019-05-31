@@ -30,8 +30,8 @@ public class InitGroupPool implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-      /*  LOG.info("zhixing");
-        ICjDataSourceConnDefineService iCjDataSourceConnDefineService =new CjDataSourceConnDefineServiceImpl();
+        LOG.info("zhixing");
+  /*      ICjDataSourceConnDefineService iCjDataSourceConnDefineService =new CjDataSourceConnDefineServiceImpl();
         List<CjDataSourceConnDefine> listDataSource = iCjDataSourceConnDefineService.selectByExample();
         System.out.println("");*/
     }

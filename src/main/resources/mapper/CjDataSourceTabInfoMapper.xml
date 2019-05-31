@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDataSourceTabInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDataSourceTabInfo" >
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <id column="data_source_table" property="dataSourceTable" jdbcType="VARCHAR" />
+    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
+    <result column="data_source_table_comment" property="dataSourceTableComment" jdbcType="VARCHAR" />
+    <result column="data_flag_for_get_cols" property="dataFlagForGetCols" jdbcType="CHAR" />
+    <result column="data_flag_for_get_rows" property="dataFlagForGetRows" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_dll" property="dataFlagForCrtOdsDll" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_hive" property="dataFlagForCrtOdsHive" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_dll" property="dataFlagForCrtDwDll" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_hive" property="dataFlagForCrtDwHive" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_script" property="dataFlagForCrtOdsScript" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_script" property="dataFlagForCrtDwScript" jdbcType="CHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, data_source_table, business_system_ID, 
+    data_source_table_comment, data_flag_for_get_cols, data_flag_for_get_rows, data_flag_for_crt_ods_dll, 
+    data_flag_for_crt_ods_hive, data_flag_for_crt_dw_dll, data_flag_for_crt_dw_hive, 
+    data_flag_for_crt_ods_script, data_flag_for_crt_dw_script, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+  </select>
+  <select id="selectAllByOdsHiveAndDwHive" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+    where data_flag_for_crt_ods_hive=#{dataFlagForCrtOdsHive}
+    and data_flag_for_crt_dw_hive=#{dataFlagForCrtDwHive}
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceTabInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceTabInfoKey" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+    and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+    and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDataSourceTabInfoKey" >
+    delete from cj_data_source_tab_info
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+    and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+    and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDataSourceTabInfoExample" >
+    delete from cj_data_source_tab_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDataSourceTabInfo" >
+    insert into cj_data_source_tab_info (business_system_name_short_name, data_source_schema,
+    data_source_table, business_system_ID, data_source_table_comment,
+    data_flag_for_get_cols, data_flag_for_get_rows, data_flag_for_crt_ods_dll,
+    data_flag_for_crt_ods_hive, data_flag_for_crt_dw_dll, data_flag_for_crt_dw_hive,
+    data_flag_for_crt_ods_script, data_flag_for_crt_dw_script,
+    last_modify_dt, last_modify_by)
+    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR},
+    #{dataSourceTable,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, #{dataSourceTableComment,jdbcType=VARCHAR},
+    #{dataFlagForGetCols,jdbcType=CHAR}, #{dataFlagForGetRows,jdbcType=CHAR}, #{dataFlagForCrtOdsDll,jdbcType=CHAR},
+    #{dataFlagForCrtOdsHive,jdbcType=CHAR}, #{dataFlagForCrtDwDll,jdbcType=CHAR}, #{dataFlagForCrtDwHive,jdbcType=CHAR},
+    #{dataFlagForCrtOdsScript,jdbcType=CHAR}, #{dataFlagForCrtDwScript,jdbcType=CHAR},
+    #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDataSourceTabInfo" >
+    insert into cj_data_source_tab_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        business_system_name_short_name,
+      </if>
+      <if test="dataSourceSchema != null" >
+        data_source_schema,
+      </if>
+      <if test="dataSourceTable != null" >
+        data_source_table,
+      </if>
+      <if test="businessSystemId != null" >
+        business_system_ID,
+      </if>
+      <if test="dataSourceTableComment != null" >
+        data_source_table_comment,
+      </if>
+      <if test="dataFlagForGetCols != null" >
+        data_flag_for_get_cols,
+      </if>
+      <if test="dataFlagForGetRows != null" >
+        data_flag_for_get_rows,
+      </if>
+      <if test="dataFlagForCrtOdsDll != null" >
+        data_flag_for_crt_ods_dll,
+      </if>
+      <if test="dataFlagForCrtOdsHive != null" >
+        data_flag_for_crt_ods_hive,
+      </if>
+      <if test="dataFlagForCrtDwDll != null" >
+        data_flag_for_crt_dw_dll,
+      </if>
+      <if test="dataFlagForCrtDwHive != null" >
+        data_flag_for_crt_dw_hive,
+      </if>
+      <if test="dataFlagForCrtOdsScript != null" >
+        data_flag_for_crt_ods_script,
+      </if>
+      <if test="dataFlagForCrtDwScript != null" >
+        data_flag_for_crt_dw_script,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        #{businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceSchema != null" >
+        #{dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTable != null" >
+        #{dataSourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemId != null" >
+        #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTableComment != null" >
+        #{dataSourceTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFlagForGetCols != null" >
+        #{dataFlagForGetCols,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForGetRows != null" >
+        #{dataFlagForGetRows,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsDll != null" >
+        #{dataFlagForCrtOdsDll,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsHive != null" >
+        #{dataFlagForCrtOdsHive,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwDll != null" >
+        #{dataFlagForCrtDwDll,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwHive != null" >
+        #{dataFlagForCrtDwHive,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsScript != null" >
+        #{dataFlagForCrtOdsScript,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwScript != null" >
+        #{dataFlagForCrtDwScript,jdbcType=CHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDataSourceTabInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_data_source_tab_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_data_source_tab_info
+    <set >
+      <if test="record.businessSystemNameShortName != null" >
+        business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceSchema != null" >
+        data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceTable != null" >
+        data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessSystemId != null" >
+        business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceTableComment != null" >
+        data_source_table_comment = #{record.dataSourceTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataFlagForGetCols != null" >
+        data_flag_for_get_cols = #{record.dataFlagForGetCols,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForGetRows != null" >
+        data_flag_for_get_rows = #{record.dataFlagForGetRows,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtOdsDll != null" >
+        data_flag_for_crt_ods_dll = #{record.dataFlagForCrtOdsDll,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtOdsHive != null" >
+        data_flag_for_crt_ods_hive = #{record.dataFlagForCrtOdsHive,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtDwDll != null" >
+        data_flag_for_crt_dw_dll = #{record.dataFlagForCrtDwDll,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtDwHive != null" >
+        data_flag_for_crt_dw_hive = #{record.dataFlagForCrtDwHive,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtOdsScript != null" >
+        data_flag_for_crt_ods_script = #{record.dataFlagForCrtOdsScript,jdbcType=CHAR},
+      </if>
+      <if test="record.dataFlagForCrtDwScript != null" >
+        data_flag_for_crt_dw_script = #{record.dataFlagForCrtDwScript,jdbcType=CHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_data_source_tab_info
+    set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+    data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+    data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
+    business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+    data_source_table_comment = #{record.dataSourceTableComment,jdbcType=VARCHAR},
+    data_flag_for_get_cols = #{record.dataFlagForGetCols,jdbcType=CHAR},
+    data_flag_for_get_rows = #{record.dataFlagForGetRows,jdbcType=CHAR},
+    data_flag_for_crt_ods_dll = #{record.dataFlagForCrtOdsDll,jdbcType=CHAR},
+    data_flag_for_crt_ods_hive = #{record.dataFlagForCrtOdsHive,jdbcType=CHAR},
+    data_flag_for_crt_dw_dll = #{record.dataFlagForCrtDwDll,jdbcType=CHAR},
+    data_flag_for_crt_dw_hive = #{record.dataFlagForCrtDwHive,jdbcType=CHAR},
+    data_flag_for_crt_ods_script = #{record.dataFlagForCrtOdsScript,jdbcType=CHAR},
+    data_flag_for_crt_dw_script = #{record.dataFlagForCrtDwScript,jdbcType=CHAR},
+    last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+    last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDataSourceTabInfo" >
+    update cj_data_source_tab_info
+    <set >
+      <if test="businessSystemId != null" >
+        business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTableComment != null" >
+        data_source_table_comment = #{dataSourceTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFlagForGetCols != null" >
+        data_flag_for_get_cols = #{dataFlagForGetCols,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForGetRows != null" >
+        data_flag_for_get_rows = #{dataFlagForGetRows,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsDll != null" >
+        data_flag_for_crt_ods_dll = #{dataFlagForCrtOdsDll,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsHive != null" >
+        data_flag_for_crt_ods_hive = #{dataFlagForCrtOdsHive,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwDll != null" >
+        data_flag_for_crt_dw_dll = #{dataFlagForCrtDwDll,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwHive != null" >
+        data_flag_for_crt_dw_hive = #{dataFlagForCrtDwHive,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtOdsScript != null" >
+        data_flag_for_crt_ods_script = #{dataFlagForCrtOdsScript,jdbcType=CHAR},
+      </if>
+      <if test="dataFlagForCrtDwScript != null" >
+        data_flag_for_crt_dw_script = #{dataFlagForCrtDwScript,jdbcType=CHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+    and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+    and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDataSourceTabInfo" >
+    update cj_data_source_tab_info
+    set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+    data_source_table_comment = #{dataSourceTableComment,jdbcType=VARCHAR},
+    data_flag_for_get_cols = #{dataFlagForGetCols,jdbcType=CHAR},
+    data_flag_for_get_rows = #{dataFlagForGetRows,jdbcType=CHAR},
+    data_flag_for_crt_ods_dll = #{dataFlagForCrtOdsDll,jdbcType=CHAR},
+    data_flag_for_crt_ods_hive = #{dataFlagForCrtOdsHive,jdbcType=CHAR},
+    data_flag_for_crt_dw_dll = #{dataFlagForCrtDwDll,jdbcType=CHAR},
+    data_flag_for_crt_dw_hive = #{dataFlagForCrtDwHive,jdbcType=CHAR},
+    data_flag_for_crt_ods_script = #{dataFlagForCrtOdsScript,jdbcType=CHAR},
+    data_flag_for_crt_dw_script = #{dataFlagForCrtDwScript,jdbcType=CHAR},
+    last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+    last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+    and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+    and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -12,6 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/generateScript")
 public class GenerateScriptController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GenerateScriptController.class);
-
 }

@@ -1,21 +1,15 @@
 package com.acquisition.service.impl;
 
-<<<<<<< HEAD
 import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import org.springframework.stereotype.Service;
 import com.acquisition.repository.CjOdsCrtTabDdlInfoRepository;
-=======
 import com.acquisition.entity.CjDataSourceTabColInfo;
->>>>>>> dev
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjOdsCrtTabDdlInfo;
 import com.acquisition.entity.Result;
 import com.acquisition.repository.CjDataSourceTabColInfoRepository;
-<<<<<<< HEAD
-=======
 import com.acquisition.repository.CjOdsCrtTabDdlInfoRepository;
 import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
->>>>>>> dev
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
@@ -28,28 +22,36 @@ import java.util.List;
  */
 @Service
 public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService {
-    @Autowired
+
+  /*  @Autowired
     CjOdsCrtTabDdlInfoRepository cjOdsCrtTabDdlInfoRepository;
+    @Autowired
+    CjDataSourceTabColInfoRepository cjDataSourceTabColInfoRepository;*/
+
+
     @Override
     public String GetODSTableName(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
-        String odsTableName = "";
+      /*  String odsTableName = "";
         odsTableName = cjOdsCrtTabDdlInfoRepository.selectODSTableNameBySystemAndSchemaAndTable(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-        return odsTableName;
+        return odsTableName;*/
+      return null;
     }
+
+    @Override
+    public String getODSTableInfo(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
+        return null;
+    }
+
 
     /**
      * @return
      */
-    @Autowired
-    CjDataSourceTabColInfoRepository cjDataSourceTabColInfoRepository;
-    @Autowired
-    CjOdsCrtTabDdlInfoRepository cjOdsCrtTabDdlInfoRepository;
+
     @Override
     public String saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
-        String sysName;
+       /* String sysName;
         String schemaName;
         String tableName;
-
         String colName;
         String colComment;
 
@@ -97,7 +99,8 @@ public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService
             cjOdsCrtTabDdlInfo.setLastModifyBy("admin");
             cjOdsCrtTabDdlInfoRepository.insertByObject(cjOdsCrtTabDdlInfo);
         }
-        return createTableInHive();
+        return createTableInHive();*/
+       return null;
     }
 
     /**

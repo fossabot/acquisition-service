@@ -5,6 +5,8 @@ import java.util.List;
 import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabColInfoExample;
 import com.acquisition.entity.CjDataSourceTabColInfoKey;
+import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjDataSourceTabColInfoMapper {
@@ -30,4 +32,8 @@ public interface CjDataSourceTabColInfoMapper {
     int updateByPrimaryKeySelective(CjDataSourceTabColInfo record);
 
     int updateByPrimaryKey(CjDataSourceTabColInfo record);
+
+    List<CjDataSourceTabColInfo> selectAllBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema , @Param("dataSourceTable") String dataSourceTable);
+
+    List<CjDwCrtDdlColPojo> selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 }

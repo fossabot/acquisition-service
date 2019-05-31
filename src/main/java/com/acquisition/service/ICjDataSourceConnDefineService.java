@@ -12,5 +12,5 @@ import java.util.List;
 @Service
 public interface ICjDataSourceConnDefineService {
     List<CjDataSourceConnDefine> selectByExample();
-
+    CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema);
 }

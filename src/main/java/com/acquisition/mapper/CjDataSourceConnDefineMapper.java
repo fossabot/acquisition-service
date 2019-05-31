@@ -8,6 +8,7 @@ import com.acquisition.entity.CjDataSourceConnDefineKey;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjDataSourceConnDefineMapper {
+
     int countByExample(CjDataSourceConnDefineExample example);
 
     int deleteByExample(CjDataSourceConnDefineExample example);
@@ -18,9 +19,11 @@ public interface CjDataSourceConnDefineMapper {
 
     int insertSelective(CjDataSourceConnDefine record);
 
-    List<CjDataSourceConnDefine> selectByExample(CjDataSourceConnDefineExample example);
+    List<CjDataSourceConnDefine> selectByExample();
 
     CjDataSourceConnDefine selectByPrimaryKey(CjDataSourceConnDefineKey key);
+
+    CjDataSourceConnDefine selectBySystemAndSchema(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema);
 
     int updateByExampleSelective(@Param("record") CjDataSourceConnDefine record, @Param("example") CjDataSourceConnDefineExample example);
 

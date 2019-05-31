@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @create 2019/5/30
  * @since 1.0.0
  */
-@ControllerAdvice
+/*@ControllerAdvice*/
 public class GlobalDefaultExceptionHandler {
 
     /**
