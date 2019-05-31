@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjOdsCrtTabRuleInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsCrtTabRuleInfo" >
+    <id column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="rule_comment" property="ruleComment" jdbcType="VARCHAR" />
+    <result column="rule_catalog" property="ruleCatalog" jdbcType="VARCHAR" />
+    <result column="rule_type" property="ruleType" jdbcType="VARCHAR" />
+    <result column="rule_col_1" property="ruleCol1" jdbcType="VARCHAR" />
+    <result column="rule_col_2" property="ruleCol2" jdbcType="VARCHAR" />
+    <result column="rule_col_3" property="ruleCol3" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    rule_name, rule_comment, rule_catalog, rule_type, rule_col_1, rule_col_2, rule_col_3, 
+    last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_ods_crt_tab_rule_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_ods_crt_tab_rule_info
+    where rule_name = #{ruleName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cj_ods_crt_tab_rule_info
+    where rule_name = #{ruleName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfoExample" >
+    delete from cj_ods_crt_tab_rule_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfo" >
+    insert into cj_ods_crt_tab_rule_info (rule_name, rule_comment, rule_catalog, 
+      rule_type, rule_col_1, rule_col_2, 
+      rule_col_3, last_modify_dt, last_modify_by
+      )
+    values (#{ruleName,jdbcType=VARCHAR}, #{ruleComment,jdbcType=VARCHAR}, #{ruleCatalog,jdbcType=VARCHAR}, 
+      #{ruleType,jdbcType=VARCHAR}, #{ruleCol1,jdbcType=VARCHAR}, #{ruleCol2,jdbcType=VARCHAR}, 
+      #{ruleCol3,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfo" >
+    insert into cj_ods_crt_tab_rule_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ruleName != null" >
+        rule_name,
+      </if>
+      <if test="ruleComment != null" >
+        rule_comment,
+      </if>
+      <if test="ruleCatalog != null" >
+        rule_catalog,
+      </if>
+      <if test="ruleType != null" >
+        rule_type,
+      </if>
+      <if test="ruleCol1 != null" >
+        rule_col_1,
+      </if>
+      <if test="ruleCol2 != null" >
+        rule_col_2,
+      </if>
+      <if test="ruleCol3 != null" >
+        rule_col_3,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ruleName != null" >
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleComment != null" >
+        #{ruleComment,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCatalog != null" >
+        #{ruleCatalog,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null" >
+        #{ruleType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol1 != null" >
+        #{ruleCol1,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol2 != null" >
+        #{ruleCol2,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol3 != null" >
+        #{ruleCol3,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_ods_crt_tab_rule_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_ods_crt_tab_rule_info
+    <set >
+      <if test="record.ruleName != null" >
+        rule_name = #{record.ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleComment != null" >
+        rule_comment = #{record.ruleComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleCatalog != null" >
+        rule_catalog = #{record.ruleCatalog,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleType != null" >
+        rule_type = #{record.ruleType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleCol1 != null" >
+        rule_col_1 = #{record.ruleCol1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleCol2 != null" >
+        rule_col_2 = #{record.ruleCol2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleCol3 != null" >
+        rule_col_3 = #{record.ruleCol3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_ods_crt_tab_rule_info
+    set rule_name = #{record.ruleName,jdbcType=VARCHAR},
+      rule_comment = #{record.ruleComment,jdbcType=VARCHAR},
+      rule_catalog = #{record.ruleCatalog,jdbcType=VARCHAR},
+      rule_type = #{record.ruleType,jdbcType=VARCHAR},
+      rule_col_1 = #{record.ruleCol1,jdbcType=VARCHAR},
+      rule_col_2 = #{record.ruleCol2,jdbcType=VARCHAR},
+      rule_col_3 = #{record.ruleCol3,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfo" >
+    update cj_ods_crt_tab_rule_info
+    <set >
+      <if test="ruleComment != null" >
+        rule_comment = #{ruleComment,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCatalog != null" >
+        rule_catalog = #{ruleCatalog,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null" >
+        rule_type = #{ruleType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol1 != null" >
+        rule_col_1 = #{ruleCol1,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol2 != null" >
+        rule_col_2 = #{ruleCol2,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleCol3 != null" >
+        rule_col_3 = #{ruleCol3,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rule_name = #{ruleName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsCrtTabRuleInfo" >
+    update cj_ods_crt_tab_rule_info
+    set rule_comment = #{ruleComment,jdbcType=VARCHAR},
+      rule_catalog = #{ruleCatalog,jdbcType=VARCHAR},
+      rule_type = #{ruleType,jdbcType=VARCHAR},
+      rule_col_1 = #{ruleCol1,jdbcType=VARCHAR},
+      rule_col_2 = #{ruleCol2,jdbcType=VARCHAR},
+      rule_col_3 = #{ruleCol3,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where rule_name = #{ruleName,jdbcType=VARCHAR}
+  </update>
+</mapper>

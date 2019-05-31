@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjOdsTabStateRptMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsTabStateRpt" >
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <id column="report_dt" property="reportDt" jdbcType="VARCHAR" />
+    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
+    <result column="data_source_tab_nums" property="dataSourceTabNums" jdbcType="VARCHAR" />
+    <result column="ods_tab_nums" property="odsTabNums" jdbcType="VARCHAR" />
+    <result column="dw_tab_nums" property="dwTabNums" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, report_dt, business_system_ID, 
+    data_source_tab_nums, ods_tab_nums, dw_tab_nums, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTabStateRptExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_ods_tab_state_rpt
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTabStateRptKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_ods_tab_state_rpt
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and report_dt = #{reportDt,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTabStateRptKey" >
+    delete from cj_ods_tab_state_rpt
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and report_dt = #{reportDt,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsTabStateRptExample" >
+    delete from cj_ods_tab_state_rpt
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjOdsTabStateRpt" >
+    insert into cj_ods_tab_state_rpt (business_system_name_short_name, data_source_schema, 
+      report_dt, business_system_ID, data_source_tab_nums, 
+      ods_tab_nums, dw_tab_nums, last_modify_dt, 
+      last_modify_by)
+    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
+      #{reportDt,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, #{dataSourceTabNums,jdbcType=VARCHAR}, 
+      #{odsTabNums,jdbcType=VARCHAR}, #{dwTabNums,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, 
+      #{lastModifyBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsTabStateRpt" >
+    insert into cj_ods_tab_state_rpt
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        business_system_name_short_name,
+      </if>
+      <if test="dataSourceSchema != null" >
+        data_source_schema,
+      </if>
+      <if test="reportDt != null" >
+        report_dt,
+      </if>
+      <if test="businessSystemId != null" >
+        business_system_ID,
+      </if>
+      <if test="dataSourceTabNums != null" >
+        data_source_tab_nums,
+      </if>
+      <if test="odsTabNums != null" >
+        ods_tab_nums,
+      </if>
+      <if test="dwTabNums != null" >
+        dw_tab_nums,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        #{businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceSchema != null" >
+        #{dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="reportDt != null" >
+        #{reportDt,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemId != null" >
+        #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTabNums != null" >
+        #{dataSourceTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTabNums != null" >
+        #{odsTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTabNums != null" >
+        #{dwTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsTabStateRptExample" resultType="java.lang.Integer" >
+    select count(*) from cj_ods_tab_state_rpt
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_ods_tab_state_rpt
+    <set >
+      <if test="record.businessSystemNameShortName != null" >
+        business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceSchema != null" >
+        data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reportDt != null" >
+        report_dt = #{record.reportDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessSystemId != null" >
+        business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceTabNums != null" >
+        data_source_tab_nums = #{record.dataSourceTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTabNums != null" >
+        ods_tab_nums = #{record.odsTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTabNums != null" >
+        dw_tab_nums = #{record.dwTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_ods_tab_state_rpt
+    set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      report_dt = #{record.reportDt,jdbcType=VARCHAR},
+      business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      data_source_tab_nums = #{record.dataSourceTabNums,jdbcType=VARCHAR},
+      ods_tab_nums = #{record.odsTabNums,jdbcType=VARCHAR},
+      dw_tab_nums = #{record.dwTabNums,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsTabStateRpt" >
+    update cj_ods_tab_state_rpt
+    <set >
+      <if test="businessSystemId != null" >
+        business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTabNums != null" >
+        data_source_tab_nums = #{dataSourceTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTabNums != null" >
+        ods_tab_nums = #{odsTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTabNums != null" >
+        dw_tab_nums = #{dwTabNums,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and report_dt = #{reportDt,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTabStateRpt" >
+    update cj_ods_tab_state_rpt
+    set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      data_source_tab_nums = #{dataSourceTabNums,jdbcType=VARCHAR},
+      ods_tab_nums = #{odsTabNums,jdbcType=VARCHAR},
+      dw_tab_nums = #{dwTabNums,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and report_dt = #{reportDt,jdbcType=VARCHAR}
+  </update>
+</mapper>

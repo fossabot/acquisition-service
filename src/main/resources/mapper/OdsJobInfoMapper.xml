@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.OdsJobInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.OdsJobInfo" >
+    <id column="job_pk" property="jobPk" jdbcType="VARCHAR" />
+    <result column="workflow_name" property="workflowName" jdbcType="VARCHAR" />
+    <result column="source_system" property="sourceSystem" jdbcType="VARCHAR" />
+    <result column="source_table" property="sourceTable" jdbcType="VARCHAR" />
+    <result column="extract_type" property="extractType" jdbcType="VARCHAR" />
+    <result column="target_database" property="targetDatabase" jdbcType="VARCHAR" />
+    <result column="target_table" property="targetTable" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+    <result column="import_rows" property="importRows" jdbcType="BIGINT" />
+    <result column="elapsed_time" property="elapsedTime" jdbcType="BIGINT" />
+    <result column="dt" property="dt" jdbcType="VARCHAR" />
+    <result column="job_status" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="import_log" property="importLog" jdbcType="VARCHAR" />
+    <result column="sqoop_end_time" property="sqoopEndTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    job_pk, workflow_name, source_system, source_table, extract_type, target_database, 
+    target_table, start_time, end_time, import_rows, elapsed_time, dt, job_status, import_log, 
+    sqoop_end_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.OdsJobInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ods_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ods_job_info
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ods_job_info
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.OdsJobInfoExample" >
+    delete from ods_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.OdsJobInfo" >
+    insert into ods_job_info (job_pk, workflow_name, source_system, 
+      source_table, extract_type, target_database, 
+      target_table, start_time, end_time, 
+      import_rows, elapsed_time, dt, 
+      job_status, import_log, sqoop_end_time
+      )
+    values (#{jobPk,jdbcType=VARCHAR}, #{workflowName,jdbcType=VARCHAR}, #{sourceSystem,jdbcType=VARCHAR}, 
+      #{sourceTable,jdbcType=VARCHAR}, #{extractType,jdbcType=VARCHAR}, #{targetDatabase,jdbcType=VARCHAR}, 
+      #{targetTable,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, 
+      #{importRows,jdbcType=BIGINT}, #{elapsedTime,jdbcType=BIGINT}, #{dt,jdbcType=VARCHAR}, 
+      #{jobStatus,jdbcType=VARCHAR}, #{importLog,jdbcType=VARCHAR}, #{sqoopEndTime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.OdsJobInfo" >
+    insert into ods_job_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="jobPk != null" >
+        job_pk,
+      </if>
+      <if test="workflowName != null" >
+        workflow_name,
+      </if>
+      <if test="sourceSystem != null" >
+        source_system,
+      </if>
+      <if test="sourceTable != null" >
+        source_table,
+      </if>
+      <if test="extractType != null" >
+        extract_type,
+      </if>
+      <if test="targetDatabase != null" >
+        target_database,
+      </if>
+      <if test="targetTable != null" >
+        target_table,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="importRows != null" >
+        import_rows,
+      </if>
+      <if test="elapsedTime != null" >
+        elapsed_time,
+      </if>
+      <if test="dt != null" >
+        dt,
+      </if>
+      <if test="jobStatus != null" >
+        job_status,
+      </if>
+      <if test="importLog != null" >
+        import_log,
+      </if>
+      <if test="sqoopEndTime != null" >
+        sqoop_end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="jobPk != null" >
+        #{jobPk,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowName != null" >
+        #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceSystem != null" >
+        #{sourceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="extractType != null" >
+        #{extractType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetDatabase != null" >
+        #{targetDatabase,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTable != null" >
+        #{targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="importRows != null" >
+        #{importRows,jdbcType=BIGINT},
+      </if>
+      <if test="elapsedTime != null" >
+        #{elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="dt != null" >
+        #{dt,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="importLog != null" >
+        #{importLog,jdbcType=VARCHAR},
+      </if>
+      <if test="sqoopEndTime != null" >
+        #{sqoopEndTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.OdsJobInfoExample" resultType="java.lang.Integer" >
+    select count(*) from ods_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ods_job_info
+    <set >
+      <if test="record.jobPk != null" >
+        job_pk = #{record.jobPk,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workflowName != null" >
+        workflow_name = #{record.workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceSystem != null" >
+        source_system = #{record.sourceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTable != null" >
+        source_table = #{record.sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extractType != null" >
+        extract_type = #{record.extractType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetDatabase != null" >
+        target_database = #{record.targetDatabase,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTable != null" >
+        target_table = #{record.targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.importRows != null" >
+        import_rows = #{record.importRows,jdbcType=BIGINT},
+      </if>
+      <if test="record.elapsedTime != null" >
+        elapsed_time = #{record.elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.dt != null" >
+        dt = #{record.dt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobStatus != null" >
+        job_status = #{record.jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.importLog != null" >
+        import_log = #{record.importLog,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sqoopEndTime != null" >
+        sqoop_end_time = #{record.sqoopEndTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ods_job_info
+    set job_pk = #{record.jobPk,jdbcType=VARCHAR},
+      workflow_name = #{record.workflowName,jdbcType=VARCHAR},
+      source_system = #{record.sourceSystem,jdbcType=VARCHAR},
+      source_table = #{record.sourceTable,jdbcType=VARCHAR},
+      extract_type = #{record.extractType,jdbcType=VARCHAR},
+      target_database = #{record.targetDatabase,jdbcType=VARCHAR},
+      target_table = #{record.targetTable,jdbcType=VARCHAR},
+      start_time = #{record.startTime,jdbcType=VARCHAR},
+      end_time = #{record.endTime,jdbcType=VARCHAR},
+      import_rows = #{record.importRows,jdbcType=BIGINT},
+      elapsed_time = #{record.elapsedTime,jdbcType=BIGINT},
+      dt = #{record.dt,jdbcType=VARCHAR},
+      job_status = #{record.jobStatus,jdbcType=VARCHAR},
+      import_log = #{record.importLog,jdbcType=VARCHAR},
+      sqoop_end_time = #{record.sqoopEndTime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.OdsJobInfo" >
+    update ods_job_info
+    <set >
+      <if test="workflowName != null" >
+        workflow_name = #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceSystem != null" >
+        source_system = #{sourceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        source_table = #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="extractType != null" >
+        extract_type = #{extractType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetDatabase != null" >
+        target_database = #{targetDatabase,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTable != null" >
+        target_table = #{targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="importRows != null" >
+        import_rows = #{importRows,jdbcType=BIGINT},
+      </if>
+      <if test="elapsedTime != null" >
+        elapsed_time = #{elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="dt != null" >
+        dt = #{dt,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        job_status = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="importLog != null" >
+        import_log = #{importLog,jdbcType=VARCHAR},
+      </if>
+      <if test="sqoopEndTime != null" >
+        sqoop_end_time = #{sqoopEndTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.OdsJobInfo" >
+    update ods_job_info
+    set workflow_name = #{workflowName,jdbcType=VARCHAR},
+      source_system = #{sourceSystem,jdbcType=VARCHAR},
+      source_table = #{sourceTable,jdbcType=VARCHAR},
+      extract_type = #{extractType,jdbcType=VARCHAR},
+      target_database = #{targetDatabase,jdbcType=VARCHAR},
+      target_table = #{targetTable,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=VARCHAR},
+      end_time = #{endTime,jdbcType=VARCHAR},
+      import_rows = #{importRows,jdbcType=BIGINT},
+      elapsed_time = #{elapsedTime,jdbcType=BIGINT},
+      dt = #{dt,jdbcType=VARCHAR},
+      job_status = #{jobStatus,jdbcType=VARCHAR},
+      import_log = #{importLog,jdbcType=VARCHAR},
+      sqoop_end_time = #{sqoopEndTime,jdbcType=VARCHAR}
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </update>
+</mapper>

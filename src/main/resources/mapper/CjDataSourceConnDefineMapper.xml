@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDataSourceConnDefineMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDataSourceConnDefine" >
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <id column="data_source_type" property="dataSourceType" jdbcType="VARCHAR" />
+    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
+    <result column="business_system_name" property="businessSystemName" jdbcType="VARCHAR" />
+    <result column="data_base_type" property="dataBaseType" jdbcType="VARCHAR" />
+    <result column="conn_ip" property="connIp" jdbcType="VARCHAR" />
+    <result column="conn_port" property="connPort" jdbcType="VARCHAR" />
+    <result column="db_instance" property="dbInstance" jdbcType="VARCHAR" />
+    <result column="hive_queue" property="hiveQueue" jdbcType="VARCHAR" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="login_password" property="loginPassword" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, data_source_type, business_system_ID, 
+    business_system_name, data_base_type, conn_ip, conn_port, db_instance, hive_queue, 
+    login_name, login_password, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap"  >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_data_source_conn_define
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceConnDefineKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_data_source_conn_define
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_type = #{dataSourceType,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDataSourceConnDefineKey" >
+    delete from cj_data_source_conn_define
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_type = #{dataSourceType,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDataSourceConnDefineExample" >
+    delete from cj_data_source_conn_define
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDataSourceConnDefine" >
+    insert into cj_data_source_conn_define (business_system_name_short_name, data_source_schema, 
+      data_source_type, business_system_ID, business_system_name, 
+      data_base_type, conn_ip, conn_port, 
+      db_instance, hive_queue, login_name, 
+      login_password, last_modify_dt, last_modify_by
+      )
+    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
+      #{dataSourceType,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, #{businessSystemName,jdbcType=VARCHAR}, 
+      #{dataBaseType,jdbcType=VARCHAR}, #{connIp,jdbcType=VARCHAR}, #{connPort,jdbcType=VARCHAR}, 
+      #{dbInstance,jdbcType=VARCHAR}, #{hiveQueue,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
+      #{loginPassword,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDataSourceConnDefine" >
+    insert into cj_data_source_conn_define
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        business_system_name_short_name,
+      </if>
+      <if test="dataSourceSchema != null" >
+        data_source_schema,
+      </if>
+      <if test="dataSourceType != null" >
+        data_source_type,
+      </if>
+      <if test="businessSystemId != null" >
+        business_system_ID,
+      </if>
+      <if test="businessSystemName != null" >
+        business_system_name,
+      </if>
+      <if test="dataBaseType != null" >
+        data_base_type,
+      </if>
+      <if test="connIp != null" >
+        conn_ip,
+      </if>
+      <if test="connPort != null" >
+        conn_port,
+      </if>
+      <if test="dbInstance != null" >
+        db_instance,
+      </if>
+      <if test="hiveQueue != null" >
+        hive_queue,
+      </if>
+      <if test="loginName != null" >
+        login_name,
+      </if>
+      <if test="loginPassword != null" >
+        login_password,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        #{businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceSchema != null" >
+        #{dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceType != null" >
+        #{dataSourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemId != null" >
+        #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemName != null" >
+        #{businessSystemName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataBaseType != null" >
+        #{dataBaseType,jdbcType=VARCHAR},
+      </if>
+      <if test="connIp != null" >
+        #{connIp,jdbcType=VARCHAR},
+      </if>
+      <if test="connPort != null" >
+        #{connPort,jdbcType=VARCHAR},
+      </if>
+      <if test="dbInstance != null" >
+        #{dbInstance,jdbcType=VARCHAR},
+      </if>
+      <if test="hiveQueue != null" >
+        #{hiveQueue,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null" >
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null" >
+        #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDataSourceConnDefineExample" resultType="java.lang.Integer" >
+    select count(*) from cj_data_source_conn_define
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_data_source_conn_define
+    <set >
+      <if test="record.businessSystemNameShortName != null" >
+        business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceSchema != null" >
+        data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceType != null" >
+        data_source_type = #{record.dataSourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessSystemId != null" >
+        business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessSystemName != null" >
+        business_system_name = #{record.businessSystemName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataBaseType != null" >
+        data_base_type = #{record.dataBaseType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.connIp != null" >
+        conn_ip = #{record.connIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.connPort != null" >
+        conn_port = #{record.connPort,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dbInstance != null" >
+        db_instance = #{record.dbInstance,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hiveQueue != null" >
+        hive_queue = #{record.hiveQueue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginName != null" >
+        login_name = #{record.loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginPassword != null" >
+        login_password = #{record.loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_data_source_conn_define
+    set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      data_source_type = #{record.dataSourceType,jdbcType=VARCHAR},
+      business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      business_system_name = #{record.businessSystemName,jdbcType=VARCHAR},
+      data_base_type = #{record.dataBaseType,jdbcType=VARCHAR},
+      conn_ip = #{record.connIp,jdbcType=VARCHAR},
+      conn_port = #{record.connPort,jdbcType=VARCHAR},
+      db_instance = #{record.dbInstance,jdbcType=VARCHAR},
+      hive_queue = #{record.hiveQueue,jdbcType=VARCHAR},
+      login_name = #{record.loginName,jdbcType=VARCHAR},
+      login_password = #{record.loginPassword,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDataSourceConnDefine" >
+    update cj_data_source_conn_define
+    <set >
+      <if test="businessSystemId != null" >
+        business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemName != null" >
+        business_system_name = #{businessSystemName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataBaseType != null" >
+        data_base_type = #{dataBaseType,jdbcType=VARCHAR},
+      </if>
+      <if test="connIp != null" >
+        conn_ip = #{connIp,jdbcType=VARCHAR},
+      </if>
+      <if test="connPort != null" >
+        conn_port = #{connPort,jdbcType=VARCHAR},
+      </if>
+      <if test="dbInstance != null" >
+        db_instance = #{dbInstance,jdbcType=VARCHAR},
+      </if>
+      <if test="hiveQueue != null" >
+        hive_queue = #{hiveQueue,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null" >
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null" >
+        login_password = #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_type = #{dataSourceType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDataSourceConnDefine" >
+    update cj_data_source_conn_define
+    set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      business_system_name = #{businessSystemName,jdbcType=VARCHAR},
+      data_base_type = #{dataBaseType,jdbcType=VARCHAR},
+      conn_ip = #{connIp,jdbcType=VARCHAR},
+      conn_port = #{connPort,jdbcType=VARCHAR},
+      db_instance = #{dbInstance,jdbcType=VARCHAR},
+      hive_queue = #{hiveQueue,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      login_password = #{loginPassword,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_type = #{dataSourceType,jdbcType=VARCHAR}
+  </update>
+</mapper>

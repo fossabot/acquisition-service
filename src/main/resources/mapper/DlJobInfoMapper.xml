@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.DlJobInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.DlJobInfo" >
+    <id column="job_pk" property="jobPk" jdbcType="VARCHAR" />
+    <result column="workflow_name" property="workflowName" jdbcType="VARCHAR" />
+    <result column="source_table" property="sourceTable" jdbcType="VARCHAR" />
+    <result column="target_schema" property="targetSchema" jdbcType="VARCHAR" />
+    <result column="target_table" property="targetTable" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+    <result column="elapsed_time" property="elapsedTime" jdbcType="BIGINT" />
+    <result column="dt" property="dt" jdbcType="VARCHAR" />
+    <result column="job_status" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="log_dir" property="logDir" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    job_pk, workflow_name, source_table, target_schema, target_table, start_time, end_time, 
+    elapsed_time, dt, job_status, log_dir
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.DlJobInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from dl_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from dl_job_info
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from dl_job_info
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.DlJobInfoExample" >
+    delete from dl_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.DlJobInfo" >
+    insert into dl_job_info (job_pk, workflow_name, source_table, 
+      target_schema, target_table, start_time, 
+      end_time, elapsed_time, dt, 
+      job_status, log_dir)
+    values (#{jobPk,jdbcType=VARCHAR}, #{workflowName,jdbcType=VARCHAR}, #{sourceTable,jdbcType=VARCHAR}, 
+      #{targetSchema,jdbcType=VARCHAR}, #{targetTable,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR}, 
+      #{endTime,jdbcType=VARCHAR}, #{elapsedTime,jdbcType=BIGINT}, #{dt,jdbcType=VARCHAR}, 
+      #{jobStatus,jdbcType=VARCHAR}, #{logDir,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.DlJobInfo" >
+    insert into dl_job_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="jobPk != null" >
+        job_pk,
+      </if>
+      <if test="workflowName != null" >
+        workflow_name,
+      </if>
+      <if test="sourceTable != null" >
+        source_table,
+      </if>
+      <if test="targetSchema != null" >
+        target_schema,
+      </if>
+      <if test="targetTable != null" >
+        target_table,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="elapsedTime != null" >
+        elapsed_time,
+      </if>
+      <if test="dt != null" >
+        dt,
+      </if>
+      <if test="jobStatus != null" >
+        job_status,
+      </if>
+      <if test="logDir != null" >
+        log_dir,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="jobPk != null" >
+        #{jobPk,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowName != null" >
+        #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="targetSchema != null" >
+        #{targetSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTable != null" >
+        #{targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="elapsedTime != null" >
+        #{elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="dt != null" >
+        #{dt,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="logDir != null" >
+        #{logDir,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.DlJobInfoExample" resultType="java.lang.Integer" >
+    select count(*) from dl_job_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update dl_job_info
+    <set >
+      <if test="record.jobPk != null" >
+        job_pk = #{record.jobPk,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workflowName != null" >
+        workflow_name = #{record.workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTable != null" >
+        source_table = #{record.sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetSchema != null" >
+        target_schema = #{record.targetSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTable != null" >
+        target_table = #{record.targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.elapsedTime != null" >
+        elapsed_time = #{record.elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.dt != null" >
+        dt = #{record.dt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobStatus != null" >
+        job_status = #{record.jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logDir != null" >
+        log_dir = #{record.logDir,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update dl_job_info
+    set job_pk = #{record.jobPk,jdbcType=VARCHAR},
+      workflow_name = #{record.workflowName,jdbcType=VARCHAR},
+      source_table = #{record.sourceTable,jdbcType=VARCHAR},
+      target_schema = #{record.targetSchema,jdbcType=VARCHAR},
+      target_table = #{record.targetTable,jdbcType=VARCHAR},
+      start_time = #{record.startTime,jdbcType=VARCHAR},
+      end_time = #{record.endTime,jdbcType=VARCHAR},
+      elapsed_time = #{record.elapsedTime,jdbcType=BIGINT},
+      dt = #{record.dt,jdbcType=VARCHAR},
+      job_status = #{record.jobStatus,jdbcType=VARCHAR},
+      log_dir = #{record.logDir,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.DlJobInfo" >
+    update dl_job_info
+    <set >
+      <if test="workflowName != null" >
+        workflow_name = #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        source_table = #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="targetSchema != null" >
+        target_schema = #{targetSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTable != null" >
+        target_table = #{targetTable,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="elapsedTime != null" >
+        elapsed_time = #{elapsedTime,jdbcType=BIGINT},
+      </if>
+      <if test="dt != null" >
+        dt = #{dt,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null" >
+        job_status = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="logDir != null" >
+        log_dir = #{logDir,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.DlJobInfo" >
+    update dl_job_info
+    set workflow_name = #{workflowName,jdbcType=VARCHAR},
+      source_table = #{sourceTable,jdbcType=VARCHAR},
+      target_schema = #{targetSchema,jdbcType=VARCHAR},
+      target_table = #{targetTable,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=VARCHAR},
+      end_time = #{endTime,jdbcType=VARCHAR},
+      elapsed_time = #{elapsedTime,jdbcType=BIGINT},
+      dt = #{dt,jdbcType=VARCHAR},
+      job_status = #{jobStatus,jdbcType=VARCHAR},
+      log_dir = #{logDir,jdbcType=VARCHAR}
+    where job_pk = #{jobPk,jdbcType=VARCHAR}
+  </update>
+</mapper>

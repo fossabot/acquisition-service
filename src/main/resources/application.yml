@@ -1,0 +1,60 @@
+#默认使用配置
+spring:
+  profiles:
+    active: dev
+server:
+  port: 6269
+#公共配置与profiles选择无关
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.acquisition.mapper
+
+
+
+---
+
+#开发配置
+spring:
+  profiles: dev
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    mode: HTML5
+
+  datasource:
+    url: jdbc:mysql://10.30.140.68:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    #dataSource Pool configuration
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    exceptionSorter: true
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties:
+      druid.stat.mergeSql: true
+      druid.stat.slowSqlMillis: 500
+    useGlobalDataSourceStat: true
+druid:
+  login:
+    enabled: true
+    username: druid
+    password: druid
+##Slf4j日志打印
+logging:
+  config: classpath:logback.xml

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDataSourceTabInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDataSourceTabInfo" >
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <id column="data_source_table" property="dataSourceTable" jdbcType="VARCHAR" />
+    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
+    <result column="data_source_table_comment" property="dataSourceTableComment" jdbcType="VARCHAR" />
+    <result column="data_flag_for_get_cols" property="dataFlagForGetCols" jdbcType="CHAR" />
+    <result column="data_flag_for_get_rows" property="dataFlagForGetRows" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_dll" property="dataFlagForCrtOdsDll" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_hive" property="dataFlagForCrtOdsHive" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_dll" property="dataFlagForCrtDwDll" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_hive" property="dataFlagForCrtDwHive" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_ods_script" property="dataFlagForCrtOdsScript" jdbcType="CHAR" />
+    <result column="data_flag_for_crt_dw_script" property="dataFlagForCrtDwScript" jdbcType="CHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, data_source_table, business_system_ID,
+    data_source_table_comment, data_flag_for_get_cols, data_flag_for_get_rows, data_flag_for_crt_ods_dll,
+    data_flag_for_crt_ods_hive, data_flag_for_crt_dw_dll, data_flag_for_crt_dw_hive,
+    data_flag_for_crt_ods_script, data_flag_for_crt_dw_script, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+  </select>
+  <select id="selectBySystemAndSchema"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from datalake_meta.cj_v_get_prepare_crt_ods_tab_list
+  </select>
+  <update id="updateDataFlagForCrtOdsDll">
+    update datalake_meta.cj_data_source_tab_info
+    set data_flag_for_crt_ods_dll=#{dataFlagForCrtOdsDll},
+    data_flag_for_crt_ods_hive=#{dataFlagForCrtOdsHive}
+    where
+  </update>
+</mapper>

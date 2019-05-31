@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjOdsDataScriptDefInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsDataScriptDefInfo" >
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <id column="data_source_table" property="dataSourceTable" jdbcType="VARCHAR" />
+    <id column="ods_data_table" property="odsDataTable" jdbcType="VARCHAR" />
+    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
+    <result column="ods_data_script_type" property="odsDataScriptType" jdbcType="VARCHAR" />
+    <result column="ods_data_sqoop_define" property="odsDataSqoopDefine" jdbcType="VARCHAR" />
+    <result column="ods_data_hivesql_define" property="odsDataHivesqlDefine" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, data_source_table, ods_data_table, 
+    business_system_ID, ods_data_script_type, ods_data_sqoop_define, ods_data_hivesql_define, 
+    last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_ods_data_script_def_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_ods_data_script_def_info
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+      and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfoKey" >
+    delete from cj_ods_data_script_def_info
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+      and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfoExample" >
+    delete from cj_ods_data_script_def_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfo" >
+    insert into cj_ods_data_script_def_info (business_system_name_short_name, data_source_schema, 
+      data_source_table, ods_data_table, business_system_ID, 
+      ods_data_script_type, ods_data_sqoop_define, 
+      ods_data_hivesql_define, last_modify_dt, last_modify_by
+      )
+    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
+      #{dataSourceTable,jdbcType=VARCHAR}, #{odsDataTable,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, 
+      #{odsDataScriptType,jdbcType=VARCHAR}, #{odsDataSqoopDefine,jdbcType=VARCHAR}, 
+      #{odsDataHivesqlDefine,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfo" >
+    insert into cj_ods_data_script_def_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        business_system_name_short_name,
+      </if>
+      <if test="dataSourceSchema != null" >
+        data_source_schema,
+      </if>
+      <if test="dataSourceTable != null" >
+        data_source_table,
+      </if>
+      <if test="odsDataTable != null" >
+        ods_data_table,
+      </if>
+      <if test="businessSystemId != null" >
+        business_system_ID,
+      </if>
+      <if test="odsDataScriptType != null" >
+        ods_data_script_type,
+      </if>
+      <if test="odsDataSqoopDefine != null" >
+        ods_data_sqoop_define,
+      </if>
+      <if test="odsDataHivesqlDefine != null" >
+        ods_data_hivesql_define,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="businessSystemNameShortName != null" >
+        #{businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceSchema != null" >
+        #{dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTable != null" >
+        #{dataSourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataTable != null" >
+        #{odsDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSystemId != null" >
+        #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataScriptType != null" >
+        #{odsDataScriptType,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataSqoopDefine != null" >
+        #{odsDataSqoopDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataHivesqlDefine != null" >
+        #{odsDataHivesqlDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_ods_data_script_def_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_ods_data_script_def_info
+    <set >
+      <if test="record.businessSystemNameShortName != null" >
+        business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceSchema != null" >
+        data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceTable != null" >
+        data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsDataTable != null" >
+        ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessSystemId != null" >
+        business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsDataScriptType != null" >
+        ods_data_script_type = #{record.odsDataScriptType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsDataSqoopDefine != null" >
+        ods_data_sqoop_define = #{record.odsDataSqoopDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsDataHivesqlDefine != null" >
+        ods_data_hivesql_define = #{record.odsDataHivesqlDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_ods_data_script_def_info
+    set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
+      data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
+      data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
+      ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
+      business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
+      ods_data_script_type = #{record.odsDataScriptType,jdbcType=VARCHAR},
+      ods_data_sqoop_define = #{record.odsDataSqoopDefine,jdbcType=VARCHAR},
+      ods_data_hivesql_define = #{record.odsDataHivesqlDefine,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfo" >
+    update cj_ods_data_script_def_info
+    <set >
+      <if test="businessSystemId != null" >
+        business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataScriptType != null" >
+        ods_data_script_type = #{odsDataScriptType,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataSqoopDefine != null" >
+        ods_data_sqoop_define = #{odsDataSqoopDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="odsDataHivesqlDefine != null" >
+        ods_data_hivesql_define = #{odsDataHivesqlDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+      and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsDataScriptDefInfo" >
+    update cj_ods_data_script_def_info
+    set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
+      ods_data_script_type = #{odsDataScriptType,jdbcType=VARCHAR},
+      ods_data_sqoop_define = #{odsDataSqoopDefine,jdbcType=VARCHAR},
+      ods_data_hivesql_define = #{odsDataHivesqlDefine,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+      and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+      and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+      and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+  </update>
+</mapper>
