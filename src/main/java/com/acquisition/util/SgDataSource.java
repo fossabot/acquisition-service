@@ -1,7 +1,7 @@
 package com.acquisition.util;
 
 import com.acquisition.entity.CjDataSourceConnDefine;
-import com.acquisition.entity.CjDataSourceConnDefineExample; 
+import com.acquisition.entity.CjDataSourceConnDefineExample;
 import com.acquisition.service.ICjDataSourceConnDefineService;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
