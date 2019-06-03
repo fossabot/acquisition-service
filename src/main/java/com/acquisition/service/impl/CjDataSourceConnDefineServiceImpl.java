@@ -30,7 +30,6 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
     public CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName, String dataSourceSchema) {
         return null;
     }
-
     @Override
     public List<ViewSourceSystemEntity> selectViewContet() {
         return cjDataSourceConnDefineMapper.selectViewContet();
