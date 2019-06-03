@@ -1,10 +1,8 @@
 package com.acquisition.service.impl;
 
 
-import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
-import com.acquisition.entity.Result;
 import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import org.springframework.stereotype.Service;
@@ -25,8 +23,8 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
      * @return 返回ODS中未创建的表
      */
     @Override
-    public String findAllByColsAndOds() {
-        return Result.ok(cjDataSourceTabInfoMapper.selectBySystemAndSchema());
+    public List<CjDataSourceTabInfo> findAllByColsAndOds() {
+        return cjDataSourceTabInfoMapper.selectBySystemAndSchema();
     }
 
     /**
@@ -56,11 +54,6 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
             return "更新成功";
         }
         return "更新失败";
-    }
-
-    @Override
-    public String findAllByColsAndOds(String dataFlagForGetCols, String dataFlagForCrtOdsDll) {
-        return null;
     }
 
     @Override

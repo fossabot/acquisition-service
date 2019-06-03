@@ -1,7 +1,5 @@
 package com.acquisition.job;
 
-import com.yili.pool.util.TypeEnume;
-
 /**
  * @author yxk
  * @Description: 适配Database
@@ -16,7 +14,6 @@ public class DatabaseType {
     public static String AdapterDatabaseType(String par) {
         String str = "";
         switch (TypeEnume.getDatabaseName(par)) {
-
             case MYSQL:
                 str = "com.mysql.jdbc.Driver";
                 break;

@@ -5,6 +5,7 @@ import java.util.List;
 import com.acquisition.entity.CjDataSourceConnDefine;
 import com.acquisition.entity.CjDataSourceConnDefineExample;
 import com.acquisition.entity.CjDataSourceConnDefineKey;
+import com.acquisition.entity.ViewSourceSystemEntity;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjDataSourceConnDefineMapper {
@@ -32,4 +33,8 @@ public interface CjDataSourceConnDefineMapper {
     int updateByPrimaryKeySelective(CjDataSourceConnDefine record);
 
     int updateByPrimaryKey(CjDataSourceConnDefine record);
+
+    List<ViewSourceSystemEntity> selectViewContet();
+
+    List<String> selectDistinctName();
 }

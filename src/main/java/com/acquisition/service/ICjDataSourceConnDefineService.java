@@ -1,6 +1,7 @@
 package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceConnDefine;
+import com.acquisition.entity.ViewSourceSystemEntity;
 import com.acquisition.mapper.CjDataSourceConnDefineMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,9 @@ import java.util.List;
 public interface ICjDataSourceConnDefineService {
     List<CjDataSourceConnDefine> selectByExample();
     CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema);
+
+    List<ViewSourceSystemEntity> selectViewContet();
+
+    List<String> selectDistinctName();
 
 }

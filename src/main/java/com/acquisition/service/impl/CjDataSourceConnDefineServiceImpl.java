@@ -2,6 +2,7 @@ package com.acquisition.service.impl;
 
 import com.acquisition.entity.CjDataSourceConnDefine;
 import com.acquisition.entity.CjDataSourceConnDefineExample;
+import com.acquisition.entity.ViewSourceSystemEntity;
 import com.acquisition.mapper.CjDataSourceConnDefineMapper;
 import com.acquisition.service.ICjDataSourceConnDefineService;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,22 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
 
     @Override
     public List<CjDataSourceConnDefine> selectByExample() {
-        List<CjDataSourceConnDefine> ff =cjDataSourceConnDefineMapper.selectByExample();
-         return ff;
+        return cjDataSourceConnDefineMapper.selectByExample();
     }
 
     @Override
     public CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName, String dataSourceSchema) {
-        return cjDataSourceConnDefineMapper.selectBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
+        return null;
+    }
+
+    @Override
+    public List<ViewSourceSystemEntity> selectViewContet() {
+        return cjDataSourceConnDefineMapper.selectViewContet();
+    }
+
+    @Override
+    public List<String> selectDistinctName() {
+        return cjDataSourceConnDefineMapper.selectDistinctName();
     }
 
 }

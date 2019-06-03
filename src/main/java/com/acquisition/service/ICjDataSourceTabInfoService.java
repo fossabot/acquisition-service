@@ -14,9 +14,8 @@ import java.util.List;
 public interface ICjDataSourceTabInfoService {
     List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll);
     String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example);
-    String findAllByColsAndOds(String dataFlagForGetCols, String dataFlagForCrtOdsDll);
+    List<CjDataSourceTabInfo> findAllByColsAndOds();
     void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo);
-    String findAllByColsAndOds();
     void updateODSFlg(String dataFlagForCrtOdsDll ,
                       String dataFlagForCrtOdsHive,
                       String businessSystemNameShortName,
