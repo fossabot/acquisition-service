@@ -38,14 +38,12 @@ public class HiveCreateTableController {
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
-    @PostMapping(value = "/getDWCreateTabList")
+    @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList() {
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService
-                .findAllByOdsHiveAndDwHive(Constant.ODS_CRT_HIVE, Constant.DW_NO_CRT_HIVE);
+                .findAllCjVGetPrepareCrtDwTabList();
         Result result=new Result();
-        result.setCode(200);
-        result.setData(cjDataSourceTabInfos);
-        result.setMsg("获取列表成功");
+        result.success(cjDataSourceTabInfos);
         return result;
     }
 
@@ -137,10 +135,11 @@ public class HiveCreateTableController {
     /**
      * @return 返回已经导入清单，但没有在ODS建表的表
      */
-    @RequestMapping(value = "/getODSTable")
+    @RequestMapping(value = "/getODSTableInfo")
     @ResponseBody
-    public String getODSTable() {
-        return cjDataSourceTabInfoService.findAllByColsAndOds();
+    public Result getODSTable() {
+        Result result=new Result();
+        return result.success(cjDataSourceTabInfoService.findAllByColsAndOds());
     }
 
     /**
@@ -148,20 +147,21 @@ public class HiveCreateTableController {
      */
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
-        Result result=new Result();
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("data");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
-        saveDDLAndCreateTable(cjDataSourceTabInfos);
-        result.setCode(200);
-        result.setMsg("建表成功");
-        return result;
+        return saveDDLAndCreateTable(cjDataSourceTabInfos);
     }
 
-    public String saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
+    /**
+     * @return 返回状态码
+     */
+    public Result saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         String colName = "";
         String colComment = "";
         StringBuffer odsDDL = new StringBuffer();
+        Result result=new Result();
+
         CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo = new CjOdsCrtTabDdlInfo();
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
@@ -179,7 +179,6 @@ public class HiveCreateTableController {
             for (int i = 0; i < infoList.size(); i++) {
                 colName = infoList.get(i).getDataSourceColName().toLowerCase();
                 colComment = infoList.get(i).getDataSourceColComment();
-
                 if (colComment == null) {
                     colComment = "";
                 }
@@ -191,6 +190,12 @@ public class HiveCreateTableController {
             }
             odsDDL.append(")" + "\n");
             odsDDL.append("row format delimited fields terminated by '\\001' lines terminated by '\\n'");
+
+            try {
+                createTableInHive(odsDDL.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             cjOdsCrtTabDdlInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
             cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
@@ -205,11 +210,15 @@ public class HiveCreateTableController {
 
             //保存DDL
             if (cjOdsCrtTabDdlInfoService.saveDDLAndCreateTable(cjOdsCrtTabDdlInfo)){
-                cjDataSourceTabInfoService.updateODSFlg("1","1");
+                cjDataSourceTabInfoService.updateODSFlg(
+                        "1","1",
+                        cjDataSourceTabInfo.getBusinessSystemNameShortName(),
+                        cjDataSourceTabInfo.getDataSourceSchema(),
+                        cjDataSourceTabInfo.getDataSourceTable());
             }
             odsDDL.setLength(0);
         }
-        return createTableInHive();
+        return  result.success("成功");
     }
 
 
@@ -218,7 +227,11 @@ public class HiveCreateTableController {
      *
      * @return 返回创建成功的状态
      */
-    public String createTableInHive() {
-        return "Hive 表创建成功！";
+    public boolean createTableInHive(String sql) {
+        if (sql != null){
+            //执行sql
+            return true;
+        }
+        return false;
     }
 }
