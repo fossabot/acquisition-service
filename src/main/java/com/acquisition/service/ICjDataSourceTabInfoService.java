@@ -17,5 +17,9 @@ public interface ICjDataSourceTabInfoService {
     String findAllByColsAndOds(String dataFlagForGetCols, String dataFlagForCrtOdsDll);
     void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo);
     String findAllByColsAndOds();
-    void updateODSFlg(String dataFlagForCrtOdsDll ,String dataFlagForCrtOdsHive);
+    void updateODSFlg(String dataFlagForCrtOdsDll ,
+                      String dataFlagForCrtOdsHive,
+                      String businessSystemNameShortName,
+                      String dataSourceSchema,
+                      String dataSourceTable);
 }

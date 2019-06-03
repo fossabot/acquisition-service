@@ -1,7 +1,6 @@
 package com.acquisition.job;
 
-import com.yili.pool.util.JdbcPojo;
-import com.yili.pool.util.PoolDataSource;
+import com.yili.pool.util.TypeEnume;
 
 /**
  * @author yxk

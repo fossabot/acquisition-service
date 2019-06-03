@@ -1,4 +1,4 @@
-package com.acquisition.job;
+package com.acquisition.util;
 
 public enum TypeEnume {
 

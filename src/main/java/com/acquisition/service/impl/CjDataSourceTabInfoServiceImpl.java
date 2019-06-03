@@ -35,8 +35,14 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
      * @return 返回更改状态
      */
     @Override
-    public void updateODSFlg(String dataFlagForCrtOdsDll ,String dataFlagForCrtOdsHive) {
-        cjDataSourceTabInfoMapper.updateDataFlagForCrtOdsDll(dataFlagForCrtOdsDll,dataFlagForCrtOdsHive);
+    public void updateODSFlg(String dataFlagForCrtOdsDll ,
+                             String dataFlagForCrtOdsHive,
+                             String businessSystemNameShortName,
+                             String dataSourceSchema,
+                             String dataSourceTable) {
+        cjDataSourceTabInfoMapper.updateDataFlagForCrtOdsDll(
+                dataFlagForCrtOdsDll,dataFlagForCrtOdsHive,
+                businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
 
     @Override
