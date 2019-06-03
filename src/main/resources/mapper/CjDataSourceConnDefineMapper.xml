@@ -361,7 +361,6 @@
   <select id="selectViewContet" resultType="com.acquisition.entity.ViewSourceSystemEntity">
     select  *  from cj_get_source_system_conn_info
   </select>
-
   <select id="selectDistinctName" resultType="java.lang.String">
     select  distinct business_system_name_short_name from cj_data_source_conn_define
   </select>

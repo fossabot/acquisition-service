@@ -390,8 +390,9 @@
     update datalake_meta.cj_data_source_tab_info
     set data_flag_for_crt_ods_dll=#{dataFlagForCrtOdsDll},
     data_flag_for_crt_ods_hive=#{dataFlagForCrtOdsHive}
-    where
-
+    where business_system_name_short_name=#{businessSystemNameShortName}
+    and data_source_schema = #{dataSourceSchema}
+    and data_source_table = #{dataSourceTable}
   </update>
   <select id="selectAllCjVGetPrepareCrtDwTabList"  resultMap="BaseResultMap">
     select

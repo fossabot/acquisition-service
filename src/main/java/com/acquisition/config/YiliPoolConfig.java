@@ -32,7 +32,10 @@ public class YiliPoolConfig implements CommandLineRunner {
         List<CjDataSourceConnDefine> allconninfo = iCjDataSourceConnDefineService.selectByExample();
         for (CjDataSourceConnDefine dta : allconninfo) {
             GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance(dta.getBusinessSystemNameShortName() + dta.getDataSourceSchema());
-            groupPoolFactory.setConfigurationParameter(DatabaseType.AdapterDatabaseType(dta.getDataBaseType()), dta.getConnIp(), dta.getConnPort(), dta.getBusinessSystemNameShortName(), dta.getLoginName(), dta.getLoginPassword());
+            groupPoolFactory.setConfigurationParameter(
+                    DatabaseType.AdapterDatabaseType(dta.getDataBaseType()),
+                    dta.getConnIp(), dta.getConnPort(), dta.getBusinessSystemNameShortName(),
+                    dta.getLoginName(), dta.getLoginPassword());
         }
         LOG.info("YILIGroupPool创建成功");
     }

@@ -37,7 +37,10 @@ public interface CjDataSourceTabInfoMapper {
     List<CjDataSourceTabInfo> selectAll(String dataFlagForGetCols, String dataFlagForCrtOdsDll);
     List<CjDataSourceTabInfo> selectBySystemAndSchema();
     int updateDataFlagForCrtOdsDll(@Param("dataFlagForCrtOdsDll") String dataFlagForGetCols,
-                                   @Param("dataFlagForCrtOdsHive") String dataFlagForCrtOdsHive
+                                   @Param("dataFlagForCrtOdsHive") String dataFlagForCrtOdsHive,
+                                   @Param("businessSystemNameShortName") String businessSystemNameShortName,
+                                   @Param("dataSourceSchema") String dataSourceSchema,
+                                   @Param("dataSourceTable") String dataSourceTable
     );
     List<CjDataSourceTabInfo> selectAllCjVGetPrepareScriptForDwTabList();
     List<CjDataSourceTabInfo> selectAllCjVGetPrepareCrtDwTabList();

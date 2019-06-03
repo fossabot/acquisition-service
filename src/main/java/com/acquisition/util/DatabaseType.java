@@ -1,4 +1,7 @@
-package com.acquisition.job;
+package com.acquisition.util;
+
+import com.yili.pool.util.JdbcPojo;
+import com.yili.pool.util.PoolDataSource;
 
 /**
  * @author yxk
@@ -14,6 +17,7 @@ public class DatabaseType {
     public static String AdapterDatabaseType(String par) {
         String str = "";
         switch (TypeEnume.getDatabaseName(par)) {
+
             case MYSQL:
                 str = "com.mysql.jdbc.Driver";
                 break;
