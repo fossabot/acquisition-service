@@ -39,5 +39,6 @@ public interface CjDataSourceTabInfoMapper {
     int updateDataFlagForCrtOdsDll(@Param("dataFlagForCrtOdsDll") String dataFlagForGetCols,
                                    @Param("dataFlagForCrtOdsHive") String dataFlagForCrtOdsHive
     );
-
+    List<CjDataSourceTabInfo> selectAllCjVGetPrepareScriptForDwTabList();
+    List<CjDataSourceTabInfo> selectAllCjVGetPrepareCrtDwTabList();
 }

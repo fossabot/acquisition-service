@@ -38,14 +38,12 @@ public class HiveCreateTableController {
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
-    @PostMapping(value = "/getDWCreateTabList")
+    @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList() {
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService
-                .findAllByOdsHiveAndDwHive(Constant.ODS_CRT_HIVE, Constant.DW_NO_CRT_HIVE);
+                .findAllCjVGetPrepareCrtDwTabList();
         Result result=new Result();
-        result.setCode(200);
-        result.setData(cjDataSourceTabInfos);
-        result.setMsg("获取列表成功");
+        result.success(cjDataSourceTabInfos);
         return result;
     }
 

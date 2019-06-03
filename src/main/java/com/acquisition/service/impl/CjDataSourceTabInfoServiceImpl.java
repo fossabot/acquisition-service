@@ -40,6 +40,16 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
+        return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findAllCjVGetPrepareScriptForDwTabList() {
+        return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareScriptForDwTabList();
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll) {
         return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols,dataFlagForCrtOdsDll);
     }

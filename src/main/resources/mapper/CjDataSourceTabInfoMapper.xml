@@ -393,4 +393,14 @@
     where
 
   </update>
+  <select id="selectAllCjVGetPrepareCrtDwTabList"  resultMap="BaseResultMap">
+    select
+    *
+    from datalake_meta.cj_v_get_prepare_crt_dw_tab_list
+  </select>
+  <select id="selectAllCjVGetPrepareScriptForDwTabList"  resultMap="BaseResultMap">
+    select
+    *
+    from datalake_meta.cj_v_get_prepare_script_for_dw_tab_list
+  </select>
 </mapper>
