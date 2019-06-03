@@ -18,9 +18,18 @@ public interface ICjDataSourceTabInfoService {
     void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo);
     List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList();
     List<CjDataSourceTabInfo> findAllCjVGetPrepareScriptForDwTabList();
+
     void updateODSFlg(String dataFlagForCrtOdsDll ,
                       String dataFlagForCrtOdsHive,
                       String businessSystemNameShortName,
                       String dataSourceSchema,
                       String dataSourceTable);
+
+    List<CjDataSourceTabInfo> findODSTaableInfo();
+
+    int updateODSScriptStatus(String dataFlagForCrtOdsScript ,
+                              String businessSystemNameShortName,
+                              String dataSourceSchema,
+                              String dataSourceTable);
+
 }

@@ -17,5 +17,4 @@ public interface ICjDataSourceConnDefineService {
     List<ViewSourceSystemEntity> selectViewContet();
 
     List<String> selectDistinctName();
-
 }
