@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * Created by zhangdongmao on 2019/3/9.
  */
 
-@Component("SgDataSource")
+/*@Component("SgDataSource")*/
 public class SgDataSource implements DataSource {
     @Resource(name = "cjDataSourceConnDefineServiceImpl")
     ICjDataSourceConnDefineService cjDataSourceConnDefineService;
@@ -111,7 +111,7 @@ public class SgDataSource implements DataSource {
         CjDataSourceConnDefineExample.Criteria criteria = cjDataSourceConnDefineExample.createCriteria();
         criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
         criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
-        CjDataSourceConnDefine cjDataSourceConnDefine = cjDataSourceConnDefineService.selectBySystemAndSchema(businessSystemNameShortName, dataSourceSchema);
+        CjDataSourceConnDefine cjDataSourceConnDefine = cjDataSourceConnDefineService.selectByExample(businessSystemNameShortName, dataSourceSchema);
         username=cjDataSourceConnDefine.getLoginName();
         password=cjDataSourceConnDefine.getLoginPassword();
         databaseType=cjDataSourceConnDefine.getDataBaseType();

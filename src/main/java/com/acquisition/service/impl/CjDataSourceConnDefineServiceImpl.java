@@ -17,18 +17,12 @@ import java.util.List;
 @Service
 public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefineService {
 
-
     @Resource(name = "cjDataSourceConnDefineMapper")
     public CjDataSourceConnDefineMapper cjDataSourceConnDefineMapper;
 
     @Override
     public List<CjDataSourceConnDefine> selectByExample() {
         return cjDataSourceConnDefineMapper.selectByExample();
-    }
-
-    @Override
-    public CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName, String dataSourceSchema) {
-        return null;
     }
 
     @Override
