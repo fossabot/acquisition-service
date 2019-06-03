@@ -1,29 +1,15 @@
 package com.acquisition.service.impl;
 
-import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
-import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.mapper.CjDataSourceConnDefineMapper;
-import com.acquisition.mapper.CjDataSourceTabColInfoMapper;
 import com.acquisition.mapper.CjDwCrtTabDdlInfoMapper;
-import com.acquisition.repository.CjDataSourceTabColInfoRepository;
-import com.acquisition.repository.CjDataSourceTableInfoRepository;
-import com.acquisition.repository.CjDwCrtTabDdlInfoRepository;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.service.ICjDwCrtTabDdlInfoService;
-import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
-import com.acquisition.util.*;
-import com.yili.pool.pool.GroupPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,4 +38,5 @@ public class CjDwCrtTabDdlInfoServiceImpl implements ICjDwCrtTabDdlInfoService{
         }
         return "更新失败";
     }
+
 }

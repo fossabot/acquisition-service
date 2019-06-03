@@ -2,18 +2,11 @@ package com.acquisition.service.impl;
 
 import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import org.springframework.stereotype.Service;
-import com.acquisition.repository.CjOdsCrtTabDdlInfoRepository;
-import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjOdsCrtTabDdlInfo;
 import com.acquisition.entity.Result;
-import com.acquisition.repository.CjDataSourceTabColInfoRepository;
-import com.acquisition.repository.CjOdsCrtTabDdlInfoRepository;
-import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.acquisition.mapper.CjOdsCrtTabDdlInfoMapper;
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -23,11 +16,8 @@ import java.util.List;
 @Service
 public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService {
 
-  /*  @Autowired
-    CjOdsCrtTabDdlInfoRepository cjOdsCrtTabDdlInfoRepository;
-    @Autowired
-    CjDataSourceTabColInfoRepository cjDataSourceTabColInfoRepository;*/
-
+    @Resource(name = "cjOdsCrtTabDdlInfoMapper")
+    CjOdsCrtTabDdlInfoMapper cjOdsCrtTabDdlInfoMapper;
 
     @Override
     public String GetODSTableName(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
@@ -41,7 +31,6 @@ public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService
     public String getODSTableInfo(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         return null;
     }
-
 
     /**
      * @return
@@ -110,4 +99,12 @@ public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService
     public String createTableInHive(){
         return Result.ok("Hive 表创建成功！");
     }
+    @Override
+    public boolean saveDDLAndCreateTable(CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo) {
+        if (cjOdsCrtTabDdlInfoMapper.insert(cjOdsCrtTabDdlInfo) > 0){
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -125,15 +125,7 @@
     and data_source_table = #{dataSourceTable}
     order by col.data_source_col_order asc
   </select>
-  <select id="selectAllBySysAndSchemaAndTab" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceTabColInfo">
-    select
-    <include refid="Base_Column_List" />
-    from cj_data_source_tab_col_info
-    where business_system_name_short_name = #{businessSystemNameShortName}
-    and data_source_schema = #{dataSourceSchema}
-    and data_source_table = #{dataSourceTable}
-    order by data_source_col_order asc
-  </select>
+
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceTabColInfoExample" >
     select
     <if test="distinct" >
@@ -453,4 +445,13 @@
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
       and data_source_col_name = #{dataSourceColName,jdbcType=VARCHAR}
   </update>
+  <select id="selectAllBySysAndSchemaAndTab" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceTabColInfo">
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_col_info
+    where business_system_name_short_name = #{businessSystemNameShortName}
+    and data_source_schema = #{dataSourceSchema}
+    and data_source_table = #{dataSourceTable}
+    order by data_source_col_order asc
+  </select>
 </mapper>

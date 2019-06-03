@@ -2,7 +2,7 @@ package com.acquisition.mapper;
 
 import java.util.List;
 
-import com.acquisition.entity.CjDataSourceTabColInfo;
+
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.entity.CjDataSourceTabInfoKey;
@@ -33,4 +33,11 @@ public interface CjDataSourceTabInfoMapper {
     int updateByPrimaryKeySelective(CjDataSourceTabInfo record);
 
     int updateByPrimaryKey(CjDataSourceTabInfo record);
+
+    List<CjDataSourceTabInfo> selectAll(String dataFlagForGetCols, String dataFlagForCrtOdsDll);
+    List<CjDataSourceTabInfo> selectBySystemAndSchema();
+    int updateDataFlagForCrtOdsDll(@Param("dataFlagForCrtOdsDll") String dataFlagForGetCols,
+                                   @Param("dataFlagForCrtOdsHive") String dataFlagForCrtOdsHive
+    );
+
 }

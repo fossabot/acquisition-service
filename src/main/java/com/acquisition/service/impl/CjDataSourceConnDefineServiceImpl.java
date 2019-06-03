@@ -31,6 +31,5 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
         return cjDataSourceConnDefineMapper.selectBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
     }
 
-
 }
 

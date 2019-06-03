@@ -77,9 +77,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    business_system_name_short_name, data_source_schema, data_source_table, business_system_ID, 
-    data_source_table_comment, data_flag_for_get_cols, data_flag_for_get_rows, data_flag_for_crt_ods_dll, 
-    data_flag_for_crt_ods_hive, data_flag_for_crt_dw_dll, data_flag_for_crt_dw_hive, 
+    business_system_name_short_name, data_source_schema, data_source_table, business_system_ID,
+    data_source_table_comment, data_flag_for_get_cols, data_flag_for_get_rows, data_flag_for_crt_ods_dll,
+    data_flag_for_crt_ods_hive, data_flag_for_crt_dw_dll, data_flag_for_crt_dw_hive,
     data_flag_for_crt_ods_script, data_flag_for_crt_dw_script, last_modify_dt, last_modify_by
   </sql>
   <select id="selectAll" resultMap="BaseResultMap" >
@@ -380,5 +380,17 @@
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
     and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
     and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+  </update>
+  <select id="selectBySystemAndSchema"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from datalake_meta.cj_v_get_prepare_crt_ods_tab_list
+  </select>
+  <update id="updateDataFlagForCrtOdsDll">
+    update datalake_meta.cj_data_source_tab_info
+    set data_flag_for_crt_ods_dll=#{dataFlagForCrtOdsDll},
+    data_flag_for_crt_ods_hive=#{dataFlagForCrtOdsHive}
+    where
+
   </update>
 </mapper>

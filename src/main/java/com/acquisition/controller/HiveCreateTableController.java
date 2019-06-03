@@ -15,6 +15,14 @@ import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.acquisition.entity.CjDataSourceTabColInfo;
+import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.CjOdsCrtTabDdlInfo;
+import com.acquisition.entity.Result;
+import com.acquisition.service.ICjDataSourceTabColInfoService;
+import com.acquisition.service.ICjDataSourceTabInfoService;
+import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -130,19 +138,88 @@ public class HiveCreateTableController {
         return Result.ok("建表成功");
     }
 
-    @PostMapping("/getODSTable")
+    /**
+     * @return 返回已经导入清单，但没有在ODS建表的表
+     */
+    @RequestMapping(value = "/getODSTable")
+    @ResponseBody
     public String getODSTable() {
-        return cjDataSourceTabInfoService.findAllByColsAndOds("1", "0");
+        return cjDataSourceTabInfoService.findAllByColsAndOds();
     }
 
-
+    /**
+     * @return 获取前端传来的需要去ODS创建的表信息
+     */
     @PostMapping("/createODSTable")
     public String createODSTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("data");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
-        cjOdsCrtTabDdlInfoService.saveDDLAndCreateTable(cjDataSourceTabInfos);
+        saveDDLAndCreateTable(cjDataSourceTabInfos);
         return Result.ok("sucess");
+    }
 
+    public String saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
+        String colName = "";
+        String colComment = "";
+        StringBuffer odsDDL = new StringBuffer();
+        CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo = new CjOdsCrtTabDdlInfo();
+
+        //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
+        for (CjDataSourceTabInfo cjDataSourceTabInfo : CjDataSourceTabInfos) {
+            odsDDL.append("create table is not exists sdata_full."
+                    + cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()
+                    + "_" + cjDataSourceTabInfo.getDataSourceSchema().toLowerCase() + "\n");
+            odsDDL.append("(" + "\n");
+
+            List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
+                    .findBySystemAndSchemaAndTab(cjDataSourceTabInfo.getBusinessSystemNameShortName(),
+                            cjDataSourceTabInfo.getDataSourceSchema(),
+                            cjDataSourceTabInfo.getDataSourceTable());
+
+            for (int i = 0; i < infoList.size(); i++) {
+                colName = infoList.get(i).getDataSourceColName().toLowerCase();
+                colComment = infoList.get(i).getDataSourceColComment();
+
+                if (colComment == null) {
+                    colComment = "";
+                }
+                if (i < infoList.size() - 1) {
+                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colComment + "'" + ",\n");
+                } else {
+                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colName + "'" + "\n");
+                }
+            }
+            odsDDL.append(")" + "\n");
+            odsDDL.append("row format delimited fields terminated by '\\001' lines terminated by '\\n'");
+
+            cjOdsCrtTabDdlInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
+            cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
+            cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
+            cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
+            cjOdsCrtTabDdlInfo.setOdsDataSchema("sdata_full");
+            cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
+            cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            cjOdsCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
+            cjOdsCrtTabDdlInfo.setLastModifyBy("admin");
+
+            //保存DDL
+            if (cjOdsCrtTabDdlInfoService.saveDDLAndCreateTable(cjOdsCrtTabDdlInfo)){
+                cjDataSourceTabInfoService.updateODSFlg("1","1");
+            }
+            odsDDL.setLength(0);
+        }
+        return createTableInHive();
+    }
+
+
+    /**
+     * 在Hive中建表
+     *
+     * @return 返回创建成功的状态
+     */
+    public String createTableInHive() {
+        return Result.ok("Hive 表创建成功！");
     }
 }

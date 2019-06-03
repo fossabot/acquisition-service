@@ -15,9 +15,10 @@ public class GetSourceMetaDataController {
 
     @GetMapping("/ffff")
     public String bbb() {
-      System.out.println("进入测试方法");
-      int gg = 1/0;
-      return "";
+        System.out.println("进入测试方法");
+        int gg = 1 / 0;
+        return "";
+
     }
 
 }
