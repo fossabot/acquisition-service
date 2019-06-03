@@ -1,75 +1,62 @@
 package com.acquisition.util;
 
-
-
 /**
- * @Description: 返回模板
- *
- * @author yuxk
- * @create 2019/5/30
+ * @author yxk
+ * @Description: http请求返回Bean
+ * @create 2019/5/31
  * @since 1.0.0
  */
-public class Result {
+public class Result<T> {
+    /**
+     * 错误码.
+     */
+    private Integer code;
 
-    private int code;
+    /**
+     * 提示信息.
+     */
     private String msg;
-    private String data;
 
-    public Result() {
+    /**
+     * 具体的内容.
+     */
+    private T data;
+
+    public Integer getCode() {
+        return code;
     }
 
-    public Result(int code, String msg) {
+    public void setCode(Integer code) {
         this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
         this.msg = msg;
     }
 
-    public Result(int code, String msg, String data) {
-        this.code = code;
-        this.msg = msg;
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
         this.data = data;
     }
 
-    /**
-     * 默认的成功
-     *
-     * @return
-     */
-    public Result success() {
-        return new Result(Status.SUCCESS.Code, Status.SUCCESS.Msg);
+    public Result success(T object) {
+        this.setCode(200);
+        this.setMsg("成功");
+        this.setData(object);
+        return this;
     }
 
-    /**
-     * 默认的失败
-     *
-     * @return
-     */
-    public Result error() {
-        return new Result(Status.FAIL.Code, Status.FAIL.Msg);
-    }
-
-    /**
-     * 成功 + 返回的成功信息
-     *
-     * @param data
-     * @return
-     */
-    public Result sussess(String data) {
-        return new Result(Status.SUCCESS.Code, Status.SUCCESS.Msg, data);
-    }
-
-    public enum Status {
-
-        SUCCESS(0, "成功"),
-
-        FAIL(1, "失败");
-
-        private int Code;
-        private String Msg;
-
-        Status(int code, String msg) {
-            this.Code = code;
-            this.Msg = msg;
-        }
+    public Result error(Integer code, String msg) {
+        this.setCode(code);
+        this.setMsg(msg);
+        return this;
     }
 
 }

@@ -3,29 +3,16 @@ package com.acquisition.controller;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.entity.CjDwCrtTabDdlInfo;
-import com.acquisition.entity.Result;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.mapper.CjDataSourceTabColInfoMapper;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.service.ICjDwCrtTabDdlInfoService;
 import com.acquisition.util.*;
 import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import com.alibaba.fastjson.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.acquisition.entity.CjDataSourceTabColInfo;
-import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjOdsCrtTabDdlInfo;
-import com.acquisition.entity.Result;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.*;
-
-
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,12 +39,18 @@ public class HiveCreateTableController {
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
     @PostMapping(value = "/getDWCreateTabList")
-    public String getDWCreateTabList() {
-        return Result.ok(JSONObject.toJSON(cjDataSourceTabInfoService.findAllByOdsHiveAndDwHive(Constant.ODS_CRT_HIVE, Constant.DW_NO_CRT_HIVE)));
+    public Result getDWCreateTabList() {
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService
+                .findAllByOdsHiveAndDwHive(Constant.ODS_CRT_HIVE, Constant.DW_NO_CRT_HIVE);
+        Result result=new Result();
+        result.setCode(200);
+        result.setData(cjDataSourceTabInfos);
+        result.setMsg("获取列表成功");
+        return result;
     }
 
     @PostMapping(value = "/dWCreateTable")
-    public String dWCreateTable(@RequestBody String data) {
+    public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
         data = jsonObject.getString("data");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
@@ -68,6 +61,7 @@ public class HiveCreateTableController {
         String colName;
         String colType;
         String colComment;
+        Result result=new Result();
 //        //遍历每张表，生成DW建表语句
         for (CjDataSourceTabInfo cjDataSourceTabInfo:cjDataSourceTabInfos){
             businessSystemNameShortName=cjDataSourceTabInfo.getBusinessSystemNameShortName();
@@ -135,7 +129,9 @@ public class HiveCreateTableController {
             cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo);
             dwddl.setLength(0);
         }
-        return Result.ok("建表成功");
+        result.setCode(200);
+        result.setMsg("建表成功");
+        return result;
     }
 
     /**
@@ -151,12 +147,15 @@ public class HiveCreateTableController {
      * @return 获取前端传来的需要去ODS创建的表信息
      */
     @PostMapping("/createODSTable")
-    public String createODSTable(@RequestBody String data) {
+    public Result createODSTable(@RequestBody String data) {
+        Result result=new Result();
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("data");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
         saveDDLAndCreateTable(cjDataSourceTabInfos);
-        return Result.ok("sucess");
+        result.setCode(200);
+        result.setMsg("建表成功");
+        return result;
     }
 
     public String saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
@@ -220,6 +219,6 @@ public class HiveCreateTableController {
      * @return 返回创建成功的状态
      */
     public String createTableInHive() {
-        return Result.ok("Hive 表创建成功！");
+        return "Hive 表创建成功！";
     }
 }
