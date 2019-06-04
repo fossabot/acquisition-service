@@ -44,6 +44,34 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findODSTaableInfo() {
+        return cjDataSourceTabInfoMapper.selectODSTableInfo();
+    }
+
+    @Override
+    public int updateODSScriptStatus(String dataFlagForCrtOdsScript,
+                                     String businessSystemNameShortName,
+                                     String dataSourceSchema,
+                                     String dataSourceTable) {
+        return cjDataSourceTabInfoMapper.updateOdsScriptDefStatus(
+                dataFlagForCrtOdsScript,
+                businessSystemNameShortName,
+                dataSourceSchema,
+                dataSourceTable
+        );
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
+        return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findAllCjVGetPrepareScriptForDwTabList() {
+        return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareScriptForDwTabList();
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll) {
         return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols,dataFlagForCrtOdsDll);
     }

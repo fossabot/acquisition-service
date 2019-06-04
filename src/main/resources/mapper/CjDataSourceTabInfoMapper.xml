@@ -394,4 +394,24 @@
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
   </update>
+  <select id="selectAllCjVGetPrepareCrtDwTabList"  resultMap="BaseResultMap">
+    select
+    *
+    from datalake_meta.cj_v_get_prepare_crt_dw_tab_list
+  </select>
+  <select id="selectAllCjVGetPrepareScriptForDwTabList"  resultMap="BaseResultMap">
+    select
+    *
+    from datalake_meta.cj_v_get_prepare_script_for_dw_tab_list
+  </select>
+  <select id="selectODSTableInfo" resultMap="BaseResultMap">
+  select * from cj_v_get_prepare_script_for_ods_tab_list
+  </select>
+  <update id="updateOdsScriptDefStatus">
+    update datalake_meta.cj_data_source_tab_info
+    set data_flag_for_crt_ods_script = #{dataFlagForCrtOdsScript}
+    where business_system_name_short_name=#{businessSystemNameShortName}
+    and data_source_schema = #{dataSourceSchema}
+    and data_source_table = #{dataSourceTable}
+  </update>
 </mapper>

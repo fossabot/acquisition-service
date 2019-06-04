@@ -38,14 +38,12 @@ public class HiveCreateTableController {
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
-    @PostMapping(value = "/getDWCreateTabList")
+    @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList() {
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService
-                .findAllByOdsHiveAndDwHive(Constant.ODS_CRT_HIVE, Constant.DW_NO_CRT_HIVE);
+                .findAllCjVGetPrepareCrtDwTabList();
         Result result=new Result();
-        result.setCode(200);
-        result.setData(cjDataSourceTabInfos);
-        result.setMsg("获取列表成功");
+        result.success(cjDataSourceTabInfos);
         return result;
     }
 
@@ -150,13 +148,13 @@ public class HiveCreateTableController {
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
-        String odsTableList = jsonObject.getString("data");
+        String odsTableList = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
         return saveDDLAndCreateTable(cjDataSourceTabInfos);
     }
 
     /**
-     * @return 返回状态码
+     * @return 拼接S并保存SQL,返回状态码
      */
     public Result saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         String colName = "";
@@ -177,7 +175,6 @@ public class HiveCreateTableController {
                     .findBySystemAndSchemaAndTab(cjDataSourceTabInfo.getBusinessSystemNameShortName(),
                             cjDataSourceTabInfo.getDataSourceSchema(),
                             cjDataSourceTabInfo.getDataSourceTable());
-
             for (int i = 0; i < infoList.size(); i++) {
                 colName = infoList.get(i).getDataSourceColName().toLowerCase();
                 colComment = infoList.get(i).getDataSourceColComment();
@@ -204,7 +201,9 @@ public class HiveCreateTableController {
             cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
             cjOdsCrtTabDdlInfo.setOdsDataSchema("sdata_full");
-            cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
+            cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_"
+                            + cjDataSourceTabInfo.getDataSourceSchema().toLowerCase() + "_"
+                            + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
             cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjOdsCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
@@ -220,7 +219,7 @@ public class HiveCreateTableController {
             }
             odsDDL.setLength(0);
         }
-        return  result.success("成功");
+        return  result.success(200);
     }
 
 
