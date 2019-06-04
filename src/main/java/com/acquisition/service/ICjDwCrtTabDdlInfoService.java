@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
-@Service
+
 public interface ICjDwCrtTabDdlInfoService {
     String save(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
     String updateByExampleSelective(CjDwCrtTabDdlInfo record,CjDwCrtTabDdlInfoExample example);

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
-@Service
+
 public interface ICjDataSourceTabInfoService {
     List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll);
     String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example);

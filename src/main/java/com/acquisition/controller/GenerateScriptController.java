@@ -1,15 +1,11 @@
 package com.acquisition.controller;
 
-import com.acquisition.entity.CjDataSourceTabColInfo;
-import com.acquisition.entity.CjDataSourceTabInfo;
-import com.acquisition.entity.CjDataSourceTabInfoExample;
-import com.acquisition.entity.CjDwDataScriptDefInfo;
+import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.service.ICjDwDataScriptDefInfoService;
 import com.acquisition.util.Constant;
-import com.acquisition.entity.CjOdsDataScriptDefInfo;
 import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
@@ -42,12 +38,26 @@ public class GenerateScriptController {
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
 
+    /**
+    * @Author: zhangdongmao
+    * @Date: 2019/6/4
+    * @Description:  获取DW脚本生成列表
+    * @Param: * @param null 1
+    * @return:
+    */
     @GetMapping(value = "/getDwTabList")
     public Result getDwTabList() {
         Result result=new Result();
         List<CjDataSourceTabInfo> allCjVGetPrepareScriptForDwTabList = cjDataSourceTabInfoService.findAllCjVGetPrepareScriptForDwTabList();
         return result.success(allCjVGetPrepareScriptForDwTabList);
     }
+    /** 
+    * @Author: zhangdongmao
+    * @Date: 2019/6/4 
+    * @Description:  生成并保存DW初始化脚本
+    * @Param: * @param null 1 
+    * @return:
+    */
     @PostMapping(value = "/generateDwInitScript")
     public Result generateDwInitScript(@RequestBody String data) {
         Result result=new Result();
@@ -61,7 +71,7 @@ public class GenerateScriptController {
             String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
             String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
             String dwTableName="d_nct_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
-            String odsTableName=businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            String odsTableName=businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase();
             StringBuffer dwInitScript=new StringBuffer();
             String colName;
             //通过系统名、数据模式、表名获取表的字段信息
@@ -80,18 +90,26 @@ public class GenerateScriptController {
                 }
             }
             dwInitScript.append("from sdata_full."+odsTableName);
-            System.out.println(dwInitScript);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
             cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
             cjDwDataScriptDefInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjDwDataScriptDefInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwDataScriptDefInfo.setOdsDataTable(cjDataSourceTabInfo.getDataSourceTable());
+            cjDwDataScriptDefInfo.setOdsDataTable(odsTableName);
             cjDwDataScriptDefInfo.setDwDataTable(dwTableName);
-            cjDwDataScriptDefInfo.setDwDataScriptType("初始化脚本");
+            cjDwDataScriptDefInfo.setDwDataScriptType("init");
             cjDwDataScriptDefInfo.setDwDataHivesqlDefine(dwInitScript.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjDwDataScriptDefInfo.setLastModifyDt(df.format(new Date()));
+
+            CjDwDataScriptDefInfoKey key = new CjDwDataScriptDefInfoKey();
+            key.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
+            key.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
+            key.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
+            key.setDwDataTable(dwTableName);
+            key.setOdsDataTable(odsTableName);
+            System.out.println(cjDataSourceTabInfo.getBusinessSystemNameShortName()+":"+cjDataSourceTabInfo.getDataSourceSchema()+":"+cjDataSourceTabInfo.getDataSourceTable()+":"+dwTableName+":"+odsTableName);
+            cjDwDataScriptDefInfoService.deleteByPrimaryKey(key);
             if(cjDwDataScriptDefInfoService.save(cjDwDataScriptDefInfo).equals("保存成功")){
                 //生成DW建表语句成功，设置状态表中的相应状态字段
                 cjDataSourceTabInfo.setDataFlagForCrtDwScript(Constant.DW_CRT_SCRPIT);

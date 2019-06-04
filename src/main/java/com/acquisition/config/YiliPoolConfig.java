@@ -34,7 +34,7 @@ public class YiliPoolConfig implements CommandLineRunner {
             GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance(dta.getBusinessSystemNameShortName() + dta.getDataSourceSchema());
             groupPoolFactory.setConfigurationParameter(
                     DatabaseType.AdapterDatabaseType(dta.getDataBaseType()),
-                    dta.getConnIp(), dta.getConnPort(), dta.getBusinessSystemNameShortName(),
+                    dta.getConnIp(), dta.getConnPort(), dta.getDataSourceSchema(),
                     dta.getLoginName(), dta.getLoginPassword());
         }
         LOG.info("YILIGroupPool创建成功");

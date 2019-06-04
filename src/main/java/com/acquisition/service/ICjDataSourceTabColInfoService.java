@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
-@Service
+
 public interface ICjDataSourceTabColInfoService {
 
     List<CjDwCrtDdlColPojo> selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);

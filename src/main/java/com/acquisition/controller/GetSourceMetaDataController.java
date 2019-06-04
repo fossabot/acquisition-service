@@ -3,9 +3,6 @@ package com.acquisition.controller;
 import com.acquisition.entity.ViewSourceSystemEntity;
 import com.acquisition.service.ICjDataSourceConnDefineService;
 import com.acquisition.util.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
