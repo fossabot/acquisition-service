@@ -23,4 +23,8 @@ public interface ICjDataSourceTabInfoService {
                       String businessSystemNameShortName,
                       String dataSourceSchema,
                       String dataSourceTable);
+
+    int insertBatch(List<CjDataSourceTabInfo> list);
+
+    int deleteBySystemName(String systemname);
 }

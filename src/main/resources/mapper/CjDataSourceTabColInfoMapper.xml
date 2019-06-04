@@ -454,4 +454,43 @@
     and data_source_table = #{dataSourceTable}
     order by data_source_col_order asc
   </select>
+
+  <insert id="insertBatch"  parameterType="java.util.List">
+    insert into cj_data_source_tab_col_info (business_system_name_short_name, data_source_schema,
+    data_source_table, data_source_col_name, business_system_ID,
+    data_source_table_comment, data_source_col_order,
+    data_source_col_primarykey_flag, data_source_col_isnull_flag,
+    data_source_col_datatype, data_source_col_len,
+    data_source_col_precision, data_source_col_scale,
+    data_source_col_comment, data_source_col_datalake_flag,
+    last_modify_dt, last_modify_by)
+    values
+    <foreach collection="list" index="index" item="item"  separator="," >
+      (#{item.businessSystemNameShortName}, #{item.dataSourceSchema},
+      #{item.dataSourceTable}, #{item.dataSourceColName}, #{item.businessSystemId},
+      #{item.dataSourceTableComment}, #{item.dataSourceColOrder},
+      #{item.dataSourceColPrimarykeyFlag}, #{item.dataSourceColIsnullFlag},
+      #{item.dataSourceColDatatype}, #{item.dataSourceColLen},
+      #{item.dataSourceColPrecision}, #{item.dataSourceColScale},
+      #{item.dataSourceColComment}, #{item.dataSourceColDatalakeFlag},
+      #{item.lastModifyDt}, #{item.lastModifyBy})
+    </foreach>
+  </insert>
+
+  <select id="findListOnlyTable" resultMap="BaseResultMap" parameterType="java.util.List">
+    SELECT distinct business_system_ID,business_system_name_short_name,data_source_schema,data_source_table,data_source_table_comment FROM cj_data_source_tab_col_info WHERE business_system_name_short_name IN
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+      #{item.businessSystemNameShortName}
+    </foreach>
+     AND data_source_schema IN
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+      #{item.dataSourceSchema}
+    </foreach>
+  </select>
+
+  <delete id="deleteBySystemName" parameterType="java.lang.String">
+    delete from cj_data_source_tab_col_info where business_system_name_short_name=#{systemname}
+   </delete>
+
+
 </mapper>

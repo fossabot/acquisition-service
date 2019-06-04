@@ -3,6 +3,7 @@ package com.acquisition.mapper;
 import java.util.List;
 
 
+import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.entity.CjDataSourceTabInfoKey;
@@ -44,4 +45,7 @@ public interface CjDataSourceTabInfoMapper {
     );
     List<CjDataSourceTabInfo> selectAllCjVGetPrepareScriptForDwTabList();
     List<CjDataSourceTabInfo> selectAllCjVGetPrepareCrtDwTabList();
+
+    int insertBatch(List<CjDataSourceTabInfo> list);
+    int deleteBySystemName(@Param("systemname") String systemname);
 }

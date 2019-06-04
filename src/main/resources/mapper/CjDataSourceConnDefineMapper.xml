@@ -17,6 +17,13 @@
     <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
     <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
   </resultMap>
+
+  <sql id="Base_Column_List" >
+    business_system_name_short_name, data_source_schema, data_source_type, business_system_ID,
+    business_system_name, data_base_type, conn_ip, conn_port, db_instance, hive_queue,
+    login_name, login_password, last_modify_dt, last_modify_by
+  </sql>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -75,11 +82,7 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
-    business_system_name_short_name, data_source_schema, data_source_type, business_system_ID, 
-    business_system_name, data_base_type, conn_ip, conn_port, db_instance, hive_queue, 
-    login_name, login_password, last_modify_dt, last_modify_by
-  </sql>
+
   <select id="selectByExample" resultMap="BaseResultMap"  >
     select
     <if test="distinct" >
@@ -90,7 +93,6 @@
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
-   WHERE data_base_type='mysql'
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceConnDefineKey" >
     select
@@ -358,10 +360,28 @@
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_type = #{dataSourceType,jdbcType=VARCHAR}
   </update>
+
   <select id="selectViewContet" resultType="com.acquisition.entity.ViewSourceSystemEntity">
     select  *  from cj_get_source_system_conn_info
   </select>
+
   <select id="selectDistinctName" resultType="java.lang.String">
     select  distinct business_system_name_short_name from cj_data_source_conn_define
   </select>
+
+ <select id="findListBySystemID" resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List" /> from cj_data_source_conn_define WHERE business_system_ID in
+   <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+   #{id}
+   </foreach>
+ </select>
+
+  <select id="selectBySystemID" resultType="java.lang.String">
+    select data_base_type from cj_data_source_conn_define where  business_system_ID=#{syid}
+  </select>
+
+<!--  <select id="selectBaseType" resultType="java.lang.String">
+    SELECT distinct data_base_type FROM cj_data_source_conn_define WHERE business_system_name_short_name=#{sysname}
+  </select>-->
+
 </mapper>

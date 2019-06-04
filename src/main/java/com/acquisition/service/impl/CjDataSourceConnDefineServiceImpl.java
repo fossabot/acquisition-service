@@ -35,5 +35,14 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
         return cjDataSourceConnDefineMapper.selectDistinctName();
     }
 
+    @Override
+    public List<CjDataSourceConnDefine> findListBySystemID(String[] ides) {
+        return cjDataSourceConnDefineMapper.findListBySystemID(ides);
+    }
+    @Override
+    public String selectBySystemID(String syid) {
+        return cjDataSourceConnDefineMapper.selectBySystemID(syid);
+    }
+
 }
 

@@ -35,4 +35,8 @@ public interface CjDataSourceConnDefineMapper {
     List<ViewSourceSystemEntity> selectViewContet();
 
     List<String> selectDistinctName();
+
+    List<CjDataSourceConnDefine> findListBySystemID(String[] arr);
+
+    String selectBySystemID(@Param("syid")String syid);
 }

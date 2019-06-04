@@ -1,6 +1,8 @@
 package com.acquisition.entity;
 
-public class CjDataSourceSystemInfo extends CjDataSourceSystemInfoKey {
+import java.io.Serializable;
+
+public class CjDataSourceSystemInfo extends CjDataSourceSystemInfoKey{
     private String businessSystemId;
 
     private String lastModifyDt;
