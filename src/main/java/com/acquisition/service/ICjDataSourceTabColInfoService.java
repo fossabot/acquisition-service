@@ -1,5 +1,6 @@
 package com.acquisition.service;
 
+import com.acquisition.entity.CjDataSourceConnDefine;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import org.springframework.stereotype.Service;
 import com.acquisition.entity.CjDataSourceTabColInfo;

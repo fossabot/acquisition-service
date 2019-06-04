@@ -93,7 +93,7 @@
    WHERE data_base_type='mysql'
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDataSourceConnDefineKey" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from cj_data_source_conn_define
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
@@ -120,16 +120,16 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.acquisition.entity.CjDataSourceConnDefine" >
-    insert into cj_data_source_conn_define (business_system_name_short_name, data_source_schema, 
-      data_source_type, business_system_ID, business_system_name, 
-      data_base_type, conn_ip, conn_port, 
-      db_instance, hive_queue, login_name, 
+    insert into cj_data_source_conn_define (business_system_name_short_name, data_source_schema,
+      data_source_type, business_system_ID, business_system_name,
+      data_base_type, conn_ip, conn_port,
+      db_instance, hive_queue, login_name,
       login_password, last_modify_dt, last_modify_by
       )
-    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
-      #{dataSourceType,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, #{businessSystemName,jdbcType=VARCHAR}, 
-      #{dataBaseType,jdbcType=VARCHAR}, #{connIp,jdbcType=VARCHAR}, #{connPort,jdbcType=VARCHAR}, 
-      #{dbInstance,jdbcType=VARCHAR}, #{hiveQueue,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
+    values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR},
+      #{dataSourceType,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, #{businessSystemName,jdbcType=VARCHAR},
+      #{dataBaseType,jdbcType=VARCHAR}, #{connIp,jdbcType=VARCHAR}, #{connPort,jdbcType=VARCHAR},
+      #{dbInstance,jdbcType=VARCHAR}, #{hiveQueue,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR},
       #{loginPassword,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
       )
   </insert>

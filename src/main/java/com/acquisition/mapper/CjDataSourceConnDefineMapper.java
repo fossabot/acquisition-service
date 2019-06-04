@@ -24,8 +24,6 @@ public interface CjDataSourceConnDefineMapper {
 
     CjDataSourceConnDefine selectByPrimaryKey(CjDataSourceConnDefineKey key);
 
-    CjDataSourceConnDefine selectBySystemAndSchema(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema);
-
     int updateByExampleSelective(@Param("record") CjDataSourceConnDefine record, @Param("example") CjDataSourceConnDefineExample example);
 
     int updateByExample(@Param("record") CjDataSourceConnDefine record, @Param("example") CjDataSourceConnDefineExample example);
