@@ -154,11 +154,6 @@
 			<artifactId>sqljdbc4</artifactId>
 			<version>4.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.yiligroup</groupId>
-			<artifactId>yili-group-pool</artifactId>
-			<version>1.0</version>
-		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.springframework</groupId>-->
 			<!--<artifactId>spring-context</artifactId>-->
@@ -227,12 +222,17 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro</artifactId>
 			<version>${avro.version}</version>
-		</dependency>-->
+		</dependency>
         <dependency>
             <groupId>org.yiligroup</groupId>
             <artifactId>yili-group-pool</artifactId>
             <version>1.0</version>
         </dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>
