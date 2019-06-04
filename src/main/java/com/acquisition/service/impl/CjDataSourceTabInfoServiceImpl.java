@@ -7,6 +7,7 @@ import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,14 +19,6 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 
     @Resource(name = "cjDataSourceTabInfoMapper")
     public CjDataSourceTabInfoMapper cjDataSourceTabInfoMapper;
-
-    /**
-     * @return 返回ODS中未创建的表
-     */
-    @Override
-    public List<CjDataSourceTabInfo> findAllByColsAndOds() {
-        return cjDataSourceTabInfoMapper.selectBySystemAndSchema();
-    }
 
     /**
      * @param dataFlagForCrtOdsDll 已生成ODS DDL 1
@@ -41,6 +34,12 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
         cjDataSourceTabInfoMapper.updateDataFlagForCrtOdsDll(
                 dataFlagForCrtOdsDll,dataFlagForCrtOdsHive,
                 businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findByExample(CjDataSourceTabInfoExample example) {
+//        return cjDataSourceTabInfoMapper.;
+        return new ArrayList<>();
     }
 
     @Override
@@ -67,7 +66,17 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findAllByColsAndOds() {
+        return null;
+    }
+
+    @Override
     public void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo) {
+
+    }
+
+    @Override
+    public void updateODSFlg(String dataFlagForCrtOdsDll, String dataFlagForCrtOdsHive) {
 
     }
 

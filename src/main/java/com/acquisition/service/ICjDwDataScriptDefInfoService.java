@@ -1,5 +1,6 @@
 package com.acquisition.service;
 
+import com.acquisition.entity.CjDwDataScriptDefInfo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -7,4 +8,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface ICjDwDataScriptDefInfoService {
+    String save(CjDwDataScriptDefInfo cjDwDataScriptDefInfo);
 }

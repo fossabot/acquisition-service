@@ -13,4 +13,5 @@ import java.util.List;
 public interface ICjDwCrtTabDdlInfoService {
     String save(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
     String updateByExampleSelective(CjDwCrtTabDdlInfo record,CjDwCrtTabDdlInfoExample example);
+    String deleteByPrimaryKey(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
 }

@@ -16,16 +16,13 @@ public interface ICjDataSourceTabInfoService {
     String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example);
     List<CjDataSourceTabInfo> findAllByColsAndOds();
     void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo);
-<<<<<<< HEAD
-    String findAllByColsAndOds();
     void updateODSFlg(String dataFlagForCrtOdsDll ,String dataFlagForCrtOdsHive);
     List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList();
     List<CjDataSourceTabInfo> findAllCjVGetPrepareScriptForDwTabList();
-=======
     void updateODSFlg(String dataFlagForCrtOdsDll ,
                       String dataFlagForCrtOdsHive,
                       String businessSystemNameShortName,
                       String dataSourceSchema,
                       String dataSourceTable);
->>>>>>> 12bafe74b2af5d107ceda580e7ff4d0bc9791939
+    List<CjDataSourceTabInfo> findByExample(CjDataSourceTabInfoExample example);
 }
