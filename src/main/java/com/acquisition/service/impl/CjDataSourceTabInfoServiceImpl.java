@@ -21,6 +21,14 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     public CjDataSourceTabInfoMapper cjDataSourceTabInfoMapper;
 
     /**
+     * @return 返回ODS中未创建的表
+     */
+    @Override
+    public List<CjDataSourceTabInfo> findAllByColsAndOds() {
+        return cjDataSourceTabInfoMapper.selectBySystemAndSchema();
+    }
+
+    /**
      * @param dataFlagForCrtOdsDll 已生成ODS DDL 1
      * @param dataFlagForCrtOdsHive ODS已建表 1
      * @return 返回更改状态
@@ -41,7 +49,7 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 //        return cjDataSourceTabInfoMapper.;
         return new ArrayList<>();
     }
-    public List<CjDataSourceTabInfo> findODSTaableInfo() {
+    public List<CjDataSourceTabInfo> findODSTableInfo() {
         return cjDataSourceTabInfoMapper.selectODSTableInfo();
     }
 
@@ -57,6 +65,16 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
                 dataSourceTable
         );
 
+    }
+
+    @Override
+    public int insertBatch(List<CjDataSourceTabInfo> list) {
+        return cjDataSourceTabInfoMapper.insertBatch(list);
+    }
+
+    @Override
+    public int deleteBySystemName(String systemname) {
+        return cjDataSourceTabInfoMapper.deleteBySystemName(systemname);
     }
 
     @Override
@@ -83,11 +101,6 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findAllByColsAndOds() {
-        return null;
-    }
-
-    @Override
     public void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo) {
 
     }
@@ -95,6 +108,16 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     @Override
     public void updateODSFlg(String dataFlagForCrtOdsDll, String dataFlagForCrtOdsHive) {
 
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findOdsScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfo();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDwScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectDwExportTableInfo();
     }
 
 

@@ -1,6 +1,5 @@
 package com.acquisition.service.impl;
 
-import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
 import com.acquisition.entity.CjDwCrtTabDdlInfoKey;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -71,6 +69,5 @@ public class CjDwCrtTabDdlInfoServiceImpl implements ICjDwCrtTabDdlInfoService{
         }
         return "删除失败";
     }
-
 
 }

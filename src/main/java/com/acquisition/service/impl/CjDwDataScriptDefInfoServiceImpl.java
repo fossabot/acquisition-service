@@ -1,13 +1,16 @@
 package com.acquisition.service.impl;
 
+import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfoKey;
+import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.mapper.CjDwDataScriptDefInfoMapper;
 import com.acquisition.service.ICjDwDataScriptDefInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -17,6 +20,7 @@ public class CjDwDataScriptDefInfoServiceImpl implements ICjDwDataScriptDefInfoS
 
     @Resource(name="cjDwDataScriptDefInfoMapper")
     CjDwDataScriptDefInfoMapper cjDwDataScriptDefInfoMapper;
+
     @Override
     public String save(CjDwDataScriptDefInfo cjDwDataScriptDefInfo) {
         try {
@@ -39,5 +43,12 @@ public class CjDwDataScriptDefInfoServiceImpl implements ICjDwDataScriptDefInfoS
             return "删除失败";
         }
         return "删除成功";
+    }
+    public String selectDdlInfo(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDwDataScriptDefInfoMapper.selectDdlInfo(
+                businessSystemNameShortName,
+                dataSourceSchema,
+                dataSourceTable
+        );
     }
 }

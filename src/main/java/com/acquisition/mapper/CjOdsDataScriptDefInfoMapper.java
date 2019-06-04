@@ -29,4 +29,9 @@ public interface CjOdsDataScriptDefInfoMapper {
     int updateByPrimaryKeySelective(CjOdsDataScriptDefInfo record);
 
     int updateByPrimaryKey(CjOdsDataScriptDefInfo record);
+
+    String selectScriptInfo(@Param("businessSystemNameShortName") String businessSystemNameShortName,
+                            @Param("dataSourceSchema") String dataSourceSchema,
+                            @Param("dataSourceTable") String dataSourceTable
+    );
 }

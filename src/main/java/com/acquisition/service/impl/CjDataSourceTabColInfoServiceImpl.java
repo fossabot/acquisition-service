@@ -1,6 +1,7 @@
 package com.acquisition.service.impl;
 
 
+import com.acquisition.entity.CjDataSourceSystemInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.mapper.CjDataSourceTabColInfoMapper;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
@@ -35,6 +36,25 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
     public List<CjDataSourceTabColInfo> findBySystemAndSchemaAndTab(
             String businessSystemNameShortName, String dataSourceSchema , String dataSourceTable) {
        return cjDataSourceTabColInfoMapper.selectAllBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+    }
+
+
+
+
+    @Override
+    public int insertBatch(List<CjDataSourceTabColInfo> list) {
+        return cjDataSourceTabColInfoMapper.insertBatch(list);
+    }
+
+
+    @Override
+    public List<CjDataSourceTabColInfo> findListOnlyTable(List<CjDataSourceSystemInfo> list) {
+        return cjDataSourceTabColInfoMapper.findListOnlyTable(list);
+    }
+
+    @Override
+    public int deleteBySystemName(String systemname) {
+        return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname);
     }
 
 }

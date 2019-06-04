@@ -30,6 +30,11 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
         return cjDataSourceConnDefineMapper.selectByExample();
     }
 
+   /* @Override
+    public CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName, String dataSourceSchema) {
+        return null;
+    }*/
+
     @Override
     public List<ViewSourceSystemEntity> selectViewContet() {
         return cjDataSourceConnDefineMapper.selectViewContet();
@@ -38,6 +43,15 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
     @Override
     public List<String> selectDistinctName() {
         return cjDataSourceConnDefineMapper.selectDistinctName();
+    }
+
+    @Override
+    public List<CjDataSourceConnDefine> findListBySystemID(String[] ides) {
+        return cjDataSourceConnDefineMapper.findListBySystemID(ides);
+    }
+    @Override
+    public String selectBySystemID(String syid) {
+        return cjDataSourceConnDefineMapper.selectBySystemID(syid);
     }
 
 }

@@ -2,6 +2,7 @@ package com.acquisition.mapper;
 
 import java.util.List;
 
+import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
 import com.acquisition.entity.CjDwCrtTabDdlInfoKey;

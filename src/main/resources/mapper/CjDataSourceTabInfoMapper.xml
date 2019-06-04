@@ -414,4 +414,33 @@
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
   </update>
+  <select id="selectOdsExportTableInfo" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+    where data_flag_for_crt_ods_script = 1
+  </select>
+  <select id="selectDwExportTableInfo" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_data_source_tab_info
+    where data_flag_for_crt_dw_script = 1
+  </select>
+
+  <insert id="insertBatch"  parameterType="java.util.List">
+    insert into cj_data_source_tab_info (business_system_ID, business_system_name_short_name,
+    data_source_schema, data_source_table, data_source_table_comment,
+    data_flag_for_get_cols)
+    values
+    <foreach collection="list" index="index" item="item"  separator="," >
+      (#{item.businessSystemId}, #{item.businessSystemNameShortName},
+      #{item.dataSourceSchema}, #{item.dataSourceTable}, #{item.dataSourceTableComment},
+      #{item.dataFlagForGetCols})
+    </foreach>
+  </insert>
+
+  <delete id="deleteBySystemName" parameterType="java.lang.String">
+    delete from cj_data_source_tab_info where business_system_name_short_name=#{systemname}
+   </delete>
+
 </mapper>

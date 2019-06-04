@@ -3,7 +3,6 @@ package com.acquisition.mapper;
 import java.util.List;
 
 
-import com.acquisition.entity.CjDataSourceConnDefine;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.entity.CjDataSourceTabInfoKey;
@@ -51,4 +50,9 @@ public interface CjDataSourceTabInfoMapper {
                                  @Param("dataSourceSchema") String dataSourceSchema,
                                  @Param("dataSourceTable") String dataSourceTable
     );
+    List<CjDataSourceTabInfo> selectOdsExportTableInfo();
+    List<CjDataSourceTabInfo> selectDwExportTableInfo();
+
+    int insertBatch(List<CjDataSourceTabInfo> list);
+    int deleteBySystemName(@Param("systemname") String systemname);
 }
