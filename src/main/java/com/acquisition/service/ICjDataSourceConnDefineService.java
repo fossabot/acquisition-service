@@ -14,6 +14,8 @@ import java.util.List;
 public interface ICjDataSourceConnDefineService {
     List<CjDataSourceConnDefine> selectByExample();
 
+    CjDataSourceConnDefine selectBySystemAndSchema(String businessSystemNameShortName, String dataSourceSchema);
+
     List<ViewSourceSystemEntity> selectViewContet();
 
     List<String> selectDistinctName();
