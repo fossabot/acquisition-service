@@ -51,4 +51,6 @@ public interface CjDataSourceTabInfoMapper {
                                  @Param("dataSourceSchema") String dataSourceSchema,
                                  @Param("dataSourceTable") String dataSourceTable
     );
+    List<CjDataSourceTabInfo> selectOdsExportTableInfo();
+    List<CjDataSourceTabInfo> selectDwExportTableInfo();
 }

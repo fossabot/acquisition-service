@@ -106,7 +106,10 @@ public class GenerateScriptController {
             }
             dwInitScript.setLength(0);
         }
-        return result.success("生成初始化脚本成功");
+
+        result.setCode(200);
+        result.setMsg("DW脚本初始化成功！");
+        return result;
     }
 
 
@@ -117,7 +120,7 @@ public class GenerateScriptController {
     @ResponseBody
     public Result getODSTableInfo(){
         Result result = new Result();
-        return result.success(cjDataSourceTabInfoService.findODSTaableInfo());
+        return result.success(cjDataSourceTabInfoService.findODSTableInfo());
     }
 
     /**
@@ -186,21 +189,11 @@ public class GenerateScriptController {
                     table.getDataSourceSchema(),
                     table.getDataSourceTable()
             );
-//            saveSqoopScrtpts(scripts);
             scripts.setLength(0);
         }
 
-        return result.success(200);
-    }
-
-    /**
-     * 保存Sqoop脚本到本地文件夹
-     */
-    public void saveSqoopScrtpts(StringBuffer scripts){
-        try {
-            OutputStream output  = new FileOutputStream("");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        result.setCode(200);
+        result.setMsg("ODS脚本初始化成功！");
+        return result;
     }
 }

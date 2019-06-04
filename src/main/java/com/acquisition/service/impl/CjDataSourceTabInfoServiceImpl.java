@@ -41,7 +41,7 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 //        return cjDataSourceTabInfoMapper.;
         return new ArrayList<>();
     }
-    public List<CjDataSourceTabInfo> findODSTaableInfo() {
+    public List<CjDataSourceTabInfo> findODSTableInfo() {
         return cjDataSourceTabInfoMapper.selectODSTableInfo();
     }
 
@@ -84,7 +84,7 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 
     @Override
     public List<CjDataSourceTabInfo> findAllByColsAndOds() {
-        return null;
+        return cjDataSourceTabInfoMapper.selectBySystemAndSchema();
     }
 
     @Override
@@ -97,5 +97,14 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 
     }
 
+    @Override
+    public List<CjDataSourceTabInfo> findOdsScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfo();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDwScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectDwExportTableInfo();
+    }
 
 }

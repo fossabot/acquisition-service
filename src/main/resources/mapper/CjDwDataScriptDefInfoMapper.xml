@@ -289,4 +289,11 @@
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
       and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
   </update>
+  <select id="selectDdlInfo" resultType="java.lang.String">
+    select dw_data_hivesql_define
+    from cj_dw_data_script_def_info
+    where business_system_name_short_name = #{businessSystemNameShortName}
+    and data_source_schema = #{dataSourceSchema}
+    and data_source_table = #{dataSourceTable}
+  </select>
 </mapper>

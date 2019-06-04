@@ -27,11 +27,13 @@ public interface ICjDataSourceTabInfoService {
                       String dataSourceTable);
     List<CjDataSourceTabInfo> findByExample(CjDataSourceTabInfoExample example);
 
-    List<CjDataSourceTabInfo> findODSTaableInfo();
+    List<CjDataSourceTabInfo> findODSTableInfo();
 
     int updateODSScriptStatus(String dataFlagForCrtOdsScript ,
                               String businessSystemNameShortName,
                               String dataSourceSchema,
                               String dataSourceTable);
 
+    List<CjDataSourceTabInfo> findOdsScriptTableInfo();
+    List<CjDataSourceTabInfo> findDwScriptTableInfo();
 }

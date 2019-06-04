@@ -145,7 +145,7 @@ public class HiveCreateTableController {
     }
 
     /**
-     * @return 拼接S并保存SQL,返回状态码
+     * @return 拼接并保存SQL,返回状态码
      */
     public Result saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         String colName = "";
@@ -157,9 +157,9 @@ public class HiveCreateTableController {
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
         for (CjDataSourceTabInfo cjDataSourceTabInfo : CjDataSourceTabInfos) {
-            odsDDL.append("create table is not exists sdata_full."
+            odsDDL.append("create table if not exists sdata_full."
                     + cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()
-                    + "_" + cjDataSourceTabInfo.getDataSourceSchema().toLowerCase() + "\n");
+                    + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase() + "\n");
             odsDDL.append("(" + "\n");
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
@@ -193,7 +193,6 @@ public class HiveCreateTableController {
             cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
             cjOdsCrtTabDdlInfo.setOdsDataSchema("sdata_full");
             cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_"
-                            + cjDataSourceTabInfo.getDataSourceSchema().toLowerCase() + "_"
                             + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
             cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -210,7 +209,10 @@ public class HiveCreateTableController {
             }
             odsDDL.setLength(0);
         }
-        return  result.success(200);
+
+        result.setMsg("ODS建表成功！！！");
+        result.setCode(200);
+        return result;
     }
 
 
