@@ -291,4 +291,11 @@
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
   </update>
+  <select id="selectScriptInfo"  resultType="java.lang.String">
+    select ods_data_sqoop_define
+    from cj_ods_data_script_def_info
+    where business_system_name_short_name = #{businessSystemNameShortName}
+    and data_source_schema = #{dataSourceSchema}
+    and data_source_table = #{dataSourceTable}
+  </select>
 </mapper>

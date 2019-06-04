@@ -6,8 +6,8 @@ import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,19 +29,42 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     /**
-     * @param dataFlagForCrtOdsDll  已生成ODS DDL 1
+     * @param dataFlagForCrtOdsDll 已生成ODS DDL 1
      * @param dataFlagForCrtOdsHive ODS已建表 1
      * @return 返回更改状态
      */
     @Override
-    public void updateODSFlg(String dataFlagForCrtOdsDll,
+    public void updateODSFlg(String dataFlagForCrtOdsDll ,
                              String dataFlagForCrtOdsHive,
                              String businessSystemNameShortName,
                              String dataSourceSchema,
                              String dataSourceTable) {
         cjDataSourceTabInfoMapper.updateDataFlagForCrtOdsDll(
-                dataFlagForCrtOdsDll, dataFlagForCrtOdsHive,
-                businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                dataFlagForCrtOdsDll,dataFlagForCrtOdsHive,
+                businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findByExample(CjDataSourceTabInfoExample example) {
+//        return cjDataSourceTabInfoMapper.;
+        return new ArrayList<>();
+    }
+    public List<CjDataSourceTabInfo> findODSTableInfo() {
+        return cjDataSourceTabInfoMapper.selectODSTableInfo();
+    }
+
+    @Override
+    public int updateODSScriptStatus(String dataFlagForCrtOdsScript,
+                                     String businessSystemNameShortName,
+                                     String dataSourceSchema,
+                                     String dataSourceTable) {
+        return cjDataSourceTabInfoMapper.updateOdsScriptDefStatus(
+                dataFlagForCrtOdsScript,
+                businessSystemNameShortName,
+                dataSourceSchema,
+                dataSourceTable
+        );
+
     }
 
     @Override
@@ -65,13 +88,13 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols, String dataFlagForCrtOdsDll) {
-        return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols, dataFlagForCrtOdsDll);
+    public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll) {
+        return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols,dataFlagForCrtOdsDll);
     }
 
     @Override
     public String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example) {
-        if (cjDataSourceTabInfoMapper.updateByExampleSelective(record, example) > 0) {
+        if(cjDataSourceTabInfoMapper.updateByExampleSelective(record,example)>0){
             return "更新成功";
         }
         return "更新失败";
@@ -80,6 +103,21 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     @Override
     public void updcrtDwFlagByObject(CjDataSourceTabInfo cjDataSourceTabInfo) {
 
+    }
+
+    @Override
+    public void updateODSFlg(String dataFlagForCrtOdsDll, String dataFlagForCrtOdsHive) {
+
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findOdsScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfo();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDwScriptTableInfo() {
+        return cjDataSourceTabInfoMapper.selectDwExportTableInfo();
     }
 
 

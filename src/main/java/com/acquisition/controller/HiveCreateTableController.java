@@ -50,7 +50,7 @@ public class HiveCreateTableController {
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
-        data = jsonObject.getString("data");
+        data = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
         String businessSystemNameShortName;
         String dataSourceSchema;
@@ -65,7 +65,7 @@ public class HiveCreateTableController {
             businessSystemNameShortName=cjDataSourceTabInfo.getBusinessSystemNameShortName();
             dataSourceSchema=cjDataSourceTabInfo.getDataSourceSchema();
             dataSourceTable=cjDataSourceTabInfo.getDataSourceTable();
-            dwTableName="d_nct_"+dataSourceSchema+"_"+dataSourceTable;
+            dwTableName="d_nct_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
             //使用StringBuffer拼接DW建表语句
             StringBuffer dwddl=new StringBuffer();
             dwddl.append("create table if not exists data_lake."+dwTableName+"\n");
@@ -87,28 +87,6 @@ public class HiveCreateTableController {
             }
             dwddl.append(")"+"\n");
             dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
-            //生成DW建表语句成功，设置状态表中的相应状态字段
-            cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
-//            Connection conn = null;
-//            PreparedStatement ps;
-//            try {
-//                conn = instance.getConnection();
-//                ps = conn.prepareStatement(dwddl.toString());
-//                ps.execute();  //executeQuery()方法支持的是增删改查等DML语句，对于DDL 需要调用execute()来执行.
-            //DW建表成功，设置状态表中的相应状态字段
-            cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
-
-// } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-            //将状态改变更新到数据库
-            CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
-            CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
-            //where条件使用业务系统缩写、数据模式和表名做限制
-            criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
-            criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
-            criteria.andDataSourceTableEqualTo(dataSourceTable);
-            cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
 
             /**
              * 将dw建表语句存入mysql中
@@ -119,12 +97,25 @@ public class HiveCreateTableController {
             cjDwCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
             cjDwCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjDwCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName+"_"+dataSourceTable);
+            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable);
             cjDwCrtTabDdlInfo.setDwDataTable(dwTableName);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwddl.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjDwCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
-            cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo);
+            cjDwCrtTabDdlInfoService.deleteByPrimaryKey(cjDwCrtTabDdlInfo);
+            if(cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo).equals("保存成功")){
+                //生成DW建表语句成功，设置状态表中的相应状态字段
+                cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
+                cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
+                //将状态改变更新到数据库
+                CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
+                CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
+                //where条件使用业务系统缩写、数据模式和表名做限制
+                criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
+                criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
+                criteria.andDataSourceTableEqualTo(dataSourceTable);
+                cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
+            }
             dwddl.setLength(0);
         }
         result.setCode(200);
@@ -148,13 +139,13 @@ public class HiveCreateTableController {
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
-        String odsTableList = jsonObject.getString("data");
+        String odsTableList = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
         return saveDDLAndCreateTable(cjDataSourceTabInfos);
     }
 
     /**
-     * @return 返回状态码
+     * @return 拼接并保存SQL,返回状态码
      */
     public Result saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         String colName = "";
@@ -166,16 +157,15 @@ public class HiveCreateTableController {
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
         for (CjDataSourceTabInfo cjDataSourceTabInfo : CjDataSourceTabInfos) {
-            odsDDL.append("create table is not exists sdata_full."
+            odsDDL.append("create table if not exists sdata_full."
                     + cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()
-                    + "_" + cjDataSourceTabInfo.getDataSourceSchema().toLowerCase() + "\n");
+                    + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase() + "\n");
             odsDDL.append("(" + "\n");
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
                     .findBySystemAndSchemaAndTab(cjDataSourceTabInfo.getBusinessSystemNameShortName(),
                             cjDataSourceTabInfo.getDataSourceSchema(),
                             cjDataSourceTabInfo.getDataSourceTable());
-
             for (int i = 0; i < infoList.size(); i++) {
                 colName = infoList.get(i).getDataSourceColName().toLowerCase();
                 colComment = infoList.get(i).getDataSourceColComment();
@@ -202,7 +192,8 @@ public class HiveCreateTableController {
             cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
             cjOdsCrtTabDdlInfo.setOdsDataSchema("sdata_full");
-            cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
+            cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_"
+                            + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
             cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjOdsCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
@@ -218,7 +209,10 @@ public class HiveCreateTableController {
             }
             odsDDL.setLength(0);
         }
-        return  result.success("成功");
+
+        result.setMsg("ODS建表成功！！！");
+        result.setCode(200);
+        return result;
     }
 
 

@@ -74,6 +74,9 @@ public class GetSourceMetaDataController {
                 try {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((table.getBusinessSystemNameShortName() + table.getDataSourceSchema()));
                     con = groupPoolFactory.getConnection();
+                    if (con == null) {
+                        continue;
+                    }
                     st = con.createStatement();
                     if (table.getDataBaseType().equals("mysql")) {
                         rs = st.executeQuery("select distinct table_schema as schema_name FROM INFORMATION_SCHEMA.tables");
@@ -151,6 +154,9 @@ public class GetSourceMetaDataController {
                     String basetype = iCjDataSourceConnDefineService.selectBySystemID(table.getBusinessSystemId());
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((table.getBusinessSystemNameShortName() + (basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
+                    if (con == null) {
+                        continue;
+                    }
                     st = con.createStatement();
                     String sql = "";
                     if (basetype.equals("mysql")) {
