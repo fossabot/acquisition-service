@@ -78,6 +78,36 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema) {
+        return cjDataSourceTabInfoMapper.selectFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findFromCjVGetPrepareCrtDwTabListBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema) {
+        return cjDataSourceTabInfoMapper.selectFromCjVGetPrepareCrtDwTabListBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
+    }
+
+    @Override
+    public List<String> findDistSystemFromCjVGetPrepareScriptForDwTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemFromCjVGetPrepareScriptForDwTabList();
+    }
+
+    @Override
+    public List<String> findDistSystemFromCjVGetPrepareScriptForOdsTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemFromCjVGetPrepareScriptForOdsTabList();
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
         return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
     }
