@@ -24,8 +24,8 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
 
     /**
      * @param businessSystemNameShortName 源系统缩写
-     * @param dataSourceSchema schema名
-     * @param dataSourceTable 表名
+     * @param dataSourceSchema            schema名
+     * @param dataSourceTable             表名
      * @return 返回指定表的字段详情
      */
 
@@ -33,12 +33,11 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
     public List<CjDwCrtDdlColPojo> selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
         return cjDataSourceTabColInfoMapper.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
     }
+
     public List<CjDataSourceTabColInfo> findBySystemAndSchemaAndTab(
-            String businessSystemNameShortName, String dataSourceSchema , String dataSourceTable) {
-       return cjDataSourceTabColInfoMapper.selectAllBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+            String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectAllBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
     }
-
-
 
 
     @Override
@@ -53,8 +52,8 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
     }
 
     @Override
-    public int deleteBySystemName(String systemname) {
-        return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname);
+    public int deleteBySystemName(String systemname, String schema) {
+        return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname, schema);
     }
 
 }

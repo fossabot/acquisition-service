@@ -33,7 +33,7 @@ public interface CjDataSourceTabColInfoMapper {
 
     int updateByPrimaryKey(CjDataSourceTabColInfo record);
 
-    List<CjDataSourceTabColInfo> selectAllBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema , @Param("dataSourceTable") String dataSourceTable);
+    List<CjDataSourceTabColInfo> selectAllBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
     List<CjDwCrtDdlColPojo> selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
@@ -41,6 +41,7 @@ public interface CjDataSourceTabColInfoMapper {
 
     List<CjDataSourceTabColInfo> findListOnlyTable(List<CjDataSourceSystemInfo> list);
 
-    int deleteBySystemName(@Param("systemname") String systemname);
+    int deleteBySystemName(@Param("systemname") String systemname, @Param("schema") String schema);
+
 
 }
