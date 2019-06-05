@@ -124,7 +124,6 @@ public class GenerateScriptController {
             }
             dwInitScript.setLength(0);
         }
-
         result.setCode(200);
         result.setMsg("DW脚本初始化成功！");
         return result;
