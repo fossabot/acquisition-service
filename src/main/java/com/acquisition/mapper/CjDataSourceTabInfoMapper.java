@@ -53,6 +53,6 @@ public interface CjDataSourceTabInfoMapper {
     List<CjDataSourceTabInfo> selectOdsExportTableInfo();
     List<CjDataSourceTabInfo> selectDwExportTableInfo();
 
-    int insertBatch(List<CjDataSourceTabInfo> list);
+    int insertBatch(CjDataSourceTabInfo list);
     int deleteBySystemName(@Param("systemname") String systemname);
 }

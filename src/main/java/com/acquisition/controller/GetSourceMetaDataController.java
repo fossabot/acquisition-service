@@ -81,7 +81,7 @@ public class GetSourceMetaDataController {
                     if (table.getDataBaseType().equals("mysql")) {
                         rs = st.executeQuery("select distinct table_schema as schema_name FROM INFORMATION_SCHEMA.tables");
                     } else if (table.getDataBaseType().equals("sqlserver")) {
-                        rs = st.executeQuery("SELECT name AS schema_name FROM  master..sysdatabases WHERE name NOT IN ( 'master', 'model', 'msdb', 'tempdb', 'northwind','pubs' )");
+                        rs = st.executeQuery("SELECT name AS schema_name FROM  master..sysdatabases WHERE name = '" + table.getDataSourceSchema() + "'");
                     } else if (table.getDataBaseType().equals("oracle")) {
                         rs = st.executeQuery("SELECT DISTINCT username AS schema_name FROM all_users");
                     }
@@ -181,17 +181,21 @@ public class GetSourceMetaDataController {
                                 "WHERE tab_col.table_schema='" + table.getDataSourceSchema() + "'" +
                                 "ORDER BY tab_col.table_schema,tab_col.table_name,tab_col.ordinal_position";
                     } else if (basetype.equals("sqlserver")) {
-                        sql = "select " +
-                                "d.name as data_source_table,f.value as data_source_table_comment" +
-                                ",a.name as data_source_col_name,a.colid as  data_source_col_order" +
-                                ",case   when   exists(SELECT 1 FROM sysobjects where  xtype='PK' AND name in (" +
-                                "SELECT name FROM sysindexes WHERE indid   in(" +
-                                "SELECT indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid" +
-                                ")))   then   'true'   else   ''   end as data_source_col_primarykey" +
-                                ", a.isnullable AS data_source_col_isnull_flag " +
-                                ",b.name AS data_source_col_datatype,'' AS data_source_col_len " +
-                                ",a.prec AS data_source_col_precision,a.xscale AS data_source_col_scale " +
-                                ",g.value as data_source_col_comment " +
+                        sql = "select '" + table.getDataSourceSchema() + "' AS data_source_schema " +
+                                ",cast(d.name as varchar(200))  as data_source_table " +
+                                ",cast(f.value as varchar(1000)) as data_source_table_comment " +
+                                ",cast(a.name as varchar(200))  as data_source_col_name " +
+                                ",cast(a.colid as varchar(5)) as  data_source_col_order " +
+                                ",case when  exists(SELECT 1 FROM sysobjects where  xtype='PK' AND name in ( " +
+                                "SELECT cast(name as varchar(200)) as name FROM sysindexes WHERE indid   in( " +
+                                "SELECT cast(indid as varchar(200)) as indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid " +
+                                ")))   then   '1'   else   ''   end as data_source_col_primarykey " +
+                                ",cast(a.isnullable as varchar(1)) AS data_source_col_isnull_flag " +
+                                ",cast(b.name  as varchar(200)) as data_source_col_datatype " +
+                                ",'' AS data_source_col_len " +
+                                ",cast(a.prec as varchar(200)) AS data_source_col_precision " +
+                                ",cast(a.xscale as varchar(200)) AS data_source_col_scale " +
+                                ",cast(g.value as varchar(800)) as data_source_col_comment " +
                                 "from sysobjects d inner join syscolumns a on a.id=d.id and d.xtype='U' " +
                                 "left join systypes b on a.xusertype=b.xusertype " +
                                 "left join sys.extended_properties g on a.id=g.major_id and a.colid=g.minor_id " +
@@ -259,8 +263,8 @@ public class GetSourceMetaDataController {
                     }
                 }
 
-                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());
-                iCjDataSourceTabInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());
+                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName(), table.getDataSourceSchema());
+                /*iCjDataSourceTabInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());*/
             }
 
             if (datasourcetabcolInfo.size() > 0 && iCjDataSourceTabColInfoService.insertBatch(datasourcetabcolInfo) > 0) {
