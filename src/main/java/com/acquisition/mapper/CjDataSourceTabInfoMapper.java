@@ -55,4 +55,14 @@ public interface CjDataSourceTabInfoMapper {
 
     int insertBatch(List<CjDataSourceTabInfo> list);
     int deleteBySystemName(@Param("systemname") String systemname);
+
+    List<CjDataSourceTabInfo> selectDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
+    List<CjDataSourceTabInfo> selectDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
+
+    List<CjDataSourceTabInfo> selectFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema);
+    List<CjDataSourceTabInfo> selectFromCjVGetPrepareCrtDwTabListBySystemAndSchema(@Param("businessSystemNameShortName") String businessSystemNameShortName,@Param("dataSourceSchema") String dataSourceSchema);
+
+    List<String> selectDistSystemFromCjVGetPrepareScriptForDwTabList();
+    List<String> selectDistSystemFromCjVGetPrepareScriptForOdsTabList();
+
 }

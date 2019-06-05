@@ -38,6 +38,20 @@ public class GenerateScriptController {
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
 
+
+    @GetMapping(value = "/getODSSystemFilterList")
+    public Result getODSSystemFilterList() {
+        Result result = new Result();
+        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForOdsTabList();
+        return result.success(systems);
+    }
+
+    @GetMapping(value = "/getDWSystemFilterList")
+    public Result getDWSystemFilterList() {
+        Result result = new Result();
+        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForDwTabList();
+        return result.success(systems);
+    }
     /**
     * @Author: zhangdongmao
     * @Date: 2019/6/4
@@ -83,12 +97,15 @@ public class GenerateScriptController {
             dwInitScript.append("insert overwrite table data_lake."+dwTableName+"\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
-                if(i<cjDwCrtDdlColPojos.size()-1) {
-                    dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
-                }else {
-                    dwInitScript.append("`" + colName + "`    as    " + colName+"\n");
-                }
+                dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
             }
+
+            dwInitScript.append("row_id    as src_sys_row_id,\n");
+            dwInitScript.append(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"    "+"as src_sys_cd,\n");
+            dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
+            dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
+            dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt,\n");
+            dwInitScript.append("data_dt    as partition_key\n");
             dwInitScript.append("from sdata_full."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());

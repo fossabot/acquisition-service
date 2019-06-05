@@ -40,6 +40,7 @@ public interface CjDataSourceTabColInfoMapper {
     int insertBatch(List<CjDataSourceTabColInfo> list);
 
     List<CjDataSourceTabColInfo> findListOnlyTable(List<CjDataSourceSystemInfo> list);
+
     int deleteBySystemName(@Param("systemname") String systemname);
 
 }
