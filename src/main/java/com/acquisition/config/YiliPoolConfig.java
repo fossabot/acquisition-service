@@ -43,7 +43,6 @@ public class YiliPoolConfig implements CommandLineRunner {
                         dta.getConnIp(), dta.getConnPort(), dta.getBusinessSystemNameShortName(),
                         dta.getLoginName(), dta.getLoginPassword(), (dta.getDataBaseType().equals("oracle") ? dta.getDbInstance() : dta.getHiveQueue()));
             }
-
         }
         LOG.info("YILIGroupPool创建成功");
     }

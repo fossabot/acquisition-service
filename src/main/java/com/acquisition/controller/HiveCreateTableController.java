@@ -12,8 +12,11 @@ import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import com.alibaba.fastjson.JSONObject;
 import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjOdsCrtTabDdlInfo;
+import com.yili.pool.pool.GroupPoolFactory;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +53,7 @@ public class HiveCreateTableController {
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
+        System.out.println(jsonObject);
         data = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
         String businessSystemNameShortName;
@@ -97,24 +101,38 @@ public class HiveCreateTableController {
             cjDwCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
             cjDwCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjDwCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable);
+            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable);
             cjDwCrtTabDdlInfo.setDwDataTable(dwTableName);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwddl.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjDwCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
-            cjDwCrtTabDdlInfoService.deleteByPrimaryKey(cjDwCrtTabDdlInfo);
-            if(cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo).equals("保存成功")){
-                //生成DW建表语句成功，设置状态表中的相应状态字段
-                cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
-                cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
-                //将状态改变更新到数据库
-                CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
-                CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
-                //where条件使用业务系统缩写、数据模式和表名做限制
-                criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
-                criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
-                criteria.andDataSourceTableEqualTo(dataSourceTable);
-                cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
+            GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
+
+            try {
+                if(instance.getConnection()==null){
+                    System.out.println("null");
+                }
+                Connection connection = instance.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(dwddl.toString());
+                preparedStatement.execute();
+                cjDwCrtTabDdlInfoService.deleteByPrimaryKey(cjDwCrtTabDdlInfo);
+                if(cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo).equals("保存成功")){
+                    //生成DW建表语句成功，设置状态表中的相应状态字段
+                    cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
+                    cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
+                    //将状态改变更新到数据库
+                    CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
+                    CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
+                    //where条件使用业务系统缩写、数据模式和表名做限制
+                    criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
+                    criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
+                    criteria.andDataSourceTableEqualTo(dataSourceTable);
+                    cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                dwddl.setLength(0);
+                return result.error(500,"建表失败");
             }
             dwddl.setLength(0);
         }
