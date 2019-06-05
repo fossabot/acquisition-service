@@ -65,10 +65,13 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            output = new FileOutputStream(new File("D:\\Java\\acquisition-service\\data\\ODS初始化"
-                    + df.format(new Date()) + ".txt"));
-
-            //遍历获取表的元数据并获取脚本信息
+            File filename = new File("D:\\Java\\acquisition-service\\data\\ODS初始化" + df.format(new Date()));
+            //判断文件是否存在，不存在则新建
+            if (!filename.exists()){
+                filename.createNewFile();
+            }
+            output = new FileOutputStream(filename);
+            //遍历获取表的元数据并获取脚本信息,写到文件中
             for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos){
                 ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
                         table.getBusinessSystemNameShortName(),
@@ -80,10 +83,13 @@ public class ExportScriptController {
                 }
                 output.write(ddl.concat("\n").getBytes());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (filename.length() == 0){
+                filename.delete();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            result.setCode(500);
+            result.setMsg("文件写入异常！！！");
+            return result;
         }finally {
             try {
                 output.close();
@@ -111,9 +117,12 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            output = new FileOutputStream(new File("D:\\Java\\acquisition-service\\data\\DW初始化"
-                    + df.format(new Date()) + ".sql"));
-
+            File filename = new File("D:\\Java\\acquisition-service\\data\\DW初始化" + df.format(new Date()) + ".sql");
+            //判断文件是否存在，不存在则新建
+            if (!filename.exists()){
+                filename.createNewFile();
+            }
+            output = new FileOutputStream(filename);
             //遍历获取表的元数据
             for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos){
                 ddl = iCjDwDataScriptDefInfoService.selectDdlInfo(
@@ -126,10 +135,13 @@ public class ExportScriptController {
                 }
                 output.write(ddl.concat(";\n\n\n").getBytes());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            if (filename.length() == 0){
+                filename.delete();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            result.setCode(500);
+            result.setMsg("文件写入异常！！！");
+            return result;
         }finally {
             try {
                 output.close();
