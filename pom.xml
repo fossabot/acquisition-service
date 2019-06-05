@@ -227,7 +227,7 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro</artifactId>
 			<version>${avro.version}</version>
-		</dependency>-->
+		</dependency>
         <dependency>
             <groupId>org.yiligroup</groupId>
             <artifactId>yili-group-pool</artifactId>
@@ -275,6 +275,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>
