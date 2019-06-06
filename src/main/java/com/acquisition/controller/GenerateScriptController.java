@@ -76,7 +76,6 @@ public class GenerateScriptController {
     public Result generateDwInitScript(@RequestBody String data) {
         Result result=new Result();
         JSONObject jsonObject = JSONObject.parseObject(data);
-        System.out.println(jsonObject);
         data = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
 
@@ -94,19 +93,19 @@ public class GenerateScriptController {
             dwInitScript.append("set hive.exec.dynamic.partition=true;\n");
             dwInitScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
             dwInitScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n");
-            dwInitScript.append("insert overwrite table data_lake."+dwTableName+"\n");
+            dwInitScript.append("insert overwrite table acquisition_dw."+dwTableName+"\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
                 dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
             }
 
             dwInitScript.append("row_id    as src_sys_row_id,\n");
-            dwInitScript.append(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"    "+"as src_sys_cd,\n");
+            dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
             dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
             dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
             dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt,\n");
             dwInitScript.append("data_dt    as partition_key\n");
-            dwInitScript.append("from sdata_full."+odsTableName);
+            dwInitScript.append("from acquisition_ods."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
             cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());

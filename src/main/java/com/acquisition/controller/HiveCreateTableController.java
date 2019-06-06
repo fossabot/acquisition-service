@@ -160,7 +160,6 @@ public class HiveCreateTableController {
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
-        System.out.println(jsonObject);
         data = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
         String businessSystemNameShortName;

@@ -9,7 +9,6 @@ import com.acquisition.util.Result;
 import com.yili.pool.pool.GroupPoolFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -145,7 +144,6 @@ public class GetSourceMetaDataController {
         Result result = new Result();
         List<CjDataSourceTabColInfo> datasourcetabcolInfo = new ArrayList<>();
         if (sourcesysteminfo.size() > 0) {
-
             for (CjDataSourceSystemInfo table : sourcesysteminfo) {
                 Connection con = null;
                 Statement st = null;

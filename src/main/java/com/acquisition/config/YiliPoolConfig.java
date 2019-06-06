@@ -35,7 +35,7 @@ public class YiliPoolConfig implements CommandLineRunner {
             if (dta.getDataBaseType().equals("mysql") || dta.getDataBaseType().equals("sqlserver")) {
                 groupPoolFactory.setConfigurationParameter(
                         DatabaseType.AdapterDatabaseType(dta.getDataBaseType()),
-                        dta.getConnIp(), dta.getConnPort(), (dta.getDataBaseType().equals("sqlserver") ? dta.getDataSourceSchema() : dta.getBusinessSystemNameShortName()),
+                        dta.getConnIp(), dta.getConnPort(), (dta.getDataBaseType().equals("sqlserver") ? dta.getDataSourceSchema() : ""),
                         dta.getLoginName(), dta.getLoginPassword());
             } else if (dta.getDataBaseType().equals("oracle") || dta.getDataBaseType().equals("hive")) {
                 groupPoolFactory.setConfigurationParameter(
