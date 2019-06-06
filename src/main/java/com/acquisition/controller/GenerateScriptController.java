@@ -2,11 +2,8 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjDwDataScriptDefInfoService;
+import com.acquisition.service.*;
 import com.acquisition.util.Constant;
-import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,9 @@ public class GenerateScriptController {
 
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
+
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    public ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
 
     /**
     * @Author: zhangdongmao
@@ -166,9 +166,16 @@ public class GenerateScriptController {
 
         //拼接Sqooop脚本
         for (CjDataSourceTabInfo table : tabInfos) {
-            scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
-                    + table.getDataSourceSchema()+ "."
-                    + table.getDataSourceTable() + str2 + "\"");
+            //判断系统名连接数
+            if (Integer.parseInt(iCjDataSourceConnDefineService.selectSystemName()) > 1){
+                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~ "
+                        + table.getDataSourceSchema()+ "."
+                        + table.getDataSourceTable() + str2 + "\"");
+            }else {
+                scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
+                        + table.getDataSourceSchema()+ "."
+                        + table.getDataSourceTable() + str2 + "\"");
+            }
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
                     .findBySystemAndSchemaAndTab(
