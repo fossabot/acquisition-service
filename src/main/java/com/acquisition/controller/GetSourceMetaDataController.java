@@ -104,7 +104,7 @@ public class GetSourceMetaDataController {
                         }
                     }
                 }
-                iCjDataSourceSystemInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());
+                iCjDataSourceSystemInfoService.deleteBySystemName(table.getBusinessSystemId());
             }
 
             if (DataSourceSystemInfo.size() > 0 && iCjDataSourceSystemInfoService.insertBatch(DataSourceSystemInfo) > 0) {

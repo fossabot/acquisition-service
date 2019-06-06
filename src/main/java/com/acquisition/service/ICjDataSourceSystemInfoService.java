@@ -14,6 +14,6 @@ public interface ICjDataSourceSystemInfoService {
 
     List<CjDataSourceSystemInfo> selectInfo();
 
-    int deleteBySystemName(String systemname);
+    int deleteBySystemName(String systemid);
 
 }

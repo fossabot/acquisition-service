@@ -233,7 +233,7 @@
     </select>
 
     <delete id="deleteBySystemName" parameterType="java.lang.String">
-    delete from cj_data_source_system_info where business_system_name_short_name=#{systemname}
+    delete from cj_data_source_system_info where business_system_ID=#{systemid}
     </delete>
 
 </mapper>

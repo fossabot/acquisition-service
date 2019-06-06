@@ -31,7 +31,7 @@ public class CjDataSourceSystemInfoServiceImpl implements ICjDataSourceSystemInf
     }
 
     @Override
-    public int deleteBySystemName(String systemname) {
-        return cjDataSourceSystemInfoMapper.deleteBySystemName(systemname);
+    public int deleteBySystemName(String systemid) {
+        return cjDataSourceSystemInfoMapper.deleteBySystemName(systemid);
     }
 }
