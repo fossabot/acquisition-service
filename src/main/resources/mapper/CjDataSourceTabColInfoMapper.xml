@@ -452,7 +452,7 @@
     where business_system_name_short_name = #{businessSystemNameShortName}
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
-    order by data_source_col_order asc
+    order by cast(data_source_col_order AS SIGNED) asc
   </select>
 
   <insert id="insertBatch"  parameterType="java.util.List">

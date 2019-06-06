@@ -43,4 +43,5 @@ public interface CjDataSourceTabColInfoMapper {
 
     int deleteBySystemName(@Param("systemname") String systemname, @Param("schema") String schema);
 
+
 }
