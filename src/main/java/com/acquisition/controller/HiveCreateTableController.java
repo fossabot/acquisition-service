@@ -242,8 +242,8 @@ public class HiveCreateTableController {
             }finally {
                 if (connection != null) {
                     try {
-                        connection.close();
                         preparedStatement.close();
+                        connection.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -347,8 +347,8 @@ public class HiveCreateTableController {
             }finally {
                 if (connection != null) {
                     try {
-                        connection.close();
                         preparedStatement.close();
+                        connection.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
