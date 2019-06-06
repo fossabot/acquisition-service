@@ -40,5 +40,5 @@ public interface CjDataSourceConnDefineMapper {
 
     String selectBySystemID(@Param("syid")String syid);
 
-    String selectSystemName();
+    String selectSystemName(@Param("businessSystemNameShortName") String businessSystemNameShortName);
 }

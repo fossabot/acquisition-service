@@ -65,7 +65,7 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            File filename = new File("D:\\Java\\acquisition-service\\data\\ODS初始化" + df.format(new Date()));
+            File filename = new File("/data/acquisition/data/scripts/ODS初始化" + df.format(new Date()));
             //判断文件是否存在，不存在则新建
             if (!filename.exists()){
                 filename.createNewFile();
@@ -117,7 +117,9 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            File filename = new File("D:\\Java\\acquisition-service\\data\\DW初始化" + df.format(new Date()) + ".sql");
+//            File filename = new File("D:\\Java\\acquisition-service\\data\\DW初始化" + df.format(new Date()) + ".sql");
+            File filename = new File("/data/acquisition/data/scripts/DW初始化" + df.format(new Date()) + ".sql");
+
             //判断文件是否存在，不存在则新建
             if (!filename.exists()){
                 filename.createNewFile();

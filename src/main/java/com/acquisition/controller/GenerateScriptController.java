@@ -9,9 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +59,6 @@ public class GenerateScriptController {
     public Result generateDwInitScript(@RequestBody String data) {
         Result result=new Result();
         JSONObject jsonObject = JSONObject.parseObject(data);
-        System.out.println(jsonObject);
         data = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
 
@@ -167,9 +163,9 @@ public class GenerateScriptController {
         //拼接Sqooop脚本
         for (CjDataSourceTabInfo table : tabInfos) {
             //判断系统名连接数
-            if (Integer.parseInt(iCjDataSourceConnDefineService.selectSystemName()) > 1){
-                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~ "
-                        + table.getDataSourceSchema()+ "."
+            if (Integer.parseInt(iCjDataSourceConnDefineService.selectSystemName(table.getBusinessSystemNameShortName())) > 1){
+                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~"
+                        + table.getDataSourceSchema()+ " "
                         + table.getDataSourceTable() + str2 + "\"");
             }else {
                 scripts.append(str1 + table.getBusinessSystemNameShortName() + " "

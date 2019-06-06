@@ -431,16 +431,46 @@
     insert into cj_data_source_tab_info (business_system_ID, business_system_name_short_name,
     data_source_schema, data_source_table, data_source_table_comment,
     data_flag_for_get_cols)
-    values
-    <foreach collection="list" index="index" item="item"  separator="," >
+    values  (#{businessSystemId}, #{businessSystemNameShortName},
+    #{dataSourceSchema}, #{dataSourceTable}, #{dataSourceTableComment},
+    #{dataFlagForGetCols})
+    <!--<foreach collection="list" index="index" item="item"  separator="," >
       (#{item.businessSystemId}, #{item.businessSystemNameShortName},
       #{item.dataSourceSchema}, #{item.dataSourceTable}, #{item.dataSourceTableComment},
       #{item.dataFlagForGetCols})
-    </foreach>
+    </foreach>-->
   </insert>
 
-  <delete id="deleteBySystemName" parameterType="java.lang.String">
+  <delete id="deleteBySystemName" parameterType="com.acquisition.entity.CjDataSourceTabInfo">
     delete from cj_data_source_tab_info where business_system_name_short_name=#{systemname}
    </delete>
 
+  <select id="selectDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList" resultMap="BaseResultMap" >
+    select DISTINCT business_system_name_short_name,data_source_schema
+    from cj_v_get_prepare_crt_dw_tab_list
+  </select>
+  <select id="selectDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList" resultMap="BaseResultMap" >
+    select DISTINCT business_system_name_short_name,data_source_schema
+    from cj_v_get_prepare_crt_ods_tab_list
+  </select>
+  <select id="selectFromCjVGetPrepareCrtDwTabListBySystemAndSchema" resultMap="BaseResultMap" >
+    select *
+    from cj_v_get_prepare_crt_dw_tab_list
+    where business_system_name_short_name=#{businessSystemNameShortName}
+    AND data_source_schema=#{dataSourceSchema}
+  </select>
+  <select id="selectFromCjVGetPrepareCrtOdsTabListBySystemAndSchema" resultMap="BaseResultMap" >
+    select *
+    from cj_v_get_prepare_crt_ods_tab_list
+    where business_system_name_short_name=#{businessSystemNameShortName}
+    AND data_source_schema=#{dataSourceSchema}
+  </select>
+  <select id="selectDistSystemFromCjVGetPrepareScriptForDwTabList" parameterType="java.lang.String"  resultType="java.util.List" >
+    select DISTINCT business_system_name_short_name
+    from cj_v_get_prepare_script_for_dw_tab_list
+  </select>
+  <select id="selectDistSystemFromCjVGetPrepareScriptForOdsTabList" parameterType="java.lang.String"  resultType="java.util.List"  >
+    select DISTINCT business_system_name_short_name
+    from cj_v_get_prepare_script_for_ods_tab_list
+  </select>
 </mapper>

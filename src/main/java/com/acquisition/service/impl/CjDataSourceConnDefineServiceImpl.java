@@ -55,8 +55,8 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
     }
 
     @Override
-    public String selectSystemName() {
-        return cjDataSourceConnDefineMapper.selectSystemName();
+    public String selectSystemName(String businessSystemNameShortName) {
+        return cjDataSourceConnDefineMapper.selectSystemName(businessSystemNameShortName);
     }
 
 }

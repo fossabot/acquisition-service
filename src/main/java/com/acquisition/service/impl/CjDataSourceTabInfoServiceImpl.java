@@ -6,6 +6,7 @@ import com.acquisition.entity.CjDataSourceTabInfoExample;
 import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,19 +30,19 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     /**
-     * @param dataFlagForCrtOdsDll 已生成ODS DDL 1
+     * @param dataFlagForCrtOdsDll  已生成ODS DDL 1
      * @param dataFlagForCrtOdsHive ODS已建表 1
      * @return 返回更改状态
      */
     @Override
-    public void updateODSFlg(String dataFlagForCrtOdsDll ,
+    public void updateODSFlg(String dataFlagForCrtOdsDll,
                              String dataFlagForCrtOdsHive,
                              String businessSystemNameShortName,
                              String dataSourceSchema,
                              String dataSourceTable) {
         cjDataSourceTabInfoMapper.updateDataFlagForCrtOdsDll(
-                dataFlagForCrtOdsDll,dataFlagForCrtOdsHive,
-                businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+                dataFlagForCrtOdsDll, dataFlagForCrtOdsHive,
+                businessSystemNameShortName, dataSourceSchema, dataSourceTable);
     }
 
     @Override
@@ -49,6 +50,8 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 //        return cjDataSourceTabInfoMapper.;
         return new ArrayList<>();
     }
+
+    @Override
     public List<CjDataSourceTabInfo> findODSTableInfo() {
         return cjDataSourceTabInfoMapper.selectODSTableInfo();
     }
@@ -69,12 +72,51 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 
     @Override
     public int insertBatch(List<CjDataSourceTabInfo> list) {
-        return cjDataSourceTabInfoMapper.insertBatch(list);
+        int i = 0;
+        for (CjDataSourceTabInfo tabInfo : list) {
+            try {
+                cjDataSourceTabInfoMapper.insertBatch(tabInfo);
+                i++;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return i;
     }
 
     @Override
     public int deleteBySystemName(String systemname) {
         return cjDataSourceTabInfoMapper.deleteBySystemName(systemname);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema) {
+        return cjDataSourceTabInfoMapper.selectFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findFromCjVGetPrepareCrtDwTabListBySystemAndSchema(String businessSystemNameShortName,String dataSourceSchema) {
+        return cjDataSourceTabInfoMapper.selectFromCjVGetPrepareCrtDwTabListBySystemAndSchema(businessSystemNameShortName,dataSourceSchema);
+    }
+
+    @Override
+    public List<String> findDistSystemFromCjVGetPrepareScriptForDwTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemFromCjVGetPrepareScriptForDwTabList();
+    }
+
+    @Override
+    public List<String> findDistSystemFromCjVGetPrepareScriptForOdsTabList() {
+        return cjDataSourceTabInfoMapper.selectDistSystemFromCjVGetPrepareScriptForOdsTabList();
     }
 
     @Override
@@ -88,13 +130,13 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols,String dataFlagForCrtOdsDll) {
-        return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols,dataFlagForCrtOdsDll);
+    public List<CjDataSourceTabInfo> findAllByOdsHiveAndDwHive(String dataFlagForGetCols, String dataFlagForCrtOdsDll) {
+        return cjDataSourceTabInfoMapper.selectAllByOdsHiveAndDwHive(dataFlagForGetCols, dataFlagForCrtOdsDll);
     }
 
     @Override
     public String updateByExampleSelective(CjDataSourceTabInfo record, CjDataSourceTabInfoExample example) {
-        if(cjDataSourceTabInfoMapper.updateByExampleSelective(record,example)>0){
+        if (cjDataSourceTabInfoMapper.updateByExampleSelective(record, example) > 0) {
             return "更新成功";
         }
         return "更新失败";
