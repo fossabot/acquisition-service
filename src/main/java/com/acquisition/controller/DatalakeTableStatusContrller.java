@@ -1,9 +1,9 @@
 package com.acquisition.controller;
 
 import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.Page;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +37,17 @@ public class DatalakeTableStatusContrller {
     /**
      * @return
      */
-    @GetMapping(value = "/getStatusList")
-    public Result getStatusList(Page reqParams){
-        Result result = new Result();
-        PageHelper.startPage(reqParams.getPageNum(),reqParams.getPageSize());
-        PageInfo<CjDataSourceTabInfo> page = new PageInfo(iCjDataSourceTabInfoService.findSumOfTables());
-        result.setData(iCjDataSourceTabInfoService.findSumOfTables());
-        result.setMsg("查询成功！！！");
-        result.setCode(200);
-        result.setData(page);
-        return  result;
+        @GetMapping(value = "/getStatusList")
+        public Result getStatusList(Page reqParams){
+            Result result = new Result();
+            System.out.println(reqParams.getPagenum() + "\n" + reqParams.getPagesize());
+            PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+            PageInfo<CjDataSourceTabInfo> page = new PageInfo(iCjDataSourceTabInfoService.findSumOfTables());
+            result.setData(iCjDataSourceTabInfoService.findSumOfTables());
+            result.setMsg("查询成功！！！");
+            result.setCode(200);
+            result.setData(page);
+            return  result;
     }
 
     /**
