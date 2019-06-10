@@ -120,6 +120,21 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<String> selectDistSystemName() {
+        return cjDataSourceTabInfoMapper.selectDistSystemName();
+    }
+
+    @Override
+    public List<String> selectDistSchema(String systemname) {
+        return cjDataSourceTabInfoMapper.selectDistSchema(systemname);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(String systemname, String schema, String tablename) {
+        return cjDataSourceTabInfoMapper.selectBySysNameAndSchemaAndTableName(systemname, schema, tablename);
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
         return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
     }

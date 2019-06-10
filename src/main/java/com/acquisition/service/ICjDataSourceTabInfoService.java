@@ -49,4 +49,7 @@ public interface ICjDataSourceTabInfoService {
 
     List<String> findDistSystemFromCjVGetPrepareScriptForDwTabList();
     List<String> findDistSystemFromCjVGetPrepareScriptForOdsTabList();
+    List<String> selectDistSystemName();
+    List<String> selectDistSchema(String systemname);
+    List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(String systemname,String schema,String tablename);
 }
