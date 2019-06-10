@@ -43,5 +43,7 @@ public interface CjDataSourceTabColInfoMapper {
 
     int deleteBySystemName(@Param("systemname") String systemname, @Param("schema") String schema);
 
+    List<CjDataSourceTabColInfo> selectByTable(@Param("systemname") String systemname, @Param("schema") String schema, @Param("tablename") String tablename);
+
 
 }

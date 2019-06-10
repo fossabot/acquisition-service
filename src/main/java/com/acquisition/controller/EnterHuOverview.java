@@ -1,6 +1,8 @@
 package com.acquisition.controller;
 
+import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,9 @@ public class EnterHuOverview {
 
     @Resource(name = "cjDataSourceTabInfoServiceImpl")
     ICjDataSourceTabInfoService iCjDataSourceTabInfoService;
+
+    @Resource(name = "cjDataSourceTabColInfoServiceImpl")
+    ICjDataSourceTabColInfoService iCjDataSourceTabColInfoService;
 
 
     /**
@@ -63,6 +68,18 @@ public class EnterHuOverview {
         return new Result().success(list);
     }
 
+
+    /**
+     * 根据表明获取表的详细信息
+     *
+     * @param tablename
+     * @return
+     */
+    @RequestMapping("/getByTableInfo")
+    public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename) {
+        List<CjDataSourceTabColInfo> list = iCjDataSourceTabColInfoService.selectByTable(systemname, schema, tablename);
+        return new Result().success(list);
+    }
 
 
 }

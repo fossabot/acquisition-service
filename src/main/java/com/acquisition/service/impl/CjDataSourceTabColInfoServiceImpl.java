@@ -56,4 +56,10 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
         return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname, schema);
     }
 
+    @Override
+    public List<CjDataSourceTabColInfo> selectByTable(String systemname, String schema, String tablename) {
+        return cjDataSourceTabColInfoMapper.selectByTable(systemname, schema, tablename);
+    }
+
+
 }
