@@ -465,12 +465,23 @@
     where business_system_name_short_name=#{businessSystemNameShortName}
     AND data_source_schema=#{dataSourceSchema}
   </select>
-  <select id="selectDistSystemFromCjVGetPrepareScriptForDwTabList" parameterType="java.lang.String"  resultType="java.util.List" >
+  <select id="selectDistSystemFromCjVGetPrepareScriptForDwTabList" resultType="java.lang.String" >
     select DISTINCT business_system_name_short_name
     from cj_v_get_prepare_script_for_dw_tab_list
   </select>
-  <select id="selectDistSystemFromCjVGetPrepareScriptForOdsTabList" parameterType="java.lang.String"  resultType="java.util.List"  >
+  <select id="selectDistSystemFromCjVGetPrepareScriptForOdsTabList"  resultType="java.lang.String"  >
     select DISTINCT business_system_name_short_name
     from cj_v_get_prepare_script_for_ods_tab_list
+  </select>
+
+  <select id="selectCjVGetPrepareScriptForDwTabListBySystem"  resultMap="BaseResultMap"  >
+    select *
+    from cj_v_get_prepare_script_for_dw_tab_list
+    where business_system_name_short_name=#{businessSystemNameShortName}
+  </select>
+  <select id="selectCjVGetPrepareScriptForOdsTabListBySystem"  resultMap="BaseResultMap"  >
+    select *
+    from cj_v_get_prepare_script_for_ods_tab_list
+    where business_system_name_short_name=#{businessSystemNameShortName}
   </select>
 </mapper>

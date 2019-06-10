@@ -1,6 +1,7 @@
 package com.acquisition.service.impl;
 
 import com.acquisition.entity.CjDataSourceSystemInfo;
+import com.acquisition.entity.CjDataSourceSystemInfoExample;
 import com.acquisition.mapper.CjDataSourceSystemInfoMapper;
 import com.acquisition.service.ICjDataSourceSystemInfoService;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,15 @@ public class CjDataSourceSystemInfoServiceImpl implements ICjDataSourceSystemInf
     @Override
     public int deleteBySystemName(String systemid) {
         return cjDataSourceSystemInfoMapper.deleteBySystemName(systemid);
+    }
+
+    @Override
+    public List<String> findDistBusinessSystemNameShortName() {
+        return cjDataSourceSystemInfoMapper.selectDistBusinessSystemNameShortName();
+    }
+
+    @Override
+    public List<CjDataSourceSystemInfo> findByExample(CjDataSourceSystemInfoExample example) {
+        return cjDataSourceSystemInfoMapper.selectByExample(example);
     }
 }

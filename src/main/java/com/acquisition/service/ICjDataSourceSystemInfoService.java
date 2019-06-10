@@ -1,6 +1,7 @@
 package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceSystemInfo;
+import com.acquisition.entity.CjDataSourceSystemInfoExample;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface ICjDataSourceSystemInfoService {
 
     int deleteBySystemName(String systemid);
 
+    List<String> findDistBusinessSystemNameShortName();
+
+    List<CjDataSourceSystemInfo> findByExample(CjDataSourceSystemInfoExample example);
 }

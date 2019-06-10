@@ -65,4 +65,6 @@ public interface CjDataSourceTabInfoMapper {
     List<String> selectDistSystemFromCjVGetPrepareScriptForDwTabList();
     List<String> selectDistSystemFromCjVGetPrepareScriptForOdsTabList();
 
+    List<CjDataSourceTabInfo> selectCjVGetPrepareScriptForDwTabListBySystem(@Param("businessSystemNameShortName") String businessSystemNameShortName);
+    List<CjDataSourceTabInfo> selectCjVGetPrepareScriptForOdsTabListBySystem(@Param("businessSystemNameShortName") String businessSystemNameShortName);
 }

@@ -36,4 +36,6 @@ public interface CjDataSourceSystemInfoMapper {
     List<CjDataSourceSystemInfo> selectInfo();
 
     int deleteBySystemName(@Param("systemid") String systemid);
+
+    List<String> selectDistBusinessSystemNameShortName();
 }

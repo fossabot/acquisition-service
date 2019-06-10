@@ -132,13 +132,12 @@ public class HiveCreateTableController {
     * @return:
     */
     @PostMapping(value = "/getODSCreateTabListByFilter")
-    public Result getODSCreateTabListByFilter(@RequestBody String data){
-        JSONObject jsonObject = JSONObject.parseObject(data);
+    public Result getODSCreateTabListByFilter(@RequestBody Page reqParams){
         Result result=new Result();
-        data = jsonObject.getString("query");
-        List<String> systemAndSchema = JSON.parseArray(data, String.class);
-        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(systemAndSchema.get(0), systemAndSchema.get(1));
-        return result.success(cjDataSourceTabInfos);
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(reqParams.getQuery().get(0), reqParams.getQuery().get(1));
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+        return result.success(page);
     }
     @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList(Page reqParams) {
@@ -193,6 +192,7 @@ public class HiveCreateTableController {
             dwddl.append(")"+"\n");
             dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
 
+
             /**
              * 将dw建表语句存入mysql中
              */
@@ -202,7 +202,7 @@ public class HiveCreateTableController {
             cjDwCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
             cjDwCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjDwCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable);
+            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase());
             cjDwCrtTabDdlInfo.setDwDataTable(dwTableName);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwddl.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -254,9 +254,12 @@ public class HiveCreateTableController {
      */
     @RequestMapping(value = "/getODSTableInfo")
     @ResponseBody
-    public Result getODSTable() {
+    public Result getODSTable(Page reqParams) {
         Result result=new Result();
-        return result.success(cjDataSourceTabInfoService.findAllByColsAndOds());
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findAllByColsAndOds();
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+        return result.success(page);
     }
 
     /**
@@ -294,6 +297,8 @@ public class HiveCreateTableController {
                             cjDataSourceTabInfo.getDataSourceTable());
             for (int i = 0; i < infoList.size(); i++) {
                 colName = infoList.get(i).getDataSourceColName().toLowerCase();
+//                System.out.println(infoList.size());
+//                System.out.println(colName);
                 colComment = infoList.get(i).getDataSourceColComment();
                 if (colComment == null) {
                     colComment = "";
@@ -307,6 +312,7 @@ public class HiveCreateTableController {
             odsDDL.append(")" + "\n");
             odsDDL.append("row format delimited fields terminated by '\\001' lines terminated by '\\n'");
 
+            System.out.println(odsDDL);
             GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
             Connection connection=null;
             PreparedStatement preparedStatement=null;

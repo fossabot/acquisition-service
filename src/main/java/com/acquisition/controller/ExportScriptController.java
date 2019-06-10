@@ -42,8 +42,8 @@ public class ExportScriptController {
     public Result getOdsTabList(Page reqParams){
         Result result = new Result();
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
-        List<CjDataSourceTabInfo> odsScriptTableInfos = cjDataSourceTabInfoService.findOdsScriptTableInfo();
-        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(odsScriptTableInfos);
+        List<CjDataSourceTabInfo> cjDataSourceTabInfo = cjDataSourceTabInfoService.findOdsScriptTableInfo();
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfo);
         result.setMsg("获取ODS表清单成功！！！");
         return result.success(page);
     }
@@ -52,10 +52,13 @@ public class ExportScriptController {
      * 获取要保存DW脚本的表信息
      */
     @RequestMapping(value = "/getDwTabList")
-    public Result getDwTabList(){
+    public Result getDwTabList(Page reqParams){
         Result result = new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> dwScriptTableInfos = cjDataSourceTabInfoService.findDwScriptTableInfo();
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(dwScriptTableInfos);
         result.setMsg("获取DW表清单成功！！！");
-        return result.success(cjDataSourceTabInfoService.findDwScriptTableInfo());
+        return result.success(page);
     }
 
     /**

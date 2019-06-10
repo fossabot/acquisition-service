@@ -120,6 +120,16 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForDwTabListBySystem(String businessSystemNameShortName) {
+        return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForDwTabListBySystem(businessSystemNameShortName);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForOdsTabListBySystem(String businessSystemNameShortName) {
+        return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForOdsTabListBySystem(businessSystemNameShortName);
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
         return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
     }
