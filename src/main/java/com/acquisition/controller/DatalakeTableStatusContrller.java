@@ -1,0 +1,78 @@
+package com.acquisition.controller;
+
+import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.service.ICjDataSourceTabInfoService;
+import com.acquisition.util.Result;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @Author : Francis Du
+ * @Date : Create in 11:19 2019/6/10
+ * Modified By :
+ */
+@RestController
+@RequestMapping(value = "/tableStatus")
+public class DatalakeTableStatusContrller {
+
+    @Resource(name = "cjDataSourceTabInfoServiceImpl")
+    ICjDataSourceTabInfoService iCjDataSourceTabInfoService;
+
+    /**
+     * @return 返回系统缩写列表
+     */
+    @RequestMapping(value = "/getSysList")
+    public Result getSysList(){
+        Result result = new Result();
+        result.setMsg("查询成功！！！");
+        result.setData(iCjDataSourceTabInfoService.findSysList());
+        result.setCode(200);
+        return result;
+    }
+
+    /**
+     * @return 返回视图中的所有信息
+     */
+    @RequestMapping(value = "/getStatusList")
+    public Result getStatusList(){
+        Result result = new Result();
+        result.setData(iCjDataSourceTabInfoService.findSumOfTables());
+        result.setMsg("查询成功！！！");
+        result.setCode(200);
+        return  result;
+    }
+
+    /**
+     * @return 返回筛选后的数据
+     */
+    @RequestMapping(value = "/getStatusBySys")
+    public Result getStatusBySys(@RequestBody CjDataSourceTabInfo data){
+        Result result = new Result();
+        result.setData(iCjDataSourceTabInfoService.findSumOfTablesBySys(
+                data.getBusinessSystemNameShortName()));
+        result.setMsg("查询成功！！！");
+        result.setCode(200);
+        return  result;
+    }
+
+    /**
+     * @return 分页查询
+     */
+    @RequestMapping(value = "/getStatusByPage")
+    @ResponseBody
+    public Result getStatusByPage(Page reqParams){
+        Result result = new Result();
+        PageHelper.startPage(reqParams.getPageNum(),reqParams.getPageSize());
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo(iCjDataSourceTabInfoService.findSumOfTables());
+        return  result.success(page);
+    }
+}

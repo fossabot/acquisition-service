@@ -18,6 +18,14 @@
     <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
     <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id = "ViewResultMap" type="com.acquisition.entity.CjDataSourceTabInfo">
+    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
+    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
+    <result column="table_count" property="tableCount" jdbcType="VARCHAR"/>
+    <result column="ods_count" property="odsCount" jdbcType="VARCHAR"/>
+    <result column="dw_count" property="dwCount" jdbcType="VARCHAR"/>
+    <result column="date" property="date"  jdbcType="VARCHAR"/>
+  </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -472,5 +480,15 @@
   <select id="selectDistSystemFromCjVGetPrepareScriptForOdsTabList" parameterType="java.lang.String"  resultType="java.util.List"  >
     select DISTINCT business_system_name_short_name
     from cj_v_get_prepare_script_for_ods_tab_list
+  </select>
+  <select id="selectSysList"  resultType="java.lang.String" >
+    SELECT DISTINCT(business_system_name_short_name)  from cj_v_get_prepare_summary_of_tables
+  </select>
+  <select id="selectSumOfTables"  resultMap="ViewResultMap">
+    select * from cj_v_get_prepare_summary_of_tables
+  </select>
+  <select id="selectSumOfTablesBySys"  resultMap="ViewResultMap">
+    select * from cj_v_get_prepare_summary_of_tables
+    where  business_system_name_short_name = #{businessSystemNameShortName}
   </select>
 </mapper>

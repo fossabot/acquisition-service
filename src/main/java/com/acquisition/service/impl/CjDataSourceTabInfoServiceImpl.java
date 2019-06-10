@@ -120,6 +120,21 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<String> findSumOfTables() {
+        return cjDataSourceTabInfoMapper.selectSumOfTables();
+    }
+
+    @Override
+    public List<String> findSumOfTablesBySys(String sys) {
+        return cjDataSourceTabInfoMapper.selectSumOfTablesBySys(sys);
+    }
+
+    @Override
+    public List<String> findSysList() {
+        return cjDataSourceTabInfoMapper.selectSysList();
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
         return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
     }
