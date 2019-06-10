@@ -9,6 +9,8 @@ import com.acquisition.util.Constant;
 import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -60,10 +62,12 @@ public class GenerateScriptController {
     * @return:
     */
     @GetMapping(value = "/getDwTabList")
-    public Result getDwTabList() {
+    public Result getDwTabList(Page reqParams) {
         Result result=new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> allCjVGetPrepareScriptForDwTabList = cjDataSourceTabInfoService.findAllCjVGetPrepareScriptForDwTabList();
-        return result.success(allCjVGetPrepareScriptForDwTabList);
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(allCjVGetPrepareScriptForDwTabList);
+        return result.success(page);
     }
     /** 
     * @Author: zhangdongmao
@@ -94,17 +98,18 @@ public class GenerateScriptController {
             dwInitScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
             dwInitScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n");
             dwInitScript.append("insert overwrite table acquisition_dw."+dwTableName+"\n");
+            dwInitScript.append("select\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
                 dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
             }
 
-            dwInitScript.append("row_id    as src_sys_row_id,\n");
+            dwInitScript.append("`row_id`    as src_sys_row_id,\n");
             dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
             dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
             dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
             dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt,\n");
-            dwInitScript.append("data_dt    as partition_key\n");
+            dwInitScript.append("`data_dt`    as partition_key\n");
             dwInitScript.append("from acquisition_ods."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
@@ -151,9 +156,12 @@ public class GenerateScriptController {
      */
     @GetMapping(value = "/getODSTableInfo")
     @ResponseBody
-    public Result getODSTableInfo(){
+    public Result getODSTableInfo(Page reqParams){
         Result result = new Result();
-        return result.success(cjDataSourceTabInfoService.findODSTableInfo());
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> odsTableInfos = cjDataSourceTabInfoService.findODSTableInfo();
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(odsTableInfos);
+        return result.success(page);
     }
 
     /**

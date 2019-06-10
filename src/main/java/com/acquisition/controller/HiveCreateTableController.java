@@ -114,21 +114,15 @@ public class HiveCreateTableController {
     * @Param: * @param null 1
     * @return:
     */
-    @PostMapping(value = "/getDWCreateTabListByFilter")
-    public Result getDWCreateTabListByFilter(@RequestBody String data){
-        JSONObject jsonObject = JSONObject.parseObject(data);
-        System.out.println(jsonObject);
-        Result result=new Result();
-        data = jsonObject.getString("query");
-        List<String> systemAndSchema = JSON.parseArray(data, String.class);
-//        String data1 = jsonObject.getString("pagesize");
-//        String data2 = jsonObject.getString("pagenum");
-//        System.out.println(data);
-//        System.out.println(data1);
-//        System.out.println(data2);
-        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtDwTabListBySystemAndSchema(systemAndSchema.get(0), systemAndSchema.get(1));
 
-        return result.success(cjDataSourceTabInfos);
+    @PostMapping(value = "/getDWCreateTabListByFilter")
+    public Result getDWCreateTabListByFilter(@RequestBody Page reqParams){
+        Result result=new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtDwTabListBySystemAndSchema(reqParams.getQuery().get(0),reqParams.getQuery().get(1));
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+        result.setMsg("查询成功");
+        return result.success(page);
     }
     /**
     * @Author: zhangdongmao
@@ -140,21 +134,21 @@ public class HiveCreateTableController {
     @PostMapping(value = "/getODSCreateTabListByFilter")
     public Result getODSCreateTabListByFilter(@RequestBody String data){
         JSONObject jsonObject = JSONObject.parseObject(data);
-        System.out.println(jsonObject);
         Result result=new Result();
-        data = jsonObject.getString("params");
-        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema("", "");
+        data = jsonObject.getString("query");
+        List<String> systemAndSchema = JSON.parseArray(data, String.class);
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(systemAndSchema.get(0), systemAndSchema.get(1));
         return result.success(cjDataSourceTabInfos);
     }
     @GetMapping(value = "/getDWCreateTabList")
-    public Result getDWCreateTabList() {
-//        PageHelper.startPage(1,2);
+    public Result getDWCreateTabList(Page reqParams) {
+        Result result=new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService
                 .findAllCjVGetPrepareCrtDwTabList();
-//        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
-        Result result=new Result();
-        result.success(cjDataSourceTabInfos);
-        return result;
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+
+        return result.success(page);
     }
 
     @PostMapping(value = "/dWCreateTable")

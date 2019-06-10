@@ -1,10 +1,14 @@
 package com.acquisition.controller;
 
+import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
+import com.acquisition.entity.Page;
 import com.acquisition.service.*;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,10 +39,13 @@ public class ExportScriptController {
      * 获取要保存ODS脚本的表信息
      */
     @RequestMapping(value = "/getOdsTabList")
-    public Result getOdsTabList(){
+    public Result getOdsTabList(Page reqParams){
         Result result = new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> odsScriptTableInfos = cjDataSourceTabInfoService.findOdsScriptTableInfo();
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(odsScriptTableInfos);
         result.setMsg("获取ODS表清单成功！！！");
-        return result.success(cjDataSourceTabInfoService.findOdsScriptTableInfo());
+        return result.success(page);
     }
 
     /**
