@@ -383,5 +383,9 @@
 <!--  <select id="selectBaseType" resultType="java.lang.String">
     SELECT distinct data_base_type FROM cj_data_source_conn_define WHERE business_system_name_short_name=#{sysname}
   </select>-->
-
+  <select id="selectSystemName" resultType="java.lang.String">
+    select count(business_system_name_short_name)
+    from cj_data_source_conn_define
+    WHERE business_system_name_short_name = #{businessSystemNameShortName}
+  </select>
 </mapper>

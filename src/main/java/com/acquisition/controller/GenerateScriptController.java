@@ -2,11 +2,8 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjDwDataScriptDefInfoService;
+import com.acquisition.service.*;
 import com.acquisition.util.Constant;
-import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -14,9 +11,6 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -40,20 +34,9 @@ public class GenerateScriptController {
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
 
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    public ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
 
-    @GetMapping(value = "/getODSSystemFilterList")
-    public Result getODSSystemFilterList() {
-        Result result = new Result();
-        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForOdsTabList();
-        return result.success(systems);
-    }
-
-    @GetMapping(value = "/getDWSystemFilterList")
-    public Result getDWSystemFilterList() {
-        Result result = new Result();
-        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForDwTabList();
-        return result.success(systems);
-    }
     /**
     * @Author: zhangdongmao
     * @Date: 2019/6/4
@@ -101,8 +84,13 @@ public class GenerateScriptController {
             dwInitScript.append("select\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
-                dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
+                if(i<cjDwCrtDdlColPojos.size()-1) {
+                    dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
+                }else {
+                    dwInitScript.append("`" + colName + "`    as    " + colName+"\n");
+                }
             }
+
 
             dwInitScript.append("`row_id`    as src_sys_row_id,\n");
             dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
@@ -145,6 +133,7 @@ public class GenerateScriptController {
             }
             dwInitScript.setLength(0);
         }
+
         result.setCode(200);
         result.setMsg("DW脚本初始化成功！");
         return result;
@@ -189,9 +178,16 @@ public class GenerateScriptController {
 
         //拼接Sqooop脚本
         for (CjDataSourceTabInfo table : tabInfos) {
-            scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
-                    + table.getDataSourceSchema()+ "."
-                    + table.getDataSourceTable() + str2 + "\"");
+            //判断系统名连接数
+            if (Integer.parseInt(iCjDataSourceConnDefineService.selectSystemName(table.getBusinessSystemNameShortName())) > 1){
+                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~"
+                        + table.getDataSourceSchema()+ " "
+                        + table.getDataSourceTable() + str2 + "\"");
+            }else {
+                scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
+                        + table.getDataSourceSchema()+ "."
+                        + table.getDataSourceTable() + str2 + "\"");
+            }
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
                     .findBySystemAndSchemaAndTab(

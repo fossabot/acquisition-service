@@ -22,4 +22,6 @@ public interface ICjDataSourceConnDefineService {
 
     String selectBySystemID(String syid);
 
+    String selectSystemName(String businessSystemNameShortName);
+
 }
