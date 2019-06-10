@@ -65,6 +65,17 @@ public interface CjDataSourceTabInfoMapper {
     List<String> selectDistSystemFromCjVGetPrepareScriptForDwTabList();
     List<String> selectDistSystemFromCjVGetPrepareScriptForOdsTabList();
 
+
     List<CjDataSourceTabInfo> selectCjVGetPrepareScriptForDwTabListBySystem(@Param("businessSystemNameShortName") String businessSystemNameShortName);
     List<CjDataSourceTabInfo> selectCjVGetPrepareScriptForOdsTabListBySystem(@Param("businessSystemNameShortName") String businessSystemNameShortName);
+
+    List<String> selectSysList();
+    List<String> selectSumOfTables();
+    List<String> selectSumOfTablesBySys(@Param(value = "businessSystemNameShortName") String businessSystemNameShortName);
+    List<String> selectDistSystemName();
+
+    List<String> selectDistSchema(@Param("systemname") String systemname);
+
+    List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(@Param("systemname") String systemname, @Param("schema") String schema, @Param("tablename") String tablename);
+
 }

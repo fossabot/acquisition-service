@@ -25,6 +25,47 @@ public class CjDataSourceTabInfo extends CjDataSourceTabInfoKey {
 
     private String lastModifyBy;
 
+    private String tableCount;
+
+    private String odsCount;
+
+    private  String dwCount;
+
+    private String date;
+
+
+    public String getTableCount() {
+        return tableCount;
+    }
+
+    public String getOdsCount() {
+        return odsCount;
+    }
+
+    public String getDwCount() {
+        return dwCount;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setTableCount(String tableCount) {
+        this.tableCount = tableCount;
+    }
+
+    public void setOdsCount(String odsCount) {
+        this.odsCount = odsCount;
+    }
+
+    public void setDwCount(String dwCount) {
+        this.dwCount = dwCount;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getBusinessSystemId() {
         return businessSystemId;
     }
