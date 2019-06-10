@@ -3,8 +3,6 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDataSourceTabInfoExample;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -49,6 +47,11 @@ public interface ICjDataSourceTabInfoService {
 
     List<String> findDistSystemFromCjVGetPrepareScriptForDwTabList();
     List<String> findDistSystemFromCjVGetPrepareScriptForOdsTabList();
+
+    List<String> findSumOfTables();
+    List<String> findSumOfTablesBySys(String sys);
+    List<String> findSysList();
+
     List<String> selectDistSystemName();
     List<String> selectDistSchema(String systemname);
     List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(String systemname,String schema,String tablename);
