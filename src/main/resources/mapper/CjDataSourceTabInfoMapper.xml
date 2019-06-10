@@ -491,4 +491,28 @@
     select * from cj_v_get_prepare_summary_of_tables
     where  business_system_name_short_name = #{businessSystemNameShortName}
   </select>
+    <select id="selectDistSystemName" resultType="java.lang.String">
+    SELECT DISTINCT business_system_name_short_name FROM cj_data_source_tab_info
+  </select>
+    <select id="selectDistSchema" resultType="java.lang.String">
+    SELECT DISTINCT data_source_schema FROM cj_data_source_tab_info where business_system_name_short_name=#{systemname}
+  </select>
+    <select id="selectBySysNameAndSchemaAndTableName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cj_data_source_tab_info
+        <where>
+            <if test="systemname !=null and systemname !=''">
+                and business_system_name_short_name=#{systemname}
+            </if>
+            <if test="schema !=null and schema !=''">
+                and data_source_schema=#{schema}
+            </if>
+            <if test="tablename !=null and tablename !=''">
+                and data_source_table=#{tablename}
+            </if>
+        </where>
+    </select>
+
+
 </mapper>
