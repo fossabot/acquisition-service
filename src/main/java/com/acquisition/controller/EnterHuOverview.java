@@ -2,9 +2,12 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.Page;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,8 +66,10 @@ public class EnterHuOverview {
      * @return
      */
     @RequestMapping("/getSysNameAndSchemaAndTableName")
-    public Result getSysNameAndSchemaAndTableName(@RequestParam(value = "systemname", required = false) String systemname, @RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "tablename", required = false) String tablename) {
+    public Result getSysNameAndSchemaAndTableName(@RequestParam(value = "systemname", required = false) String systemname, @RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "tablename", required = false) String tablename, Page reqParams) {
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> list = iCjDataSourceTabInfoService.selectBySysNameAndSchemaAndTableName(systemname, schema, tablename);
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(list);
         return new Result().success(list);
     }
 
@@ -76,8 +81,10 @@ public class EnterHuOverview {
      * @return
      */
     @RequestMapping("/getByTableInfo")
-    public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename) {
+    public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename, Page reqParams) {
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabColInfo> list = iCjDataSourceTabColInfoService.selectByTable(systemname, schema, tablename);
+        PageInfo<CjDataSourceTabColInfo> page = new PageInfo<>(list);
         return new Result().success(list);
     }
 
