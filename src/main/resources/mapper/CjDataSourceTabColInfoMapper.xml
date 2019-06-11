@@ -492,5 +492,9 @@
     delete from cj_data_source_tab_col_info where business_system_name_short_name=#{systemname} and data_source_schema=#{schema}
    </delete>
 
+  <select id="selectByTable" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List" /> from cj_data_source_tab_col_info where business_system_name_short_name=#{systemname} and data_source_schema=#{schema} and data_source_table=#{tablename}
+
+  </select>
 
 </mapper>

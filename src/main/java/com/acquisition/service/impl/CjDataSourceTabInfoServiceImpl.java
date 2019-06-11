@@ -128,6 +128,35 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForOdsTabListBySystem(String businessSystemNameShortName) {
         return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForOdsTabListBySystem(businessSystemNameShortName);
     }
+    public List<String> findSumOfTables() {
+        return cjDataSourceTabInfoMapper.selectSumOfTables();
+    }
+
+    @Override
+    public List<String> findSumOfTablesBySys(String sys) {
+        return cjDataSourceTabInfoMapper.selectSumOfTablesBySys(sys);
+    }
+
+    @Override
+    public List<String> findSysList() {
+        return cjDataSourceTabInfoMapper.selectSysList();
+    }
+
+    @Override
+    public List<String> selectDistSystemName() {
+        return cjDataSourceTabInfoMapper.selectDistSystemName();
+    }
+
+    @Override
+    public List<String> selectDistSchema(String systemname) {
+        return cjDataSourceTabInfoMapper.selectDistSchema(systemname);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(String systemname, String schema, String tablename) {
+        return cjDataSourceTabInfoMapper.selectBySysNameAndSchemaAndTableName(systemname, schema, tablename);
+
+    }
 
     @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
