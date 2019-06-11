@@ -40,7 +40,6 @@ public class DatalakeTableStatusContrller {
         @GetMapping(value = "/getStatusList")
         public Result getStatusList(Page reqParams){
             Result result = new Result();
-            System.out.println(reqParams.getPagenum() + "\n" + reqParams.getPagesize());
             PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
             PageInfo<CjDataSourceTabInfo> page = new PageInfo(iCjDataSourceTabInfoService.findSumOfTables());
             result.setData(iCjDataSourceTabInfoService.findSumOfTables());
