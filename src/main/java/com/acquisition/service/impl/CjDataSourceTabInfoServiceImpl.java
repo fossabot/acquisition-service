@@ -120,6 +120,14 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForDwTabListBySystem(String businessSystemNameShortName) {
+        return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForDwTabListBySystem(businessSystemNameShortName);
+    }
+
+    @Override
+    public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForOdsTabListBySystem(String businessSystemNameShortName) {
+        return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForOdsTabListBySystem(businessSystemNameShortName);
+    }
     public List<String> findSumOfTables() {
         return cjDataSourceTabInfoMapper.selectSumOfTables();
     }
@@ -147,6 +155,7 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     @Override
     public List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(String systemname, String schema, String tablename) {
         return cjDataSourceTabInfoMapper.selectBySysNameAndSchemaAndTableName(systemname, schema, tablename);
+
     }
 
     @Override

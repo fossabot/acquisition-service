@@ -6,7 +6,10 @@ import com.acquisition.service.ICjDataSourceSystemInfoService;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +47,12 @@ public class GetSourceMetaDataController {
      * @return
      */
     @RequestMapping("/getDataInfo")
-    public Result getDataSourceInfo() {
+    public Result getDataSourceInfo(Page reqParams) {
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<ViewSourceSystemEntity> list = iCjDataSourceConnDefineService.selectViewContet();
-        return new Result().success(list);
+        PageInfo<ViewSourceSystemEntity> page = new PageInfo<>(list);
+        return new Result().success(page);
     }
-
 
     /**
      * 获取参数，生成 schema 数据信息  cj_data_source_system_info
@@ -125,14 +129,31 @@ public class GetSourceMetaDataController {
      * @return
      */
     @RequestMapping("/getSchema")
-    public Result getSchema() {
+    public Result getSchema(Page reqParams) {
         Result result = new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceSystemInfo> list = iCjDataSourceSystemInfoService.selectInfo();
-        result.success(list);
+        PageInfo<CjDataSourceSystemInfo> page = new PageInfo<>(list);
+        result.success(page);
         return result;
     }
 
+    @RequestMapping("/getSystemFilterList")
+    public Result getSystemFilterList() {
+        List<String> distBusinessSystemNameShortName = iCjDataSourceSystemInfoService.findDistBusinessSystemNameShortName();
+        return new Result().success(distBusinessSystemNameShortName);
+    }
 
+    @PostMapping("/getSchemaByFilter")
+    public Result getDataInfoByFilter(@RequestBody Page reqParams) {
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        CjDataSourceSystemInfoExample  example= new CjDataSourceSystemInfoExample();
+        CjDataSourceSystemInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andBusinessSystemNameShortNameEqualTo(reqParams.getQuery().get(0));
+        List<CjDataSourceSystemInfo> list = iCjDataSourceSystemInfoService.findByExample(example);
+        PageInfo<CjDataSourceSystemInfo> page = new PageInfo<>(list);
+        return new Result().success(page);
+    }
     /**
      * 导入元数据
      *
@@ -282,7 +303,7 @@ public class GetSourceMetaDataController {
                     if (arrDataSourceTabInfo.size() > 0 && iCjDataSourceTabInfoService.insertBatch(arrDataSourceTabInfo) > 0) {
                         result.success("");
                     } else {
-                        result.error(500, "cj_data_source_tab_info 导入失败");
+                        result.error(500, "cj_data_source_tab_info 源库未新增表");
                     }
                 } else {
                     result.error(500, "cj_data_source_tab_col_info 查询失败");

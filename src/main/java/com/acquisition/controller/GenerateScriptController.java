@@ -39,6 +39,50 @@ public class GenerateScriptController {
 
     /**
     * @Author: zhangdongmao
+    * @Date: 2019/6/10
+    * @Description:  获取DW脚本生成页面筛选框里的值
+    * @Param: * @param null 1
+    * @return:
+    */
+    @GetMapping(value = "/getDwSystemFilterList")
+    public Result getDwSystemFilterList() {
+        Result result=new Result();
+        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForDwTabList();
+        return result.success(systems);
+    }
+
+    /**
+     * @Author: zhangdongmao
+     * @Date: 2019/6/10
+     * @Description:  获取ODS脚本生成页面筛选框里的值
+     * @Param: * @param null 1
+     * @return:
+     */
+    @GetMapping(value = "/getOdsSystemFilterList")
+    public Result getOdsSystemFilterList() {
+        Result result=new Result();
+        List<String> systems = cjDataSourceTabInfoService.findDistSystemFromCjVGetPrepareScriptForOdsTabList();
+        return result.success(systems);
+    }
+
+    @PostMapping(value = "/getDwListByFilter")
+    public Result getDwListByFilter(@RequestBody Page reqParams) {
+        Result result=new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findCjVGetPrepareScriptForDwTabListBySystem(reqParams.getQuery().get(0));
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+        return result.success(page);
+    }
+    @PostMapping(value = "/getOdsListByFilter")
+    public Result getOdsListByFilter(@RequestBody Page reqParams) {
+        Result result=new Result();
+        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findCjVGetPrepareScriptForOdsTabListBySystem(reqParams.getQuery().get(0));
+        PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
+        return result.success(page);
+    }
+    /**
+    * @Author: zhangdongmao
     * @Date: 2019/6/4
     * @Description:  获取DW脚本生成列表
     * @Param: * @param null 1
@@ -121,7 +165,7 @@ public class GenerateScriptController {
             cjDwDataScriptDefInfoService.deleteByPrimaryKey(key);
             if(cjDwDataScriptDefInfoService.save(cjDwDataScriptDefInfo).equals("保存成功")){
                 //生成DW建表语句成功，设置状态表中的相应状态字段
-                cjDataSourceTabInfo.setDataFlagForCrtDwScript(Constant.DW_CRT_SCRPIT);
+                cjDataSourceTabInfo.setDataFlagForCrtDwScript(Constant.DW_CRT_SCRIPT);
                 //将状态改变更新到数据库
                 CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
                 CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();

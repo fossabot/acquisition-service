@@ -14,5 +14,5 @@ public class Constant {
     public static final String ODS_CRT_HIVE="1";
     public static final String DW_CRT_HIVE="1";
     public static final String DW_CRT_DDL="1";
-    public static final String DW_CRT_SCRPIT="1";
+    public static final String DW_CRT_SCRIPT="1";
 }

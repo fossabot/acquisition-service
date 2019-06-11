@@ -48,6 +48,9 @@ public interface ICjDataSourceTabInfoService {
     List<String> findDistSystemFromCjVGetPrepareScriptForDwTabList();
     List<String> findDistSystemFromCjVGetPrepareScriptForOdsTabList();
 
+    List<CjDataSourceTabInfo> findCjVGetPrepareScriptForDwTabListBySystem(String businessSystemNameShortName);
+    List<CjDataSourceTabInfo> findCjVGetPrepareScriptForOdsTabListBySystem(String businessSystemNameShortName);
+
     List<String> findSumOfTables();
     List<String> findSumOfTablesBySys(String sys);
     List<String> findSysList();
