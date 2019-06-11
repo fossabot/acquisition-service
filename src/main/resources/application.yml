@@ -8,8 +8,8 @@ server:
 #公共配置与profiles选择无关
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
 
 #  type-aliases-package: com.acquisition.mapper
 

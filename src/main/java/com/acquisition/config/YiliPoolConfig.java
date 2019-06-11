@@ -31,6 +31,7 @@ public class YiliPoolConfig implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<CjDataSourceConnDefine> allconninfo = iCjDataSourceConnDefineService.selectByExample();
         for (CjDataSourceConnDefine dta : allconninfo) {
+            LOG.info("正在连接"+dta.getBusinessSystemNameShortName() +"/" + dta.getDataSourceSchema());
             GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((dta.getBusinessSystemNameShortName() + dta.getDataSourceSchema()));
             if (dta.getDataBaseType().equals("mysql") || dta.getDataBaseType().equals("sqlserver")) {
                 groupPoolFactory.setConfigurationParameter(
