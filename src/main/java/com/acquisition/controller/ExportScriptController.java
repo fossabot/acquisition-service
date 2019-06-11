@@ -75,12 +75,13 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            File filename = new File("/data/acquisition/data/scripts/ODS初始化" + df.format(new Date()));
+//            File path= new File("/data/acquisition/data/scripts");
+            File path= new File("data\\");
             //判断文件是否存在，不存在则新建
-            if (!filename.exists()){
-                filename.createNewFile();
+            if (!path.exists()){
+                path.mkdir();
             }
-            output = new FileOutputStream(filename);
+            output = new FileOutputStream(path.getPath() + "/ODS初始化" +  df.format(new Date()) + ".txt");
             //遍历获取表的元数据并获取脚本信息,写到文件中
             for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos){
                 ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
@@ -92,9 +93,6 @@ public class ExportScriptController {
                     continue;
                 }
                 output.write(ddl.concat("\n").getBytes());
-            }
-            if (filename.length() == 0){
-                filename.delete();
             }
         } catch (IOException e) {
             result.setCode(500);
@@ -127,14 +125,13 @@ public class ExportScriptController {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-//            File filename = new File("D:\\Java\\acquisition-service\\data\\DW初始化" + df.format(new Date()) + ".sql");
-            File filename = new File("/data/acquisition/data/scripts/DW初始化" + df.format(new Date()) + ".sql");
-
+//            File path = new File("/data/acquisition/data/scripts");
+            File path = new File("data\\");
             //判断文件是否存在，不存在则新建
-            if (!filename.exists()){
-                filename.createNewFile();
+            if (!path.exists()){
+                path.mkdir();
             }
-            output = new FileOutputStream(filename);
+            output = new FileOutputStream(path.getPath() + "/DW初始化" + df.format(new Date()) + ".sql");
             //遍历获取表的元数据
             for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos){
                 ddl = iCjDwDataScriptDefInfoService.selectDdlInfo(
@@ -146,9 +143,6 @@ public class ExportScriptController {
                     continue;
                 }
                 output.write(ddl.concat(";\n\n\n").getBytes());
-            }
-            if (filename.length() == 0){
-                filename.delete();
             }
         } catch (IOException e) {
             result.setCode(500);
