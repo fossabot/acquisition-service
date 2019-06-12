@@ -134,6 +134,7 @@ public class HiveCreateTableController {
     @PostMapping(value = "/getODSCreateTabListByFilter")
     public Result getODSCreateTabListByFilter(@RequestBody Page reqParams){
         Result result=new Result();
+        System.out.println(reqParams.getQuery());
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(reqParams.getQuery().get(0), reqParams.getQuery().get(1));
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
@@ -254,7 +255,7 @@ public class HiveCreateTableController {
      */
     @RequestMapping(value = "/getODSTableInfo")
     @ResponseBody
-    public Result getODSTable(Page reqParams) {
+    public Result getODSTable(PageGeorge reqParams) {
         Result result=new Result();
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findAllByColsAndOds();

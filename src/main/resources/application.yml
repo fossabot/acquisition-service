@@ -8,8 +8,8 @@ server:
 #公共配置与profiles选择无关
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
 
 #  type-aliases-package: com.acquisition.mapper
 
@@ -29,12 +29,9 @@ spring:
     mode: HTML5
 
   datasource:
-    url: jdbc:mysql://10.30.140.27:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.30.140.227:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
-#    url: jdbc:mysql://10.119.1.40:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-#    username: datalake_meta
-#    password: datalake_meta
     driver-class-name: com.mysql.jdbc.Driver
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
