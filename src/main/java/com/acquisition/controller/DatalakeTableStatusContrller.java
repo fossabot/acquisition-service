@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -81,54 +82,47 @@ public class DatalakeTableStatusContrller {
      * @return 返回excle的二进制流
      */
     @PostMapping(value = "/exportExcle")
-    public Result exportExcle(@RequestBody List<ExclePropertyModel> dataList, HttpServletResponse response) throws IOException {
-        Result result = new Result();
+    public void exportExcle(@RequestBody List<ExclePropertyModel> dataList,
+                              HttpServletResponse response) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 
-        //判断文件夹是否存在，不存在则新建
-        String path = "data\\";
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdir();
+        //      File path = new File("/data/acquisition/data/scripts");
+        File path = new File("data\\");
+        if (!path.exists()) {
+            path.mkdir();
         }
-        String filename = file.getPath() + "/入湖报告" + dateFormat.format(new Date()) + ".xlsx";
+        String filename = "/入湖报告" + dateFormat.format(new Date()) + ".xlsx";
+        String file = path.getPath() + filename;
         OutputStream outputStream = null;
 
         try {
-            outputStream = new FileOutputStream(filename);
+            outputStream = new FileOutputStream(file);
             ExcelWriter excelWriter = new ExcelWriter(outputStream, ExcelTypeEnum.XLSX);
             Sheet sheet1 = new Sheet(1, 0, ExclePropertyModel.class);
             sheet1.setSheetName("入湖报告");
             excelWriter.write(dataList, sheet1);
             excelWriter.finish();
 
+            //实现前端下载
             ServletOutputStream servletOutputStream = response.getOutputStream();
-            response.setHeader("Content-Disposition","attachment;filename=".concat(filename));
-            FileInputStream fileInputStream = new FileInputStream(filename);
+            response.setHeader("Access-Control-Expose-Headers","FileName");
+            response.setHeader("FileName",URLEncoder.encode(filename,"UTF-8"));
+            FileInputStream fileInputStream = new FileInputStream(file);
             servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
 
         } catch (FileNotFoundException e) {
-            result.setCode(500);
-            result.setMsg("数据导出失败！！！");
+            e.printStackTrace();
             try {
                 outputStream.flush();
             } catch (IOException ex) {
-                result.setCode(500);
-                result.setMsg("文件流关闭失败！！！");
-
+                ex.printStackTrace();
             }
         } finally {
             try {
                 outputStream.flush();
             } catch (IOException e) {
-                result.setCode(500);
-                result.setMsg("文件流关闭失败！！！");
-
+                e.printStackTrace();
             }
         }
-        result.setCode(200);
-        result.setMsg("文件导出成功！！！");
-        result.setData(filename);
-        return null;
     }
 }
