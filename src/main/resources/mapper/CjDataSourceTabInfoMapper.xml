@@ -515,7 +515,7 @@
         from cj_data_source_tab_info
         <where>
             <if test="systemname !=null and systemname !=''">
-                and business_system_name_short_name=#{systemname}
+                business_system_name_short_name=#{systemname}
             </if>
             <if test="schema !=null and schema !=''">
                 and data_source_schema=#{schema}
