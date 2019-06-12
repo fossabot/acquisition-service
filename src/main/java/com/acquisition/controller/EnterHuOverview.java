@@ -3,6 +3,7 @@ package com.acquisition.controller;
 import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.Page;
+import com.acquisition.entity.PageGeorge;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
@@ -47,12 +48,12 @@ public class EnterHuOverview {
     /**
      * 获取去重的Schema
      *
-     * @param schema
+     * @param systemname
      * @return
      */
     @RequestMapping("/getSchema")
-    public Result getSchema(@RequestParam("schema") String schema) {
-        List<String> list = iCjDataSourceTabInfoService.selectDistSchema(schema);
+    public Result getSchema(@RequestParam(value = "systemname", defaultValue = "") String systemname) {
+        List<String> list = iCjDataSourceTabInfoService.selectDistSchema(systemname);
         return new Result().success(list);
     }
 
@@ -66,11 +67,11 @@ public class EnterHuOverview {
      * @return
      */
     @RequestMapping("/getSysNameAndSchemaAndTableName")
-    public Result getSysNameAndSchemaAndTableName(@RequestParam(value = "systemname", required = false) String systemname, @RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "tablename", required = false) String tablename, Page reqParams) {
-        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+    public Result getSysNameAndSchemaAndTableName(@RequestParam(value = "systemname", required = false) String systemname, @RequestParam(value = "schema", required = false) String schema, @RequestParam(value = "tablename", required = false) String tablename, PageGeorge reqParams) {
+        PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         List<CjDataSourceTabInfo> list = iCjDataSourceTabInfoService.selectBySysNameAndSchemaAndTableName(systemname, schema, tablename);
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(list);
-        return new Result().success(list);
+        return new Result().success(page);
     }
 
 
@@ -81,10 +82,8 @@ public class EnterHuOverview {
      * @return
      */
     @RequestMapping("/getByTableInfo")
-    public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename, Page reqParams) {
-        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+    public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename) {
         List<CjDataSourceTabColInfo> list = iCjDataSourceTabColInfoService.selectByTable(systemname, schema, tablename);
-        PageInfo<CjDataSourceTabColInfo> page = new PageInfo<>(list);
         return new Result().success(list);
     }
 
