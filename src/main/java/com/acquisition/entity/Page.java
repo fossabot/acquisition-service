@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Page {
     public  Integer pagenum;
-    public List<String> query=new ArrayList<>();
+    public  List<String> query=new ArrayList<>();
     public  Integer pagesize;
 
     @Override

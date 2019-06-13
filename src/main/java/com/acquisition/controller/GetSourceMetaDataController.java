@@ -9,6 +9,7 @@ import com.acquisition.util.Result;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zhangdongmao on 2019/5/29.
+ * @author yxk
+ * @Description: 获取导入元数据
+ * @create 2019/6/5
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping(value = "/getSourceMetaData")
@@ -48,7 +52,7 @@ public class GetSourceMetaDataController {
      */
     @RequestMapping("/getDataInfo")
     public Result getDataSourceInfo(Page reqParams) {
-        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         List<ViewSourceSystemEntity> list = iCjDataSourceConnDefineService.selectViewContet();
         PageInfo<ViewSourceSystemEntity> page = new PageInfo<>(list);
         return new Result().success(page);
@@ -131,7 +135,7 @@ public class GetSourceMetaDataController {
     @RequestMapping("/getSchema")
     public Result getSchema(Page reqParams) {
         Result result = new Result();
-        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
+        PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         List<CjDataSourceSystemInfo> list = iCjDataSourceSystemInfoService.selectInfo();
         PageInfo<CjDataSourceSystemInfo> page = new PageInfo<>(list);
         result.success(page);
@@ -146,14 +150,15 @@ public class GetSourceMetaDataController {
 
     @PostMapping("/getSchemaByFilter")
     public Result getDataInfoByFilter(@RequestBody Page reqParams) {
-        PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
-        CjDataSourceSystemInfoExample  example= new CjDataSourceSystemInfoExample();
+        PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
+        CjDataSourceSystemInfoExample example = new CjDataSourceSystemInfoExample();
         CjDataSourceSystemInfoExample.Criteria criteria = example.createCriteria();
         criteria.andBusinessSystemNameShortNameEqualTo(reqParams.getQuery().get(0));
         List<CjDataSourceSystemInfo> list = iCjDataSourceSystemInfoService.findByExample(example);
         PageInfo<CjDataSourceSystemInfo> page = new PageInfo<>(list);
         return new Result().success(page);
     }
+
     /**
      * 导入元数据
      *
@@ -286,7 +291,7 @@ public class GetSourceMetaDataController {
                 /*iCjDataSourceTabInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());*/
             }
 
-            if (datasourcetabcolInfo.size() > 0 && iCjDataSourceTabColInfoService.insertBatch(datasourcetabcolInfo) > 0) {
+            if (datasourcetabcolInfo.size() > 0 && InBatchesInsert(datasourcetabcolInfo)) {
                 List<CjDataSourceTabColInfo> tabcolinfo = iCjDataSourceTabColInfoService.findListOnlyTable(sourcesysteminfo);
                 List<CjDataSourceTabInfo> arrDataSourceTabInfo = new ArrayList<>();
                 if (tabcolinfo != null) {
@@ -317,6 +322,33 @@ public class GetSourceMetaDataController {
         }
         return result;
     }
+
+
+    /**
+     * 分批逻辑insert
+     *
+     * @return
+     */
+    public boolean InBatchesInsert(List<CjDataSourceTabColInfo> list) {
+        int size = list.size();
+        //一次性插入数据
+        int unitNum = 100;
+        int startIndex = 0;
+        int endIndex = 0;
+        while (size > 0) {
+            if (size > unitNum) {
+                endIndex = startIndex + unitNum;
+            } else {
+                endIndex = startIndex + size;
+            }
+            List<CjDataSourceTabColInfo> insertData = list.subList(startIndex, endIndex);
+            iCjDataSourceTabColInfoService.insertBatch(insertData);
+            size = size - unitNum;
+            startIndex = endIndex;
+        }
+        return true;
+    }
+
 
 
 }
