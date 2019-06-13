@@ -462,6 +462,7 @@
         order by cast(data_source_col_order AS SIGNED) asc
     </select>
 
+
     <insert id="insertBatch" parameterType="java.util.List">
         insert into cj_data_source_tab_col_info (business_system_name_short_name, data_source_schema,
         data_source_table, data_source_col_name, business_system_ID,
