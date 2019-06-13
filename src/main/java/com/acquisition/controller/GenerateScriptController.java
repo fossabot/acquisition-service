@@ -214,9 +214,9 @@ public class GenerateScriptController {
      */
     public Result spliceSqoopScript(List<CjDataSourceTabInfo>  tabInfos){
         Result result =  new Result();
-        String str1 = "sh /home/infa/datalake_function/ods_import_new_etl.sh url username password ";
+        String str1 = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
         String columns = "";
-        String str2 = " no no init ";
+        String str2 = " no no init \"\" \"\" ";
         StringBuffer scripts = new StringBuffer();
         CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo = new CjOdsDataScriptDefInfo();
 
@@ -256,7 +256,6 @@ public class GenerateScriptController {
             cjOdsDataScriptDefInfo.setOdsDataTable(table.getDataSourceTable());
             cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
             cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(scripts.toString());
-//            cjOdsDataScriptDefInfo.setOdsDataHivesqlDefine();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjOdsDataScriptDefInfo.setLastModifyDt(df.format(new Date()));
             cjOdsDataScriptDefInfo.setLastModifyBy("admin");
