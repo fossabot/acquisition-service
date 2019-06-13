@@ -7,6 +7,7 @@ import com.yili.pool.pool.GroupPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -18,7 +19,7 @@ import java.util.List;
  * @create 2019/6/2
  * @since 1.0.0
  */
-@Component
+@Configuration
 public class YiliPoolConfig implements CommandLineRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(YiliPoolConfig.class);
