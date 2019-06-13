@@ -9,12 +9,16 @@ import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.poi.util.IOUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -65,23 +69,25 @@ public class ExportScriptController {
      * 保存ODS脚本到本地文件夹
      */
     @RequestMapping(value = "/exportOdsScript")
-    public Result exportOdsScript(@RequestBody String data){
-        Result result = new Result();
+    public void exportOdsScript(@RequestBody String data,
+                                  HttpServletResponse response){
         OutputStream output  = null;
         String ddl = new String();
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjOdsDataScriptDefInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjOdsDataScriptDefInfo.class);
 
+//        File path= new File("/data/acquisition/data/scripts");
+        File path= new File("data\\");
+        if (!path.exists()){
+            path.mkdir();
+        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String filename = "/ODS初始化" +  df.format(new Date()) + ".txt";
+        String file= path.getPath() + filename;
+
         try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-//            File path= new File("/data/acquisition/data/scripts");
-            File path= new File("data\\");
-            //判断文件是否存在，不存在则新建
-            if (!path.exists()){
-                path.mkdir();
-            }
-            output = new FileOutputStream(path.getPath() + "/ODS初始化" +  df.format(new Date()) + ".txt");
+            output = new FileOutputStream(file);
             //遍历获取表的元数据并获取脚本信息,写到文件中
             for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos){
                 ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
@@ -94,10 +100,15 @@ public class ExportScriptController {
                 }
                 output.write(ddl.concat("\n").getBytes());
             }
+            //实现前端下载文件功能
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            response.setContentType("application/octet-stream");
+            response.setHeader("Access-Control-Expose-Headers","FileName");
+            response.setHeader("FileName",URLEncoder.encode(filename,"UTF-8"));
+            FileInputStream fileInputStream = new FileInputStream(file);
+            servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
         } catch (IOException e) {
-            result.setCode(500);
-            result.setMsg("文件写入异常！！！");
-            return result;
+            e.printStackTrace();
         }finally {
             try {
                 output.close();
@@ -105,9 +116,6 @@ public class ExportScriptController {
                 e.printStackTrace();
             }
         }
-        result.setCode(200);
-        result.setMsg("ODS脚本保存成功！！！");
-        return result;
     }
 
 
@@ -115,23 +123,25 @@ public class ExportScriptController {
      * 保存DW脚本到本地文件夹
      */
     @RequestMapping(value = "/exportDwScript")
-    public Result exportDwScript(@RequestBody String data){
-        Result result = new Result();
+    public void exportDwScript(@RequestBody String data,
+                                 HttpServletResponse response){
         OutputStream output  = null;
-        String ddl = new String();
+        String ddl = "";
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjDwDataScriptDefInfo> cjDwDataScriptDefInfos = JSONObject.parseArray(odsTableList, CjDwDataScriptDefInfo.class);
 
+//      File path = new File("/data/acquisition/data/scripts");
+        File path = new File("data\\");
+        if (!path.exists()){
+            path.mkdir();
+        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String filename = "/DW初始化" + df.format(new Date()) + ".sql";
+        String file= path.getPath() + filename;
+
         try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-//            File path = new File("/data/acquisition/data/scripts");
-            File path = new File("data\\");
-            //判断文件是否存在，不存在则新建
-            if (!path.exists()){
-                path.mkdir();
-            }
-            output = new FileOutputStream(path.getPath() + "/DW初始化" + df.format(new Date()) + ".sql");
+            output = new FileOutputStream(file);
             //遍历获取表的元数据
             for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos){
                 ddl = iCjDwDataScriptDefInfoService.selectDdlInfo(
@@ -144,10 +154,15 @@ public class ExportScriptController {
                 }
                 output.write(ddl.concat(";\n\n\n").getBytes());
             }
+            //实现前端下载文件功能
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            response.setContentType("application/octet-stream");
+            response.setHeader("Access-Control-Expose-Headers","FileName");
+            response.setHeader("FileName",URLEncoder.encode(filename,"UTF-8"));
+            FileInputStream fileInputStream = new FileInputStream(file);
+            servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
         } catch (IOException e) {
-            result.setCode(500);
-            result.setMsg("文件写入异常！！！");
-            return result;
+            e.printStackTrace();
         }finally {
             try {
                 output.close();
@@ -155,8 +170,5 @@ public class ExportScriptController {
                 e.printStackTrace();
             }
         }
-        result.setCode(200);
-        result.setMsg("DW脚本保存成功！！！");
-        return result;
     }
 }
