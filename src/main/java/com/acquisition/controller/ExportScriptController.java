@@ -181,14 +181,18 @@ public class ExportScriptController {
         Result result = new Result();
         List<CjDataSourceTabInfo> sysAndSchemaList = cjDataSourceTabInfoService.findOdsExportTableInfoByFilterList();
 
-        //使用MultiValueMap接收多个value
-        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        Map<String,List<String>> listLinkedHashMap = new LinkedHashMap<>();
         for (CjDataSourceTabInfo tabInfo : sysAndSchemaList){
-            multiValueMap.add(tabInfo.getBusinessSystemNameShortName(),tabInfo.getDataSourceSchema());
-            multiValueMap.get(tabInfo.getBusinessSystemNameShortName());
+            if (listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()) != null){
+                listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()).add(tabInfo.getDataSourceSchema());
+            }else {
+                List<String> list = new ArrayList();
+                list.add(tabInfo.getDataSourceSchema());
+                listLinkedHashMap.put(tabInfo.getBusinessSystemNameShortName(),list);
+            }
         }
 
-        result.setData(multiValueMap);
+        result.setData(listLinkedHashMap);
         return result;
     }
 
