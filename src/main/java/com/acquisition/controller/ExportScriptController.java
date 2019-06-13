@@ -77,8 +77,8 @@ public class ExportScriptController {
         String odsTableList = jsonObject.getString("params");
         List<CjOdsDataScriptDefInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjOdsDataScriptDefInfo.class);
 
-//        File path= new File("/data/acquisition/data/scripts");
-        File path= new File("data\\");
+        File path= new File("/data/acquisition/data/scripts");
+//        File path= new File("data\\");
         if (!path.exists()){
             path.mkdir();
         }
@@ -131,8 +131,8 @@ public class ExportScriptController {
         String odsTableList = jsonObject.getString("params");
         List<CjDwDataScriptDefInfo> cjDwDataScriptDefInfos = JSONObject.parseArray(odsTableList, CjDwDataScriptDefInfo.class);
 
-//      File path = new File("/data/acquisition/data/scripts");
-        File path = new File("data\\");
+      File path = new File("/data/acquisition/data/scripts");
+//        File path = new File("data\\");
         if (!path.exists()){
             path.mkdir();
         }

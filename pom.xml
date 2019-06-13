@@ -239,6 +239,13 @@
 			<version>1.0.0-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- 导入pinyin4j -->
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

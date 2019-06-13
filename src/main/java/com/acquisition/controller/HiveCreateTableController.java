@@ -20,6 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -116,7 +118,7 @@ public class HiveCreateTableController {
     */
 
     @PostMapping(value = "/getDWCreateTabListByFilter")
-    public Result getDWCreateTabListByFilter(@RequestBody Page reqParams){
+    public Result getDWCreateTabListByFilter(@RequestBody PageGeorge<List<String>> reqParams){
         Result result=new Result();
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtDwTabListBySystemAndSchema(reqParams.getQuery().get(0),reqParams.getQuery().get(1));
@@ -178,11 +180,18 @@ public class HiveCreateTableController {
             List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++){
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
-                colType=cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
                 colComment=cjDwCrtDdlColPojos.get(i).getDataSourceColComment();
                 if(colComment==null){
                     colComment="";
                 }
+                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+                Matcher m = p.matcher(colName);
+                if (m.find()) {
+                    colComment=colName;
+                    colName=PinyinUtil.getPinYin(colName);
+                }
+                colType=cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
                 dwddl.append("    `"+colName+"`    "+colType+"    "+"comment '"+colComment+"'"+",\n");
             }
             dwddl.append("    `src_sys_row_id`    string    comment '源系统pk',\n");

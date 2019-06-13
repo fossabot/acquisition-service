@@ -303,13 +303,13 @@ public class GetSourceMetaDataController {
                     if (arrDataSourceTabInfo.size() > 0 && iCjDataSourceTabInfoService.insertBatch(arrDataSourceTabInfo) > 0) {
                         result.success("");
                     } else {
-                        result.error(500, "cj_data_source_tab_info 源库未新增表");
+                        result.error(200, "源库未新增表");
                     }
                 } else {
-                    result.error(500, "cj_data_source_tab_col_info 查询失败");
+                    result.error(500, "查询失败");
                 }
             } else {
-                result.error(500, "cj_data_source_tab_col_info 导入失败");
+                result.error(500, "导入失败");
             }
 
         } else {

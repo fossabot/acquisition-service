@@ -86,8 +86,8 @@ public class DatalakeTableStatusContrller {
                               HttpServletResponse response) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 
-        //      File path = new File("/data/acquisition/data/scripts");
-        File path = new File("data\\");
+              File path = new File("/data/acquisition/data/scripts");
+//        File path = new File("data\\");
         if (!path.exists()) {
             path.mkdir();
         }
