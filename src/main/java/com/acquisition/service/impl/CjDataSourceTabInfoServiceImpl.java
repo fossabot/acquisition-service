@@ -128,6 +128,7 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     public List<CjDataSourceTabInfo> findCjVGetPrepareScriptForOdsTabListBySystem(String businessSystemNameShortName) {
         return cjDataSourceTabInfoMapper.selectCjVGetPrepareScriptForOdsTabListBySystem(businessSystemNameShortName);
     }
+    @Override
     public List<String> findSumOfTables() {
         return cjDataSourceTabInfoMapper.selectSumOfTables();
     }
@@ -159,8 +160,8 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findOdsExportTableInfoByFilterList() {
-        return cjDataSourceTabInfoMapper.selectOdsExportTableInfoByFilterList();
+    public List<CjDataSourceTabInfo> findOdsExportTableInfoByFilterList(String flag) {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfoByFilterList(flag);
     }
 
     @Override
@@ -197,13 +198,13 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findOdsScriptTableInfo() {
-        return cjDataSourceTabInfoMapper.selectOdsExportTableInfo();
+    public List<CjDataSourceTabInfo> findOdsScriptTableInfo(String schema) {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfo(schema);
     }
 
     @Override
-    public List<CjDataSourceTabInfo> findDwScriptTableInfo() {
-        return cjDataSourceTabInfoMapper.selectDwExportTableInfo();
+    public List<CjDataSourceTabInfo> findDwScriptTableInfo(String schema) {
+        return cjDataSourceTabInfoMapper.selectDwExportTableInfo(schema);
     }
 
 

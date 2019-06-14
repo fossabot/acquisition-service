@@ -427,23 +427,46 @@
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
   </update>
+
+    <!--ods列表-->
   <select id="selectOdsExportTableInfo" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from cj_data_source_tab_info
-    where data_flag_for_crt_ods_script = 1
+    <where>
+        data_flag_for_crt_ods_script = 1
+        <if test="schema !=null and schema !='' ">
+           and data_source_schema=#{schema}
+        </if>
+    </where>
+    where
     order by last_modify_dt  desc
   </select>
+
+    <!--筛选-->
   <select id="selectOdsExportTableInfoByFilterList" resultMap="BaseResultMap" >
     select DISTINCT business_system_name_short_name,data_source_schema
     from cj_data_source_tab_info
+    <if test="flag !=null and flag !='' and flag == '1'">
+        where data_flag_for_crt_ods_script = 1
+    </if>
+      <if test="flag !=null and flag !='' and flag == '0'">
+          where data_flag_for_crt_dw_script = 1
+      </if>
     order by last_modify_dt  desc
   </select>
+
+    <!--DW的列表-->
   <select id="selectDwExportTableInfo" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from cj_data_source_tab_info
-    where data_flag_for_crt_dw_script = 1
+    <where>
+        data_flag_for_crt_dw_script = 1
+        <if test="schema !=null and schema !='' ">
+           and data_source_schema=#{schema}
+        </if>
+    </where>
   </select>
 
     <insert id="insertBatch" parameterType="java.util.List">
