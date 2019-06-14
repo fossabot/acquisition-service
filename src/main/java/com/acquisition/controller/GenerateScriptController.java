@@ -4,6 +4,7 @@ import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.service.*;
 import com.acquisition.util.Constant;
+import com.acquisition.util.PinyinUtil;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +15,8 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -114,8 +117,18 @@ public class GenerateScriptController {
             String dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
             String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
             String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
-            String dwTableName="d_nct_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            String dwTableName="d_nct_"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase();
             String odsTableName=businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(dwTableName);
+            if (m.find()) {
+                dwTableName= PinyinUtil.getPinYin(dwTableName);
+            }
+            p = Pattern.compile("[\u4e00-\u9fa5]");
+            m = p.matcher(odsTableName);
+            if (m.find()) {
+                odsTableName= PinyinUtil.getPinYin(odsTableName);
+            }
             StringBuffer dwInitScript=new StringBuffer();
             String colName;
             //通过系统名、数据模式、表名获取表的字段信息
@@ -124,10 +137,16 @@ public class GenerateScriptController {
             dwInitScript.append("set hive.exec.dynamic.partition=true;\n");
             dwInitScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
             dwInitScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n");
-            dwInitScript.append("insert overwrite table acquisition_dw."+dwTableName+"\n");
+            dwInitScript.append("insert overwrite table "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
             dwInitScript.append("select\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
                 colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
+                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                p = Pattern.compile("[\u4e00-\u9fa5]");
+                m = p.matcher(colName);
+                if (m.find()) {
+                    colName= PinyinUtil.getPinYin(colName);
+                }
                 if(i<cjDwCrtDdlColPojos.size()-1) {
                     dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
                 }else {
@@ -142,7 +161,7 @@ public class GenerateScriptController {
             dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
             dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt,\n");
             dwInitScript.append("`data_dt`    as partition_key\n");
-            dwInitScript.append("from acquisition_ods."+odsTableName);
+            dwInitScript.append("from "+Constant.ODS_HIVE_SCHEMA+"."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
             cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
@@ -161,7 +180,6 @@ public class GenerateScriptController {
             key.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
             key.setDwDataTable(dwTableName);
             key.setOdsDataTable(odsTableName);
-            System.out.println(cjDataSourceTabInfo.getBusinessSystemNameShortName()+":"+cjDataSourceTabInfo.getDataSourceSchema()+":"+cjDataSourceTabInfo.getDataSourceTable()+":"+dwTableName+":"+odsTableName);
             cjDwDataScriptDefInfoService.deleteByPrimaryKey(key);
             if(cjDwDataScriptDefInfoService.save(cjDwDataScriptDefInfo).equals("保存成功")){
                 //生成DW建表语句成功，设置状态表中的相应状态字段
@@ -240,15 +258,27 @@ public class GenerateScriptController {
                             table.getDataSourceTable());
 
             for (int i = 0; i < infoList.size(); i++){
+                columns = infoList.get(i).getDataSourceColName();
+                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+                Matcher m = p.matcher(columns);
+                if (m.find()) {
+                    columns=PinyinUtil.getPinYin(columns);
+                }
                 if (i == infoList.size() - 1 ){
-                    columns = infoList.get(i).getDataSourceColName() + "\"";
+                    columns = columns + "\"";
                     scripts.append(columns);
                 }else {
-                    columns = infoList.get(i).getDataSourceColName() + ",";
+                    columns = columns + ",";
                     scripts.append(columns);
                 }
             }
-
+//            String odsTableName=table.getBusinessSystemNameShortName().toLowerCase()+"_"+table.getDataSourceTable().toLowerCase();
+//            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+//            Matcher m = p.matcher(odsTableName);
+//            if (m.find()) {
+//                odsTableName= PinyinUtil.getPinYin(odsTableName);
+//            }
             cjOdsDataScriptDefInfo.setBusinessSystemId(table.getBusinessSystemId());
             cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(table.getBusinessSystemNameShortName());
             cjOdsDataScriptDefInfo.setDataSourceSchema(table.getDataSourceSchema());

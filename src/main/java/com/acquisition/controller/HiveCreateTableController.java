@@ -44,12 +44,12 @@ public class HiveCreateTableController {
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
     /**
-    * @Author: zhangdongmao
-    * @Date: 2019/6/5
-    * @Description:  获取DW建表页面筛选列表
-    * @Param: * @param null 1
-    * @return:
-    */
+     * @Author: zhangdongmao
+     * @Date: 2019/6/5
+     * @Description:  获取DW建表页面筛选列表
+     * @Param: * @param null 1
+     * @return:
+     */
     @GetMapping(value = "/getDWSystemAndSchemaFilterList")
     public Result getDWSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
@@ -77,12 +77,12 @@ public class HiveCreateTableController {
         return result.success(systemSchemaFilterEntities);
     }
     /**
-    * @Author: zhangdongmao
-    * @Date: 2019/6/5
-    * @Description: 获取ODS建表页面筛选列表
-    * @Param: * @param null 1
-    * @return:
-    */
+     * @Author: zhangdongmao
+     * @Date: 2019/6/5
+     * @Description: 获取ODS建表页面筛选列表
+     * @Param: * @param null 1
+     * @return:
+     */
     @GetMapping(value = "/getODSSystemAndSchemaFilterList")
     public Result getODSSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
@@ -110,12 +110,12 @@ public class HiveCreateTableController {
         return result.success(systemSchemaFilterEntities);
     }
     /**
-    * @Author: zhangdongmao
-    * @Date: 2019/6/5
-    * @Description:  DW建表页面筛选查询
-    * @Param: * @param null 1
-    * @return:
-    */
+     * @Author: zhangdongmao
+     * @Date: 2019/6/5
+     * @Description:  DW建表页面筛选查询
+     * @Param: * @param null 1
+     * @return:
+     */
 
     @PostMapping(value = "/getDWCreateTabListByFilter")
     public Result getDWCreateTabListByFilter(@RequestBody PageGeorge<List<String>> reqParams){
@@ -127,12 +127,12 @@ public class HiveCreateTableController {
         return result.success(page);
     }
     /**
-    * @Author: zhangdongmao
-    * @Date: 2019/6/5
-    * @Description:  ODS建表页面筛选查询
-    * @Param: * @param null 1
-    * @return:
-    */
+     * @Author: zhangdongmao
+     * @Date: 2019/6/5
+     * @Description:  ODS建表页面筛选查询
+     * @Param: * @param null 1
+     * @return:
+     */
     @PostMapping(value = "/getODSCreateTabListByFilter")
     public Result getODSCreateTabListByFilter(@RequestBody Page reqParams){
         Result result=new Result();
@@ -171,10 +171,16 @@ public class HiveCreateTableController {
             businessSystemNameShortName=cjDataSourceTabInfo.getBusinessSystemNameShortName();
             dataSourceSchema=cjDataSourceTabInfo.getDataSourceSchema();
             dataSourceTable=cjDataSourceTabInfo.getDataSourceTable();
-            dwTableName="d_nct_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            dwTableName="d_nct_"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
+            //判断表名中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(dwTableName);
+            if (m.find()) {
+                dwTableName=PinyinUtil.getPinYin(dwTableName);
+            }
             //使用StringBuffer拼接DW建表语句
             StringBuffer dwddl=new StringBuffer();
-            dwddl.append("create table if not exists acquisition_dw."+dwTableName+"\n");
+            dwddl.append("create table if not exists "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
             dwddl.append("("+"\n");
             //通过系统名、数据模式、表名获取表的字段信息
             List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
@@ -185,8 +191,8 @@ public class HiveCreateTableController {
                     colComment="";
                 }
                 //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
-                Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-                Matcher m = p.matcher(colName);
+                p = Pattern.compile("[\u4e00-\u9fa5]");
+                m = p.matcher(colName);
                 if (m.find()) {
                     colComment=colName;
                     colName=PinyinUtil.getPinYin(colName);
@@ -289,6 +295,7 @@ public class HiveCreateTableController {
     public Result saveDDLAndCreateTable(List<CjDataSourceTabInfo> CjDataSourceTabInfos) {
         String colName = "";
         String colComment = "";
+        String odsTableName="";
         StringBuffer odsDDL = new StringBuffer();
         Result result=new Result();
 
@@ -296,9 +303,14 @@ public class HiveCreateTableController {
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
         for (CjDataSourceTabInfo cjDataSourceTabInfo : CjDataSourceTabInfos) {
-            odsDDL.append("create table if not exists acquisition_ods."
-                    + cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()
-                    + "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase() + "\n");
+            odsTableName=cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
+            //判断表名中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(odsTableName);
+            if (m.find()) {
+                odsTableName=PinyinUtil.getPinYin(odsTableName);
+            }
+            odsDDL.append("create table if not exists "+Constant.ODS_HIVE_SCHEMA+"."+ odsTableName+ "\n");
             odsDDL.append("(" + "\n");
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
@@ -313,10 +325,16 @@ public class HiveCreateTableController {
                 if (colComment == null) {
                     colComment = "";
                 }
+                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                m = p.matcher(colName);
+                if (m.find()) {
+                    colComment=colName;
+                    colName=PinyinUtil.getPinYin(colName);
+                }
                 if (i < infoList.size() - 1) {
                     odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colComment + "'" + ",\n");
                 } else {
-                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colName + "'" + "\n");
+                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colComment + "'" + "\n");
                 }
             }
             odsDDL.append(")" + "\n");
@@ -335,7 +353,7 @@ public class HiveCreateTableController {
                 cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
                 cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
                 cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-                cjOdsCrtTabDdlInfo.setOdsDataSchema("sdata_full");
+                cjOdsCrtTabDdlInfo.setOdsDataSchema(Constant.ODS_HIVE_SCHEMA);
                 cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_"
                         + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
                 cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());

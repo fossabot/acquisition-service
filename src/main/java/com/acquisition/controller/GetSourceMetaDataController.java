@@ -314,7 +314,7 @@ public class GetSourceMetaDataController {
                     result.error(500, "查询失败");
                 }
             } else {
-                result.error(500, "导入失败");
+                result.error(200, "该schema下没有表");
             }
 
         } else {

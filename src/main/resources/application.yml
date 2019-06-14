@@ -2,6 +2,7 @@
 spring:
   profiles:
 #    active: prod
+#    active: test
     active: dev
 server:
   port: 6269
@@ -80,6 +81,55 @@ spring:
     url: jdbc:mysql://10.119.1.40:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: datalake_meta
     password: datalake_meta
+    driver-class-name: com.mysql.jdbc.Driver
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    #dataSource Pool configuration
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    exceptionSorter: true
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties:
+      druid.stat.mergeSql: true
+      druid.stat.slowSqlMillis: 500
+    useGlobalDataSourceStat: true
+druid:
+  login:
+    enabled: true
+    username: druid
+    password: druid
+##Slf4j日志打印
+logging:
+  config: classpath:logback.xml
+
+
+---
+
+#测试配置
+spring:
+  profiles: test
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    mode: HTML5
+
+  datasource:
+    url: jdbc:mysql://10.119.1.40:3306/acquisition_db?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource

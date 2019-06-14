@@ -15,4 +15,6 @@ public class Constant {
     public static final String DW_CRT_HIVE="1";
     public static final String DW_CRT_DDL="1";
     public static final String DW_CRT_SCRIPT="1";
+    public static final String DW_HIVE_SCHEMA="acquisition_dw";
+    public static final String ODS_HIVE_SCHEMA="acquisition_ods";
 }
