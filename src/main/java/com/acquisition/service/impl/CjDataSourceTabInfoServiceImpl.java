@@ -159,6 +159,11 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
     }
 
     @Override
+    public List<CjDataSourceTabInfo> findOdsExportTableInfoByFilterList() {
+        return cjDataSourceTabInfoMapper.selectOdsExportTableInfoByFilterList();
+    }
+
+    @Override
     public List<CjDataSourceTabInfo> findAllCjVGetPrepareCrtDwTabList() {
         return cjDataSourceTabInfoMapper.selectAllCjVGetPrepareCrtDwTabList();
     }

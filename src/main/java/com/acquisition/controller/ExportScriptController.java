@@ -9,7 +9,10 @@ import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.IOUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by zhangdongmao on 2019/6/3.
@@ -114,7 +116,6 @@ public class ExportScriptController {
         }
     }
 
-
     /**
      * 保存DW脚本到本地文件夹
      */
@@ -166,5 +167,39 @@ public class ExportScriptController {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 返回要导出表的筛选列表
+     */
+    @RequestMapping(value = "/getFilterList")
+    public Result getFilterList(){
+        Result result = new Result();
+        List<CjDataSourceTabInfo> sysAndSchemaList = cjDataSourceTabInfoService.findOdsExportTableInfoByFilterList();
+
+        Map<String,List<String>> listLinkedHashMap = new LinkedHashMap<>();
+        for (CjDataSourceTabInfo tabInfo : sysAndSchemaList){
+            if (listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()) != null){
+                listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()).add(tabInfo.getDataSourceSchema());
+            }else {
+                List<String> list = new ArrayList();
+                list.add(tabInfo.getDataSourceSchema());
+                listLinkedHashMap.put(tabInfo.getBusinessSystemNameShortName(),list);
+            }
+        }
+
+        result.setData(listLinkedHashMap);
+        return result;
+    }
+
+    /**
+     * 返回筛选结果
+     */
+    @RequestMapping(value = "/getFilterResults")
+    public Result getFilterResults(){
+        Result result = new Result();
+
+
+        return result;
     }
 }

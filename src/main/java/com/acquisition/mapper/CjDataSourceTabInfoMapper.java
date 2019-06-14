@@ -78,4 +78,6 @@ public interface CjDataSourceTabInfoMapper {
 
     List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(@Param("systemname") String systemname, @Param("schema") String schema, @Param("tablename") String tablename);
 
+    List<CjDataSourceTabInfo> selectOdsExportTableInfoByFilterList();
+
 }
