@@ -21,16 +21,21 @@ mybatis:
 #开发配置
 spring:
   profiles: dev
+  # 使用Swagger2配置解析swagger-ui.html
+  mvc:
+    static-path-pattern: /**
+    resources:
+      static-locations: classpath:/META-INF/resources/
   thymeleaf:
-    prefix: classpath:/templates/
-    cache: false
-    suffix: .html
-    encoding: UTF-8
-    content-type: text/html
-    mode: HTML5
+      prefix: classpath:/templates/
+      cache: false
+      suffix: .html
+      encoding: UTF-8
+      content-type: text/html
+      mode: HTML5
 
   datasource:
-    url: jdbc:mysql://10.30.140.56:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.30.140.90:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
