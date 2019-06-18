@@ -30,7 +30,7 @@ spring:
     mode: HTML5
 
   datasource:
-    url: jdbc:mysql://10.30.140.56:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.30.140.90:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

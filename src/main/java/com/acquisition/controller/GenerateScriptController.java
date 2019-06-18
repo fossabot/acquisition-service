@@ -117,8 +117,8 @@ public class GenerateScriptController {
             String dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
             String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
             String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
-            String dwTableName="d_nct_"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase();
-            String odsTableName=businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            String dwTableName="d_nct_"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
+            String odsTableName=businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase();
             Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
             Matcher m = p.matcher(dwTableName);
             if (m.find()) {
@@ -147,20 +147,15 @@ public class GenerateScriptController {
                 if (m.find()) {
                     colName= PinyinUtil.getPinYin(colName);
                 }
-                if(i<cjDwCrtDdlColPojos.size()-1) {
-                    dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
-                }else {
-                    dwInitScript.append("`" + colName + "`    as    " + colName+"\n");
-                }
+                dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
             }
 
 
-            dwInitScript.append("`row_id`    as src_sys_row_id,\n");
+            dwInitScript.append("''    as src_sys_row_id,\n");
             dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
             dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
             dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
-            dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt,\n");
-            dwInitScript.append("`data_dt`    as partition_key\n");
+            dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt\n");
             dwInitScript.append("from "+Constant.ODS_HIVE_SCHEMA+"."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
@@ -273,7 +268,7 @@ public class GenerateScriptController {
                     scripts.append(columns);
                 }
             }
-//            String odsTableName=table.getBusinessSystemNameShortName().toLowerCase()+"_"+table.getDataSourceTable().toLowerCase();
+//            String odsTableName=table.getBusinessSystemNameShortName().toLowerCase()+"_"+table.getDataSourceSchema().toLowerCase()+"_"+table.getDataSourceTable().toLowerCase();
 //            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
 //            Matcher m = p.matcher(odsTableName);
 //            if (m.find()) {
