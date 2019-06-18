@@ -171,7 +171,7 @@ public class HiveCreateTableController {
             businessSystemNameShortName=cjDataSourceTabInfo.getBusinessSystemNameShortName();
             dataSourceSchema=cjDataSourceTabInfo.getDataSourceSchema();
             dataSourceTable=cjDataSourceTabInfo.getDataSourceTable();
-            dwTableName="d_nct_"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
+            dwTableName="d_nct_"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" +cjDataSourceTabInfo.getDataSourceSchema().toLowerCase()+"_"+ cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
             //判断表名中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
             Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
             Matcher m = p.matcher(dwTableName);
@@ -180,7 +180,7 @@ public class HiveCreateTableController {
             }
             //使用StringBuffer拼接DW建表语句
             StringBuffer dwddl=new StringBuffer();
-            dwddl.append("create table if not exists "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
+            dwddl.append("create external table if not exists "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
             dwddl.append("("+"\n");
             //通过系统名、数据模式、表名获取表的字段信息
             List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
@@ -202,9 +202,9 @@ public class HiveCreateTableController {
             }
             dwddl.append("    `src_sys_row_id`    string    comment '源系统pk',\n");
             dwddl.append("    `src_sys_cd`    string    comment '源系统代码',\n");
-            dwddl.append("    `src_table_name`    string    comment '源系统pk',\n");
-            dwddl.append("    `etl_dt`    string    comment '源表名',\n");
-            dwddl.append("    `data_dt`    string    comment 'etl处理时间'\n");
+            dwddl.append("    `src_table_name`    string    comment '源表名',\n");
+            dwddl.append("    `etl_dt`    string    comment 'etl处理时间',\n");
+            dwddl.append("    `data_dt`    string    comment '数据日期'\n");
             dwddl.append(")"+"\n");
             dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
 
@@ -218,7 +218,7 @@ public class HiveCreateTableController {
             cjDwCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
             cjDwCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
             cjDwCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase());
+            cjDwCrtTabDdlInfo.setOdsDataTable(businessSystemNameShortName.toLowerCase()+"_"+dataSourceSchema.toLowerCase()+"_"+dataSourceTable.toLowerCase());
             cjDwCrtTabDdlInfo.setDwDataTable(dwTableName);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwddl.toString());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -303,14 +303,14 @@ public class HiveCreateTableController {
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
         for (CjDataSourceTabInfo cjDataSourceTabInfo : CjDataSourceTabInfos) {
-            odsTableName=cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" + cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
+            odsTableName=cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" +cjDataSourceTabInfo.getDataSourceSchema().toLowerCase()+"_"+ cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
             //判断表名中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
             Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
             Matcher m = p.matcher(odsTableName);
             if (m.find()) {
                 odsTableName=PinyinUtil.getPinYin(odsTableName);
             }
-            odsDDL.append("create table if not exists "+Constant.ODS_HIVE_SCHEMA+"."+ odsTableName+ "\n");
+            odsDDL.append("create external table if not exists "+Constant.ODS_HIVE_SCHEMA+"."+ odsTableName+ "\n");
             odsDDL.append("(" + "\n");
 
             List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
@@ -355,7 +355,7 @@ public class HiveCreateTableController {
                 cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
                 cjOdsCrtTabDdlInfo.setOdsDataSchema(Constant.ODS_HIVE_SCHEMA);
                 cjOdsCrtTabDdlInfo.setOdsDataTable(cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase() + "_"
-                        + cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
+                        +cjDataSourceTabInfo.getDataSourceSchema().toLowerCase()+"_"+ cjDataSourceTabInfo.getDataSourceTable().toLowerCase());
                 cjOdsCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDDL.toString());
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 cjOdsCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));

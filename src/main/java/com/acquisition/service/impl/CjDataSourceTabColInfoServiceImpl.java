@@ -1,6 +1,7 @@
 package com.acquisition.service.impl;
 
 
+import com.acquisition.config.YiliPoolConfig;
 import com.acquisition.entity.CjDataSourceSystemInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.mapper.CjDataSourceTabColInfoMapper;
@@ -8,9 +9,13 @@ import com.acquisition.service.ICjDataSourceTabColInfoService;
 import com.acquisition.entity.CjDataSourceTabColInfo;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +24,7 @@ import java.util.List;
 @Service
 public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInfoService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CjDataSourceTabColInfoServiceImpl.class);
     @Resource(name = "cjDataSourceTabColInfoMapper")
     public CjDataSourceTabColInfoMapper cjDataSourceTabColInfoMapper;
 
@@ -53,6 +59,8 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
 
     @Override
     public int deleteBySystemName(String systemname, String schema) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LOG.info(df.format(new Date())+"----调用了删除字段方法");
         return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname, schema);
     }
 
