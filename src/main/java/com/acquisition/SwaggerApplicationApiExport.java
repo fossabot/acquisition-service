@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,7 +29,40 @@ import java.util.Collections;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SwaggerApplicationAPIExport {
+public class SwaggerApplicationApiExport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(YiliPoolConfig.class);
+
+    @Value("${server.port}")
+    private String serverPort;
+
+
+    /**
+     * 生成AsciiDocs格式文档,并汇总成一个文件   *
+     * 执行maven命令
+     * <p>
+     * 1). mvn test
+     * 2). mvn asciidoctor:process-asciidoc
+     *
+     * @throws Exception
+     */
+    @Test
+    public void generateAsciiDocsToFile() throws Exception {
+        //  输出Ascii到单文件
+        Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
+                .withMarkupLanguage(MarkupLanguage.ASCIIDOC)
+                .withOutputLanguage(Language.ZH)
+                .withPathsGroupedBy(GroupBy.TAGS)
+                .withGeneratedExamples()
+                .withoutInlineSchema()
+                .build();
+
+        Swagger2MarkupConverter.from(new URL("http://localhost:" + serverPort + "/v2/api-docs"))
+                .withConfig(config)
+                .build()
+                .toFile(Paths.get("src/main/resources/swagger/adoc/API"));
+        executeMaven();
+    }
 
 
     /**
@@ -36,7 +70,6 @@ public class SwaggerApplicationAPIExport {
      *
      * @throws Exception
      */
-    @Test
     public void generateAsciiDocs() throws Exception {
         //  输出Ascii格式
         Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
@@ -58,7 +91,6 @@ public class SwaggerApplicationAPIExport {
      *
      * @throws Exception
      */
-    @Test
     public void generateMarkdownDocs() throws Exception {
         //  输出Markdown格式
         Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
@@ -81,7 +113,6 @@ public class SwaggerApplicationAPIExport {
      *
      * @throws Exception
      */
-    @Test
     public void generateConfluenceDocs() throws Exception {
         //  输出Confluence使用的格式
         Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
@@ -104,7 +135,6 @@ public class SwaggerApplicationAPIExport {
      *
      * @throws Exception
      */
-    @Test
     public void generateMarkdownDocsToFile() throws Exception {
         //  输出Markdown到单文件
         Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
@@ -121,37 +151,8 @@ public class SwaggerApplicationAPIExport {
                 .toFile(Paths.get("src/docs/markdown/generated/all"));
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(YiliPoolConfig.class);
 
-    /**
-     * 生成AsciiDocs格式文档,并汇总成一个文件   *
-     * 执行maven命令
-     * <p>
-     * 1). mvn test
-     * 2). mvn asciidoctor:process-asciidoc
-     *
-     * @throws Exception
-     */
-    @Test
-    public void generateAsciiDocsToFile() throws Exception {
-        //  输出Ascii到单文件
-        Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
-                .withMarkupLanguage(MarkupLanguage.ASCIIDOC)
-                .withOutputLanguage(Language.ZH)
-                .withPathsGroupedBy(GroupBy.TAGS)
-                .withGeneratedExamples()
-                .withoutInlineSchema()
-                .build();
-
-        Swagger2MarkupConverter.from(new URL("http://localhost:6269/v2/api-docs"))
-                .withConfig(config)
-                .build()
-                .toFile(Paths.get("src/main/resources/swagger/adoc/API"));
-        maven();
-    }
-
-
-    public void maven() {
+    private void executeMaven() {
 
         InvocationRequest request = new DefaultInvocationRequest();
 
