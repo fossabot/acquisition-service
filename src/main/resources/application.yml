@@ -21,7 +21,7 @@ mybatis:
 #开发配置
 spring:
   profiles: dev
-  # 使用Swagger2配置解析swagger-ui.html
+  # 使用Swagger2配置swagger-ui.html
   mvc:
     static-path-pattern: /**
     resources:

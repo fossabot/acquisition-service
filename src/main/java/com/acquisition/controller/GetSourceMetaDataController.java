@@ -9,11 +9,11 @@ import com.acquisition.util.Result;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.Connection;
@@ -29,6 +29,7 @@ import java.util.List;
  * @create 2019/6/5
  * @since 1.0.0
  */
+@Api(tags = "getSourceMetaData", description = "初始化业务元数据")
 @RestController
 @RequestMapping(value = "/getSourceMetaData")
 public class GetSourceMetaDataController {
@@ -45,26 +46,19 @@ public class GetSourceMetaDataController {
     @Resource(name = "cjDataSourceTabInfoServiceImpl")
     ICjDataSourceTabInfoService iCjDataSourceTabInfoService;
 
-    /**
-     * 获取配置的参数
-     *
-     * @return
-     */
-    @RequestMapping("/getDataInfo")
-    public Result getDataSourceInfo(Page reqParams) {
+
+    @ApiOperation("获取配置的参数")
+    @GetMapping("/getDataInfo")
+    public Result getDataSourceInfo(PageGeorge reqParams) {
         PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         List<ViewSourceSystemEntity> list = iCjDataSourceConnDefineService.selectViewContet();
         PageInfo<ViewSourceSystemEntity> page = new PageInfo<>(list);
         return new Result().success(page);
     }
 
-    /**
-     * 获取参数，生成 schema 数据信息  cj_data_source_system_info
-     *
-     * @param
-     * @return 返回200 ok
-     */
-    @RequestMapping("/getConnection")
+
+    @ApiOperation(value = "生成schema数据信息", notes = "List<ViewSourceSystemEntity> 复杂对象", produces = "application/json")
+    @PostMapping("/getConnection")
     public Result setStauts(@RequestBody List<ViewSourceSystemEntity> sourcesysteminfo) {
         String[] arr = new String[100];
         for (int i = 0; i < sourcesysteminfo.size(); i++) {
@@ -127,13 +121,9 @@ public class GetSourceMetaDataController {
     }
 
 
-    /**
-     * 获取 schema信息表
-     *
-     * @return
-     */
-    @RequestMapping("/getSchema")
-    public Result getSchema(Page reqParams) {
+    @ApiOperation("获取 schema信息表")
+    @GetMapping("/getSchema")
+    public Result getSchema(PageGeorge reqParams) {
         Result result = new Result();
         PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         List<CjDataSourceSystemInfo> list = iCjDataSourceSystemInfoService.selectInfo();
@@ -142,14 +132,18 @@ public class GetSourceMetaDataController {
         return result;
     }
 
-    @RequestMapping("/getSystemFilterList")
+
+    @ApiOperation("获取源系统数据模式")
+    @GetMapping("/getSystemFilterList")
     public Result getSystemFilterList() {
         List<String> distBusinessSystemNameShortName = iCjDataSourceSystemInfoService.findDistBusinessSystemNameShortName();
         return new Result().success(distBusinessSystemNameShortName);
     }
 
+
+    @ApiOperation("获取表及字段的查询")
     @PostMapping("/getSchemaByFilter")
-    public Result getDataInfoByFilter(@RequestBody Page reqParams) {
+    public Result getDataInfoByFilter(@RequestBody PageGeorge<List<String>> reqParams) {
         PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
         CjDataSourceSystemInfoExample example = new CjDataSourceSystemInfoExample();
         CjDataSourceSystemInfoExample.Criteria criteria = example.createCriteria();
@@ -159,13 +153,9 @@ public class GetSourceMetaDataController {
         return new Result().success(page);
     }
 
-    /**
-     * 导入元数据
-     *
-     * @param
-     * @return
-     */
-    @RequestMapping("/importingMetadata")
+
+    @ApiOperation(value = "导入元数据", notes = "List<CjDataSourceSystemInfo> 复杂对象", produces = "application/json")
+    @PostMapping("/importingMetadata")
     public Result importingMetadata(@RequestBody List<CjDataSourceSystemInfo> sourcesysteminfo) {
         Result result = new Result();
         List<CjDataSourceTabColInfo> datasourcetabcolInfo = new ArrayList<>();
@@ -348,7 +338,6 @@ public class GetSourceMetaDataController {
         }
         return true;
     }
-
 
 
 }
