@@ -50,8 +50,8 @@ public interface CjDataSourceTabInfoMapper {
                                  @Param("dataSourceSchema") String dataSourceSchema,
                                  @Param("dataSourceTable") String dataSourceTable
     );
-    List<CjDataSourceTabInfo> selectOdsExportTableInfo();
-    List<CjDataSourceTabInfo> selectDwExportTableInfo();
+    List<CjDataSourceTabInfo> selectOdsExportTableInfo(@Param("schema") String schema);
+    List<CjDataSourceTabInfo> selectDwExportTableInfo(@Param("schema") String schema);
 
     int insertBatch(CjDataSourceTabInfo list);
     int deleteBySystemName(@Param("systemname") String systemname);
@@ -78,6 +78,6 @@ public interface CjDataSourceTabInfoMapper {
 
     List<CjDataSourceTabInfo> selectBySysNameAndSchemaAndTableName(@Param("systemname") String systemname, @Param("schema") String schema, @Param("tablename") String tablename);
 
-    List<CjDataSourceTabInfo> selectOdsExportTableInfoByFilterList();
+    List<CjDataSourceTabInfo> selectOdsExportTableInfoByFilterList(@Param("flag")String flag);
 
 }

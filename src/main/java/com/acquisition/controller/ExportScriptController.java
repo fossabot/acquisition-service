@@ -15,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -45,9 +46,9 @@ public class ExportScriptController {
      * 获取要保存ODS脚本的表信息
      */
     @RequestMapping(value = "/getOdsTabList")
-    public Result getOdsTabList(){
+    public Result getOdsTabList(@RequestParam("schema") String schema) {
         Result result = new Result();
-        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findOdsScriptTableInfo();
+        List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findOdsScriptTableInfo(schema);
         result.setMsg("获取ODS表清单成功！！！");
         return result.success(cjDataSourceTabInfos);
     }
@@ -56,9 +57,9 @@ public class ExportScriptController {
      * 获取要保存DW脚本的表信息
      */
     @RequestMapping(value = "/getDwTabList")
-    public Result getDwTabList(){
+    public Result getDwTabList(@RequestParam("schema") String schema) {
         Result result = new Result();
-        List<CjDataSourceTabInfo> dwScriptTableInfos = cjDataSourceTabInfoService.findDwScriptTableInfo();
+        List<CjDataSourceTabInfo> dwScriptTableInfos = cjDataSourceTabInfoService.findDwScriptTableInfo(schema);
         result.setMsg("获取DW表清单成功！！！");
         return result.success(dwScriptTableInfos);
     }
@@ -68,32 +69,32 @@ public class ExportScriptController {
      */
     @RequestMapping(value = "/exportOdsScript")
     public void exportOdsScript(@RequestBody String data,
-                                  HttpServletResponse response){
-        OutputStream output  = null;
+                                HttpServletResponse response) {
+        OutputStream output = null;
         String ddl = new String();
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjOdsDataScriptDefInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjOdsDataScriptDefInfo.class);
 
-        File path= new File("/data/acquisition/data/scripts");
+        File path = new File("/data/acquisition/data/scripts");
 //        File path= new File("data\\");
-        if (!path.exists()){
+        if (!path.exists()) {
             path.mkdir();
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-        String filename = "/ODS初始化" +  df.format(new Date()) + ".txt";
-        String file= path.getPath() + filename;
+        String filename = "/ODS初始化" + df.format(new Date()) + ".txt";
+        String file = path.getPath() + filename;
 
         try {
             output = new FileOutputStream(file);
             //遍历获取表的元数据并获取脚本信息,写到文件中
-            for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos){
+            for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos) {
                 ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
                         table.getBusinessSystemNameShortName(),
                         table.getDataSourceSchema(),
                         table.getDataSourceTable()
                 );
-                if (ddl == null){
+                if (ddl == null) {
                     continue;
                 }
                 output.write(ddl.concat("\n").getBytes());
@@ -101,13 +102,13 @@ public class ExportScriptController {
             //实现前端下载文件功能
             ServletOutputStream servletOutputStream = response.getOutputStream();
             response.setContentType("application/octet-stream");
-            response.setHeader("Access-Control-Expose-Headers","FileName");
-            response.setHeader("FileName",URLEncoder.encode(filename,"UTF-8"));
+            response.setHeader("Access-Control-Expose-Headers", "FileName");
+            response.setHeader("FileName", URLEncoder.encode(filename, "UTF-8"));
             FileInputStream fileInputStream = new FileInputStream(file);
             servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 output.close();
             } catch (IOException e) {
@@ -121,32 +122,32 @@ public class ExportScriptController {
      */
     @RequestMapping(value = "/exportDwScript")
     public void exportDwScript(@RequestBody String data,
-                                 HttpServletResponse response){
-        OutputStream output  = null;
+                               HttpServletResponse response) {
+        OutputStream output = null;
         String ddl = "";
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjDwDataScriptDefInfo> cjDwDataScriptDefInfos = JSONObject.parseArray(odsTableList, CjDwDataScriptDefInfo.class);
 
-      File path = new File("/data/acquisition/data/scripts");
+        File path = new File("/data/acquisition/data/scripts");
 //        File path = new File("data\\");
-        if (!path.exists()){
+        if (!path.exists()) {
             path.mkdir();
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
         String filename = "/DW初始化" + df.format(new Date()) + ".sql";
-        String file= path.getPath() + filename;
+        String file = path.getPath() + filename;
 
         try {
             output = new FileOutputStream(file);
             //遍历获取表的元数据
-            for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos){
+            for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos) {
                 ddl = iCjDwDataScriptDefInfoService.selectDdlInfo(
                         table.getBusinessSystemNameShortName(),
                         table.getDataSourceSchema(),
                         table.getDataSourceTable()
                 );
-                if (ddl == null){
+                if (ddl == null) {
                     continue;
                 }
                 output.write(ddl.concat(";\n\n\n").getBytes());
@@ -154,13 +155,13 @@ public class ExportScriptController {
             //实现前端下载文件功能
             ServletOutputStream servletOutputStream = response.getOutputStream();
             response.setContentType("application/octet-stream");
-            response.setHeader("Access-Control-Expose-Headers","FileName");
-            response.setHeader("FileName",URLEncoder.encode(filename,"UTF-8"));
+            response.setHeader("Access-Control-Expose-Headers", "FileName");
+            response.setHeader("FileName", URLEncoder.encode(filename, "UTF-8"));
             FileInputStream fileInputStream = new FileInputStream(file);
             servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 output.close();
             } catch (IOException e) {
@@ -171,20 +172,23 @@ public class ExportScriptController {
 
     /**
      * 返回要导出表的筛选列表
+     *
+     * @param flag 1=ods 0=dw
+     * @return
      */
     @RequestMapping(value = "/getFilterList")
-    public Result getFilterList(){
+    public Result getFilterList(@RequestParam("flag") String flag) {
         Result result = new Result();
-        List<CjDataSourceTabInfo> sysAndSchemaList = cjDataSourceTabInfoService.findOdsExportTableInfoByFilterList();
+        List<CjDataSourceTabInfo> sysAndSchemaList = cjDataSourceTabInfoService.findOdsExportTableInfoByFilterList(flag);
 
-        Map<String,List<String>> listLinkedHashMap = new LinkedHashMap<>();
-        for (CjDataSourceTabInfo tabInfo : sysAndSchemaList){
-            if (listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()) != null){
+        Map<String, List<String>> listLinkedHashMap = new LinkedHashMap<>();
+        for (CjDataSourceTabInfo tabInfo : sysAndSchemaList) {
+            if (listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()) != null) {
                 listLinkedHashMap.get(tabInfo.getBusinessSystemNameShortName()).add(tabInfo.getDataSourceSchema());
-            }else {
+            } else {
                 List<String> list = new ArrayList();
                 list.add(tabInfo.getDataSourceSchema());
-                listLinkedHashMap.put(tabInfo.getBusinessSystemNameShortName(),list);
+                listLinkedHashMap.put(tabInfo.getBusinessSystemNameShortName(), list);
             }
         }
 
@@ -196,7 +200,7 @@ public class ExportScriptController {
      * 返回筛选结果
      */
     @RequestMapping(value = "/getFilterResults")
-    public Result getFilterResults(){
+    public Result getFilterResults() {
         Result result = new Result();
 
 

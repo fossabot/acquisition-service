@@ -14,14 +14,21 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-	@Bean
-	public Docket userApi() {
-		return new Docket(DocumentationType.SWAGGER_2).groupName("任务管理").apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("com.zdm.controller")).paths(PathSelectors.any()).build();
-	}
-	// 预览地址:swagger-ui.html
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Spring 中使用Swagger2构建文档").termsOfServiceUrl("https://blog.52itstyle.com")
-				.contact(new Contact("surging ", "https://blog.52itstyle.com/", "626943302@qq.com")).version("1.1").build();
-	}
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.acquisition.controller"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("采集系统的API文档")
+                .description("描述：伊利采集系统官方API")
+                .version("1.0")
+                .build();
+    }
 }
