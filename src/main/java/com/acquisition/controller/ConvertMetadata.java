@@ -220,7 +220,7 @@ public class ConvertMetadata {
                         }
                     }
                 }
-                iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema());
+                iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
             }
 
             if (datasourcetabcolInfo.size() > 0 && InBatchesInsert(datasourcetabcolInfo)) {

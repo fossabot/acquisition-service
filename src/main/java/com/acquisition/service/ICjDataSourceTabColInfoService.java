@@ -25,7 +25,7 @@ public interface ICjDataSourceTabColInfoService {
 
     List<CjDataSourceTabColInfo> findListOnlyTable(List<CjDataSourceSystemInfo> list);
 
-    int deleteBySystemName(String systemname, String schema);
+    int deleteBySystemName(String systemname, String schema,String table);
 
     List<CjDataSourceTabColInfo> selectByTable(String systemname, String schema, String tablename);
 

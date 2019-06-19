@@ -58,10 +58,10 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
     }
 
     @Override
-    public int deleteBySystemName(String systemname, String schema) {
+    public int deleteBySystemName(String systemname, String schema, String table) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        LOG.info(df.format(new Date())+"----调用了删除字段方法");
-        return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname, schema);
+        LOG.info(df.format(new Date()) + "----调用了删除字段方法");
+        return cjDataSourceTabColInfoMapper.deleteBySystemName(systemname, schema, table);
     }
 
     @Override

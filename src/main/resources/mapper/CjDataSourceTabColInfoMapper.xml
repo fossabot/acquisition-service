@@ -499,7 +499,18 @@
     </select>
 
     <delete id="deleteBySystemName" parameterType="java.lang.String">
-    delete from cj_data_source_tab_col_info where business_system_name_short_name=#{systemname} and data_source_schema=#{schema}
+    delete from cj_data_source_tab_col_info
+     <where>
+         <if test="systemname !=null and systemname !=''">
+             business_system_name_short_name=#{systemname}
+         </if>
+         <if test="schema !=null and schema !=''">
+             and data_source_schema=#{schema}
+         </if>
+         <if test="table !=null and table !=''">
+             and data_source_table=#{table}
+         </if>
+     </where>
    </delete>
 
     <select id="selectByTable" resultMap="BaseResultMap">
