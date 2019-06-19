@@ -45,9 +45,4 @@ public class CjDataSourceSystemInfoServiceImpl implements ICjDataSourceSystemInf
     public List<CjDataSourceSystemInfo> findByExample(CjDataSourceSystemInfoExample example) {
         return cjDataSourceSystemInfoMapper.selectByExample(example);
     }
-
-    @Override
-    public String selectDistDataBaseType(String sysname) {
-        return cjDataSourceSystemInfoMapper.selectDistDataBaseType(sysname);
-    }
 }
