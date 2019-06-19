@@ -20,4 +20,5 @@ public interface ICjDataSourceSystemInfoService {
     List<String> findDistBusinessSystemNameShortName();
 
     List<CjDataSourceSystemInfo> findByExample(CjDataSourceSystemInfoExample example);
+    String selectDistDataBaseType(String sysname);
 }

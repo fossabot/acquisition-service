@@ -241,4 +241,11 @@
         business_system_name_short_name
         from cj_data_source_system_info
     </select>
+
+    <select id="selectDistDataBaseType" resultType="java.lang.String">
+        select
+        DISTINCT
+        data_base_type
+        from cj_data_source_system_info where business_system_name_short_name=#{sysname}
+    </select>
 </mapper>
