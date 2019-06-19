@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.sql.Connection;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
+@Api(tags = "hiveCreateTable", description = "hive建表")
 @RestController
 @RequestMapping(value = "/hiveCreateTable")
 public class HiveCreateTableController {
@@ -50,6 +53,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("获取dw建表页面的筛选列表")
     @GetMapping(value = "/getDWSystemAndSchemaFilterList")
     public Result getDWSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
@@ -83,6 +87,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("获取ods建表页面的筛选列表")
     @GetMapping(value = "/getODSSystemAndSchemaFilterList")
     public Result getODSSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
@@ -116,7 +121,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
-
+    @ApiOperation("dw建表页面按系统名和schema筛选接口")
     @PostMapping(value = "/getDWCreateTabListByFilter")
     public Result getDWCreateTabListByFilter(@RequestBody PageGeorge<List<String>> reqParams){
         Result result=new Result();
@@ -133,15 +138,16 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("ODS建表页面按系统名和schema筛选接口")
     @PostMapping(value = "/getODSCreateTabListByFilter")
     public Result getODSCreateTabListByFilter(@RequestBody Page reqParams){
         Result result=new Result();
-        System.out.println(reqParams.getQuery());
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(reqParams.getQuery().get(0), reqParams.getQuery().get(1));
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
         return result.success(page);
     }
+    @ApiOperation("dw建表页面获取表清单接口")
     @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList(Page reqParams) {
         Result result=new Result();
@@ -153,6 +159,7 @@ public class HiveCreateTableController {
         return result.success(page);
     }
 
+    @ApiOperation("dw建表接口")
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
@@ -268,7 +275,8 @@ public class HiveCreateTableController {
     /**
      * @return 返回已经导入清单，但没有在ODS建表的表
      */
-    @RequestMapping(value = "/getODSTableInfo")
+    @ApiOperation("ods建表页面获取表清单接口")
+    @RequestMapping(value = "/getODSTableInfo" ,method = RequestMethod.GET)
     @ResponseBody
     public Result getODSTable(PageGeorge reqParams) {
         Result result=new Result();
@@ -281,6 +289,7 @@ public class HiveCreateTableController {
     /**
      * @return 获取前端传来的需要去ODS创建的表信息
      */
+    @ApiOperation("ods建表接口")
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);

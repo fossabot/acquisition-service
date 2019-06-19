@@ -1,0 +1,28 @@
+h1. 采集系统的API文档
+
+
+h2. 概览 {anchor:overview}
+描述：伊利采集系统官方API
+
+
+h3. 版本信息
+_版本_ : 1.0
+
+
+h3. URI scheme
+_域名_ : localhost:6269\\ 
+_基础路径_ : /
+
+
+h3. 标签
+
+* datalake-table-status-contrller : Datalake Table Status Contrller
+* enterHuOverview : 入湖总览
+* export-script-controller : 初始化ODS/DW脚本导出
+* generate-script-controller : ods/dw脚本生成页面
+* getSourceMetaData : 初始化业务元数据
+* hiveCreateTable : hive建表
+* kafka-test-controller : Kafka Test Controller
+
+
+

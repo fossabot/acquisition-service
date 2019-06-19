@@ -154,7 +154,7 @@ public class GetSourceMetaDataController {
     }
 
 
-    @ApiOperation(value = "导入元数据", notes = "List<CjDataSourceSystemInfo> 复杂对象", produces = "application/json")
+    @ApiOperation(value = "按schema导入元数据", notes = "List<CjDataSourceSystemInfo> 复杂对象", produces = "application/json")
     @PostMapping("/importingMetadata")
     public Result importingMetadata(@RequestBody List<CjDataSourceSystemInfo> sourcesysteminfo) {
         Result result = new Result();

@@ -9,6 +9,8 @@ import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
+@Api(value = "generateScript",description = "ods/dw脚本生成页面")
 @RestController
 @RequestMapping(value = "/generateScript")
 public class GenerateScriptController {
@@ -47,6 +50,7 @@ public class GenerateScriptController {
     * @Param: * @param null 1
     * @return:
     */
+    @ApiOperation("dw脚本生成页面获取筛选列表接口")
     @GetMapping(value = "/getDwSystemFilterList")
     public Result getDwSystemFilterList() {
         Result result=new Result();
@@ -61,6 +65,7 @@ public class GenerateScriptController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("ods脚本生成页面获取筛选列表接口")
     @GetMapping(value = "/getOdsSystemFilterList")
     public Result getOdsSystemFilterList() {
         Result result=new Result();
@@ -68,6 +73,7 @@ public class GenerateScriptController {
         return result.success(systems);
     }
 
+    @ApiOperation("dw脚本生成页面按系统名筛选接口")
     @PostMapping(value = "/getDwListByFilter")
     public Result getDwListByFilter(@RequestBody Page reqParams) {
         Result result=new Result();
@@ -76,6 +82,7 @@ public class GenerateScriptController {
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
         return result.success(page);
     }
+    @ApiOperation("ods脚本生成页面按系统名筛选接口")
     @PostMapping(value = "/getOdsListByFilter")
     public Result getOdsListByFilter(@RequestBody Page reqParams) {
         Result result=new Result();
@@ -91,6 +98,7 @@ public class GenerateScriptController {
     * @Param: * @param null 1
     * @return:
     */
+    @ApiOperation("获取dw脚本生成页面表清单")
     @GetMapping(value = "/getDwTabList")
     public Result getDwTabList(Page reqParams) {
         Result result=new Result();
@@ -106,6 +114,7 @@ public class GenerateScriptController {
     * @Param: * @param null 1 
     * @return:
     */
+    @ApiOperation("生成dw初始化脚本")
     @PostMapping(value = "/generateDwInitScript")
     public Result generateDwInitScript(@RequestBody String data) {
         Result result=new Result();
@@ -200,6 +209,7 @@ public class GenerateScriptController {
     /**
      * @return 返回生成ODS脚本状态
      */
+    @ApiOperation("获取ods脚本生成页面表清单接口")
     @GetMapping(value = "/getODSTableInfo")
     @ResponseBody
     public Result getODSTableInfo(Page reqParams){
@@ -213,6 +223,7 @@ public class GenerateScriptController {
     /**
      * @return 获取前端的数据，解析所需要的字段
      */
+    @ApiOperation("生成ods初始化脚本")
     @PostMapping(value = "/generateSqoopScript")
     @ResponseBody
     public Result generateSqoopScript(@RequestBody String data){

@@ -9,14 +9,13 @@ import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.IOUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -29,6 +28,7 @@ import java.util.*;
 /**
  * Created by zhangdongmao on 2019/6/3.
  */
+@Api(value = "exportScript",description = "初始化ODS/DW脚本导出")
 @RestController
 @RequestMapping(value = "/exportScript")
 public class ExportScriptController {
@@ -45,7 +45,8 @@ public class ExportScriptController {
     /**
      * 获取要保存ODS脚本的表信息
      */
-    @RequestMapping(value = "/getOdsTabList")
+    @ApiOperation("获取ODS脚本导出清单")
+    @GetMapping(value = "/getOdsTabList")
     public Result getOdsTabList(@RequestParam("schema") String schema) {
         Result result = new Result();
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findOdsScriptTableInfo(schema);
@@ -56,7 +57,8 @@ public class ExportScriptController {
     /**
      * 获取要保存DW脚本的表信息
      */
-    @RequestMapping(value = "/getDwTabList")
+    @ApiOperation("获取DW脚本导出清单")
+    @GetMapping(value = "/getDwTabList")
     public Result getDwTabList(@RequestParam("schema") String schema) {
         Result result = new Result();
         List<CjDataSourceTabInfo> dwScriptTableInfos = cjDataSourceTabInfoService.findDwScriptTableInfo(schema);
@@ -67,7 +69,8 @@ public class ExportScriptController {
     /**
      * 保存ODS脚本到本地文件夹
      */
-    @RequestMapping(value = "/exportOdsScript")
+    @ApiOperation("导出ODS脚本")
+    @GetMapping(value = "/exportOdsScript")
     public void exportOdsScript(@RequestBody String data,
                                 HttpServletResponse response) {
         OutputStream output = null;
@@ -120,7 +123,8 @@ public class ExportScriptController {
     /**
      * 保存DW脚本到本地文件夹
      */
-    @RequestMapping(value = "/exportDwScript")
+    @ApiOperation("导出dw脚本")
+    @GetMapping(value = "/exportDwScript")
     public void exportDwScript(@RequestBody String data,
                                HttpServletResponse response) {
         OutputStream output = null;
@@ -176,7 +180,7 @@ public class ExportScriptController {
      * @param flag 1=ods 0=dw
      * @return
      */
-    @RequestMapping(value = "/getFilterList")
+    @GetMapping(value = "/getFilterList")
     public Result getFilterList(@RequestParam("flag") String flag) {
         Result result = new Result();
         List<CjDataSourceTabInfo> sysAndSchemaList = cjDataSourceTabInfoService.findOdsExportTableInfoByFilterList(flag);

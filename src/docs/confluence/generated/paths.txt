@@ -1,0 +1,2389 @@
+
+h2. 资源 {anchor:paths}
+
+h3. Datalake-table-status-contrller {anchor:datalake-table-status-contrller_resource}
+Datalake Table Status Contrller
+
+
+h4. exportExcle {anchor:exportexcleusingpost}
+{noformat}
+POST /tableStatus/exportExcle
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*dataList*\\ \\ _必填_||dataList||< [ExclePropertyModel|#exclepropertymodel] > array|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||无内容|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/tableStatus/exportExcle
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+[ {
+  "businessSystemNameShortName" : "string",
+  "dataSourceSchema" : "string",
+  "date" : "string",
+  "dwCount" : "string",
+  "odsCount" : "string",
+  "tableCount" : "string"
+} ]
+{code}
+
+
+h4. getStatusBySys {anchor:getstatusbysysusingpost}
+{noformat}
+POST /tableStatus/getStatusBySys
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[PageGeorge<T>«CjDataSourceTabInfo»|#7f4ba0f109180f5993eeb37df6fb2a04]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/tableStatus/getStatusBySys
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : {
+    "businessSystemId" : "string",
+    "businessSystemNameShortName" : "string",
+    "dataFlagForCrtDwDll" : "string",
+    "dataFlagForCrtDwHive" : "string",
+    "dataFlagForCrtDwScript" : "string",
+    "dataFlagForCrtOdsDll" : "string",
+    "dataFlagForCrtOdsHive" : "string",
+    "dataFlagForCrtOdsScript" : "string",
+    "dataFlagForGetCols" : "string",
+    "dataFlagForGetRows" : "string",
+    "dataSourceSchema" : "string",
+    "dataSourceTable" : "string",
+    "dataSourceTableComment" : "string",
+    "date" : "string",
+    "dwCount" : "string",
+    "lastModifyBy" : "string",
+    "lastModifyDt" : "string",
+    "odsCount" : "string",
+    "tableCount" : "string"
+  }
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getStatusList {anchor:getstatuslistusingget}
+{noformat}
+GET /tableStatus/getStatusList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||类型||
+|*Query*|*pagenum*\\ \\ _可选_||integer (int32)|
+|*Query*|*pagesize*\\ \\ _可选_||integer (int32)|
+|*Query*|*query*\\ \\ _可选_||< string > array(multi)|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/tableStatus/getStatusList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getSysList {anchor:getsyslistusingget}
+{noformat}
+GET /tableStatus/getSysList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/tableStatus/getSysList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. EnterHuOverview {anchor:enterhuoverview_resource}
+入湖总览
+
+
+h4. 根据表名获取表的详细信息 {anchor:selectbytableusingget}
+{noformat}
+GET /enterHuOverview/getByTableInfo
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*schema*\\ \\ _必填_||schema||[String|#string]|
+|*Body*|*systemname*\\ \\ _必填_||系统名||[String|#string]|
+|*Body*|*tablename*\\ \\ _必填_||表名||[String|#string]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/enterHuOverview/getByTableInfo
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4.  获取去重的Schema {anchor:getschemausingget}
+{noformat}
+GET /enterHuOverview/getSchema
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*systemname*\\ \\ _必填_||系统名||[String|#string]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/enterHuOverview/getSchema
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取表信息列表 {anchor:getsysnameandschemaandtablenameusingget}
+{noformat}
+GET /enterHuOverview/getSysNameAndSchemaAndTableName
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*pagenum*\\ \\ _必填_||当前页数||integer (int32)|
+|*Query*|*pagesize*\\ \\ _必填_||页面大小||integer (int32)|
+|*Query*|*query*\\ \\ _必填_||数据||object|
+|*Body*|*schema*\\ \\ _可选_||schema||[String|#string]|
+|*Body*|*systemname*\\ \\ _可选_||系统名||[String|#string]|
+|*Body*|*tablename*\\ \\ _可选_||表明||[String|#string]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/enterHuOverview/getSysNameAndSchemaAndTableName
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "object"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4.  获取去重的SystemName {anchor:getsystemnameusingget}
+{noformat}
+GET /enterHuOverview/getSystemName
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/enterHuOverview/getSystemName
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. Export-script-controller {anchor:export-script-controller_resource}
+初始化ODS/DW脚本导出
+
+
+h4. 导出dw脚本 {anchor:exportdwscriptusingget}
+{noformat}
+GET /exportScript/exportDwScript
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/exportDwScript
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h4. 导出ODS脚本 {anchor:exportodsscriptusingget}
+{noformat}
+GET /exportScript/exportOdsScript
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/exportOdsScript
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h4. 获取DW脚本导出清单 {anchor:getdwtablistusingget}
+{noformat}
+GET /exportScript/getDwTabList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*schema*\\ \\ _必填_||schema||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getDwTabList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "schema" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterList {anchor:getfilterlistusingget}
+{noformat}
+GET /exportScript/getFilterList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*flag*\\ \\ _必填_||flag||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "flag" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingpost}
+{noformat}
+POST /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingget}
+{noformat}
+GET /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingput}
+{noformat}
+PUT /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingdelete}
+{noformat}
+DELETE /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*204*||No Content||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingpatch}
+{noformat}
+PATCH /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*204*||No Content||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusinghead}
+{noformat}
+HEAD /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*204*||No Content||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. getFilterResults {anchor:getfilterresultsusingoptions}
+{noformat}
+OPTIONS /exportScript/getFilterResults
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*204*||No Content||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getFilterResults
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取ODS脚本导出清单 {anchor:getodstablistusingget}
+{noformat}
+GET /exportScript/getOdsTabList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*schema*\\ \\ _必填_||schema||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/exportScript/getOdsTabList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "schema" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. Generate-script-controller {anchor:generate-script-controller_resource}
+ods/dw脚本生成页面
+
+
+h4. 生成dw初始化脚本 {anchor:generatedwinitscriptusingpost}
+{noformat}
+POST /generateScript/generateDwInitScript
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/generateDwInitScript
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 生成ods初始化脚本 {anchor:generatesqoopscriptusingpost}
+{noformat}
+POST /generateScript/generateSqoopScript
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/generateSqoopScript
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. dw脚本生成页面按系统名筛选接口 {anchor:getdwlistbyfilterusingpost}
+{noformat}
+POST /generateScript/getDwListByFilter
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[Page|#page]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getDwListByFilter
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : [ "string" ]
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. dw脚本生成页面获取筛选列表接口 {anchor:getdwsystemfilterlistusingget}
+{noformat}
+GET /generateScript/getDwSystemFilterList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getDwSystemFilterList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取dw脚本生成页面表清单 {anchor:getdwtablistusingget_1}
+{noformat}
+GET /generateScript/getDwTabList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||类型||
+|*Query*|*pagenum*\\ \\ _可选_||integer (int32)|
+|*Query*|*pagesize*\\ \\ _可选_||integer (int32)|
+|*Query*|*query*\\ \\ _可选_||< string > array(multi)|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getDwTabList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取ods脚本生成页面表清单接口 {anchor:getodstableinfousingget}
+{noformat}
+GET /generateScript/getODSTableInfo
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||类型||
+|*Query*|*pagenum*\\ \\ _可选_||integer (int32)|
+|*Query*|*pagesize*\\ \\ _可选_||integer (int32)|
+|*Query*|*query*\\ \\ _可选_||< string > array(multi)|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getODSTableInfo
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. ods脚本生成页面按系统名筛选接口 {anchor:getodslistbyfilterusingpost}
+{noformat}
+POST /generateScript/getOdsListByFilter
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[Page|#page]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getOdsListByFilter
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : [ "string" ]
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. ods脚本生成页面获取筛选列表接口 {anchor:getodssystemfilterlistusingget}
+{noformat}
+GET /generateScript/getOdsSystemFilterList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/generateScript/getOdsSystemFilterList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. GetSourceMetaData {anchor:getsourcemetadata_resource}
+初始化业务元数据
+
+
+h4. 生成schema数据信息 {anchor:setstautsusingpost}
+{noformat}
+POST /getSourceMetaData/getConnection
+{noformat}
+
+
+h5. 说明
+List<ViewSourceSystemEntity> 复杂对象
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*sourcesysteminfo*\\ \\ _必填_||sourcesysteminfo||< [ViewSourceSystemEntity|#viewsourcesystementity] > array|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}application/json{noformat}
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/getConnection
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+[ {
+  "business_system_ID" : "string",
+  "business_system_name_short_name" : "string",
+  "data_base_type" : "string",
+  "status" : "string"
+} ]
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取配置的参数 {anchor:getdatasourceinfousingget}
+{noformat}
+GET /getSourceMetaData/getDataInfo
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*pagenum*\\ \\ _必填_||当前页数||integer (int32)|
+|*Query*|*pagesize*\\ \\ _必填_||页面大小||integer (int32)|
+|*Query*|*query*\\ \\ _必填_||数据||object|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/getDataInfo
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "object"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取 schema信息表 {anchor:getschemausingget_1}
+{noformat}
+GET /getSourceMetaData/getSchema
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*pagenum*\\ \\ _必填_||当前页数||integer (int32)|
+|*Query*|*pagesize*\\ \\ _必填_||页面大小||integer (int32)|
+|*Query*|*query*\\ \\ _必填_||数据||object|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/getSchema
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "object"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取表及字段的查询 {anchor:getdatainfobyfilterusingpost}
+{noformat}
+POST /getSourceMetaData/getSchemaByFilter
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[PageGeorge<T>«List«string»»|#ca8e551132bc628e96a324037be3936d]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/getSchemaByFilter
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : [ "string" ]
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取源系统数据模式 {anchor:getsystemfilterlistusingget}
+{noformat}
+GET /getSourceMetaData/getSystemFilterList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/getSystemFilterList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 按schema导入元数据 {anchor:importingmetadatausingpost}
+{noformat}
+POST /getSourceMetaData/importingMetadata
+{noformat}
+
+
+h5. 说明
+List<CjDataSourceSystemInfo> 复杂对象
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*sourcesysteminfo*\\ \\ _必填_||sourcesysteminfo||< [CjDataSourceSystemInfo|#cjdatasourcesysteminfo] > array|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}application/json{noformat}
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/getSourceMetaData/importingMetadata
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+[ {
+  "businessSystemId" : "string",
+  "businessSystemNameShortName" : "string",
+  "dataSourceSchema" : "string",
+  "lastModifyBy" : "string",
+  "lastModifyDt" : "string"
+} ]
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. HiveCreateTable {anchor:hivecreatetable_resource}
+hive建表
+
+
+h4. ods建表接口 {anchor:createodstableusingpost}
+{noformat}
+POST /hiveCreateTable/createODSTable
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/createODSTable
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. dw建表接口 {anchor:dwcreatetableusingpost}
+{noformat}
+POST /hiveCreateTable/dWCreateTable
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*data*\\ \\ _必填_||data||string|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/dWCreateTable
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{ }
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. dw建表页面获取表清单接口 {anchor:getdwcreatetablistusingget}
+{noformat}
+GET /hiveCreateTable/getDWCreateTabList
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||类型||
+|*Query*|*pagenum*\\ \\ _可选_||integer (int32)|
+|*Query*|*pagesize*\\ \\ _可选_||integer (int32)|
+|*Query*|*query*\\ \\ _可选_||< string > array(multi)|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getDWCreateTabList
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "string"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. dw建表页面按系统名和schema筛选接口 {anchor:getdwcreatetablistbyfilterusingpost}
+{noformat}
+POST /hiveCreateTable/getDWCreateTabListByFilter
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[PageGeorge<T>«List«string»»|#ca8e551132bc628e96a324037be3936d]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getDWCreateTabListByFilter
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : [ "string" ]
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取dw建表页面的筛选列表 {anchor:getdwsystemandschemafilterlistusingget}
+{noformat}
+GET /hiveCreateTable/getDWSystemAndSchemaFilterList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getDWSystemAndSchemaFilterList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. ODS建表页面按系统名和schema筛选接口 {anchor:getodscreatetablistbyfilterusingpost}
+{noformat}
+POST /hiveCreateTable/getODSCreateTabListByFilter
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Body*|*reqParams*\\ \\ _必填_||reqParams||[Page|#page]|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*201*||Created||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getODSCreateTabListByFilter
+{code}
+
+
+h6. 请求 body
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : [ "string" ]
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. 获取ods建表页面的筛选列表 {anchor:getodssystemandschemafilterlistusingget}
+{noformat}
+GET /hiveCreateTable/getODSSystemAndSchemaFilterList
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getODSSystemAndSchemaFilterList
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h4. ods建表页面获取表清单接口 {anchor:getodstableusingget}
+{noformat}
+GET /hiveCreateTable/getODSTableInfo
+{noformat}
+
+
+h5. 参数
+
+||类型||名称||说明||类型||
+|*Query*|*pagenum*\\ \\ _必填_||当前页数||integer (int32)|
+|*Query*|*pagesize*\\ \\ _必填_||页面大小||integer (int32)|
+|*Query*|*query*\\ \\ _必填_||数据||object|
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||[Result|#result]|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/hiveCreateTable/getODSTableInfo
+{code}
+
+
+h6. 请求 query
+{code:language=json}
+{
+  "pagenum" : 0,
+  "pagesize" : 0,
+  "query" : "object"
+}
+{code}
+
+
+h5. HTTP响应示例
+
+h6. 响应 200
+{code:language=json}
+{
+  "code" : 0,
+  "data" : "object",
+  "msg" : "string"
+}
+{code}
+
+
+h3. Kafka-test-controller {anchor:kafka-test-controller_resource}
+Kafka Test Controller
+
+
+h4. getDWSystemAndSchemaFilterList {anchor:getdwsystemandschemafilterlistusingget_1}
+{noformat}
+GET /kafka/sender
+{noformat}
+
+
+h5. 响应
+
+||HTTP代码||说明||类型||
+|*200*||OK||无内容|
+|*401*||Unauthorized||无内容|
+|*403*||Forbidden||无内容|
+|*404*||Not Found||无内容|
+
+
+h5. 消耗
+
+* {noformat}application/json{noformat}
+
+
+h5. 生成
+
+* {noformat}*/*{noformat}
+
+
+h5. HTTP请求示例
+
+h6. 请求 path
+{code}
+/kafka/sender
+{code}
+
+
+
