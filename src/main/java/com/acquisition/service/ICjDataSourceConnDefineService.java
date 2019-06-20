@@ -24,4 +24,6 @@ public interface ICjDataSourceConnDefineService {
 
     String selectSystemName(String businessSystemNameShortName);
 
+    CjDataSourceConnDefine selectDataBaseType(String sysname, String schema);
+
 }

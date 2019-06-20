@@ -38,7 +38,9 @@ public interface CjDataSourceConnDefineMapper {
 
     List<CjDataSourceConnDefine> findListBySystemID(String[] arr);
 
-    String selectBySystemID(@Param("syid")String syid);
+    String selectBySystemID(@Param("syid") String syid);
 
     String selectSystemName(@Param("businessSystemNameShortName") String businessSystemNameShortName);
+
+    CjDataSourceConnDefine selectDataBaseType(@Param("sysname") String sysname, @Param("schema") String schema);
 }

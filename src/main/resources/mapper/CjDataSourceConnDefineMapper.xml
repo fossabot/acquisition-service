@@ -388,4 +388,10 @@
     from cj_data_source_conn_define
     WHERE business_system_name_short_name = #{businessSystemNameShortName}
   </select>
+
+  <select id="selectDataBaseType" resultMap="BaseResultMap">
+        SELECT business_system_ID,data_base_type,data_source_schema  from cj_data_source_conn_define WHERE business_system_name_short_name=#{sysname} GROUP BY data_base_type HAVING(CASE COUNT(1)>1
+	WHEN data_source_schema=#{schema} THEN 1=1 END )
+    </select>
+
 </mapper>

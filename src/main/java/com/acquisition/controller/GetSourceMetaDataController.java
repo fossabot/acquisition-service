@@ -277,7 +277,7 @@ public class GetSourceMetaDataController {
                     }
                 }
 
-                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName(), table.getDataSourceSchema());
+                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName(), table.getDataSourceSchema(),null);
                 /*iCjDataSourceTabInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());*/
             }
 

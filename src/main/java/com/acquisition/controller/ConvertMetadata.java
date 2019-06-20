@@ -1,8 +1,14 @@
 package com.acquisition.controller;
 
+import com.acquisition.entity.CjDataSourceConnDefine;
+import com.acquisition.entity.CjDataSourceSystemInfo;
 import com.acquisition.entity.CjDataSourceTabColInfo;
+import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.excel.EtuInfo;
+import com.acquisition.service.ICjDataSourceConnDefineService;
 import com.acquisition.service.ICjDataSourceSystemInfoService;
+import com.acquisition.service.ICjDataSourceTabColInfoService;
+import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.EasyExcelUtil;
 import com.acquisition.util.Result;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -35,8 +41,15 @@ import java.util.List;
 public class ConvertMetadata {
 
 
-    @Resource(name = "cjDataSourceSystemInfoServiceImpl")
-    ICjDataSourceSystemInfoService iCjDataSourceSystemInfoService;
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
+
+
+    @Resource(name = "cjDataSourceTabColInfoServiceImpl")
+    ICjDataSourceTabColInfoService iCjDataSourceTabColInfoService;
+
+    @Resource(name = "cjDataSourceTabInfoServiceImpl")
+    ICjDataSourceTabInfoService iCjDataSourceTabInfoService;
 
 
     @ApiOperation(" 上传excel并转成map数据")
@@ -82,24 +95,29 @@ public class ConvertMetadata {
 
     @ApiOperation(value = "导入元数据", notes = "List<EtuInfo> 复杂对象", produces = "application/json")
     @PostMapping("/importingMetadata")
-    public Result importingMetadata(@RequestBody List<EtuInfo> etu) {
+    public Result importingMetadata(@RequestBody List<EtuInfo> etuEntity) {
         Result result = new Result();
-        if (!etu.isEmpty()) {
+        if (!etuEntity.isEmpty()) {
+            List<CjDataSourceSystemInfo> listSysEntity = new ArrayList<>();
             List<CjDataSourceTabColInfo> datasourcetabcolInfo = new ArrayList<>();
-            for (EtuInfo ent : etu) {
+            for (EtuInfo etuInfo : etuEntity) {
                 Connection con = null;
                 Statement st = null;
                 ResultSet rs = null;
+                CjDataSourceSystemInfo model = new CjDataSourceSystemInfo();
+                model.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
+                model.setDataSourceSchema(etuInfo.getDataSourceSchema());
+                listSysEntity.add(model);
+                CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.selectDataBaseType(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema());
                 try {
-                    String basetype = iCjDataSourceSystemInfoService.selectDistDataBaseType(ent.getBusinessSystemNameShortName());
-                    GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((ent.getBusinessSystemNameShortName() + (basetype.equals("sqlserver") ? ent.getDataSourceSchema() : "-")));
+                    GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((etuInfo.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuInfo.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
                     if (con == null) {
                         continue;
                     }
                     st = con.createStatement();
                     String sql = "";
-                    if (basetype.equals("mysql")) {
+                    if (connDefine.getDataBaseType().equals("mysql")) {
                         sql = "select DISTINCT " +
                                 " tab_col.table_schema AS data_source_schema " +
                                 ",tab_col.table_name AS data_source_table" +
@@ -118,10 +136,10 @@ public class ConvertMetadata {
                                 "from information_schema.COLUMNS tab_col " +
                                 "LEFT JOIN information_schema.TABLES tab_tab " +
                                 "ON (tab_col.TABLE_NAME=tab_tab.TABLE_NAME AND tab_col.table_schema=tab_tab.TABLE_SCHEMA)" +
-                                "WHERE tab_col.table_schema='" + ent.getDataSourceSchema() + "' and tab_col.table_name='" + ent.getDataSourceTable() + "'" +
+                                "WHERE tab_col.table_schema='" + etuInfo.getDataSourceSchema() + "' and tab_col.table_name='" + etuInfo.getDataSourceTable() + "'" +
                                 "ORDER BY tab_col.table_schema,tab_col.table_name,tab_col.ordinal_position";
-                    } else if (basetype.equals("sqlserver")) {
-                        sql = "select '" + ent.getDataSourceSchema() + "' AS data_source_schema " +
+                    } else if (connDefine.getDataBaseType().equals("sqlserver")) {
+                        sql = "select '" + etuInfo.getDataSourceSchema() + "' AS data_source_schema " +
                                 ",cast(d.name as varchar(200))  as data_source_table " +
                                 ",cast(f.value as varchar(1000)) as data_source_table_comment " +
                                 ",cast(a.name as varchar(200))  as data_source_col_name " +
@@ -139,9 +157,9 @@ public class ConvertMetadata {
                                 "from sysobjects d inner join syscolumns a on a.id=d.id and d.xtype='U' " +
                                 "left join systypes b on a.xusertype=b.xusertype " +
                                 "left join sys.extended_properties g on a.id=g.major_id and a.colid=g.minor_id " +
-                                "left join sys.extended_properties f on d.id=f.major_id and f.minor_id=0 where a.name='" + ent.getDataSourceTable() + "'" +
+                                "left join sys.extended_properties f on d.id=f.major_id and f.minor_id=0 where d.name='" + etuInfo.getDataSourceTable() + "'" +
                                 "order by d.name,a.colid";
-                    } else if (basetype.equals("oracle")) {
+                    } else if (connDefine.getDataBaseType().equals("oracle")) {
                         sql = "SELECT  T.owner as data_source_schema ,T.table_name as data_source_table,T.tab_comments as data_source_table_comment,T.column_name as data_source_col_name,T.column_id as data_source_col_order,T.primarykey as data_source_col_primarykey,T.isnullflag as data_source_col_isnull_flag,T.data_type as data_source_col_datatype,T.data_length as data_source_col_len,T.data_precision as data_source_col_precision,T.data_scale as data_source_col_scale " +
                                 ",replace(T.comments,chr(10)) AS data_source_col_comment  " +
                                 "FROM  (  " +
@@ -165,15 +183,15 @@ public class ConvertMetadata {
                                 "ON (tab1.TABLE_name=tab3.TABLE_name AND tab1.owner=tab3.owner AND tab1.column_name=tab3.primaryKEY) " +
                                 ") T1 LEFT JOIN all_col_comments T2  " +
                                 "ON (T1.TABLE_name=T2.TABLE_name AND T1.column_name=T2.column_name AND T1.OWNER=T2.OWNER) " +
-                                " WHERE T1.OWNER IN (UPPER('" + ent.getDataSourceSchema() + "')) and  T.table_name='" + ent.getDataSourceTable() + "'" +
+                                " WHERE T1.OWNER = UPPER('" + etuInfo.getDataSourceSchema() + "') and  T1.table_name='" + etuInfo.getDataSourceTable() + "'" +
                                 ") T " +
                                 "ORDER BY T.OWNER,T.TABLE_name ,T.column_id ";
                     }
                     rs = st.executeQuery(sql);
                     while (rs.next()) {
                         CjDataSourceTabColInfo sourcetabcolinfo = new CjDataSourceTabColInfo();
-                       /* sourcetabcolinfo.setBusinessSystemId(table.getBusinessSystemId());*/
-                        sourcetabcolinfo.setBusinessSystemNameShortName(ent.getBusinessSystemNameShortName());
+                        sourcetabcolinfo.setBusinessSystemId(connDefine.getBusinessSystemId());
+                        sourcetabcolinfo.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
                         sourcetabcolinfo.setDataSourceSchema(rs.getString("data_source_schema"));
                         sourcetabcolinfo.setDataSourceTable(rs.getString("data_source_table"));
                         sourcetabcolinfo.setDataSourceTableComment(rs.getString("data_source_table_comment"));
@@ -202,7 +220,33 @@ public class ConvertMetadata {
                         }
                     }
                 }
+                iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
+            }
 
+            if (datasourcetabcolInfo.size() > 0 && InBatchesInsert(datasourcetabcolInfo)) {
+                List<CjDataSourceTabColInfo> tabcolinfo = iCjDataSourceTabColInfoService.findListOnlyTable(listSysEntity);
+                List<CjDataSourceTabInfo> arrDataSourceTabInfo = new ArrayList<>();
+                if (tabcolinfo != null) {
+                    for (CjDataSourceTabColInfo model : tabcolinfo) {
+                        CjDataSourceTabInfo en = new CjDataSourceTabInfo();
+                        en.setBusinessSystemId(model.getBusinessSystemId());
+                        en.setBusinessSystemNameShortName(model.getBusinessSystemNameShortName());
+                        en.setDataSourceSchema(model.getDataSourceSchema());
+                        en.setDataSourceTable(model.getDataSourceTable());
+                        en.setDataSourceTableComment(model.getDataSourceTableComment());
+                        en.setDataFlagForGetCols("1");
+                        arrDataSourceTabInfo.add(en);
+                    }
+                    if (arrDataSourceTabInfo.size() > 0 && iCjDataSourceTabInfoService.insertBatch(arrDataSourceTabInfo) > 0) {
+                        result.success("");
+                    } else {
+                        result.error(200, "源库未新增表");
+                    }
+                } else {
+                    result.error(500, "查询失败");
+                }
+            } else {
+                result.error(200, "该schema下没有表");
             }
 
         } else {
@@ -212,5 +256,30 @@ public class ConvertMetadata {
         return result;
     }
 
+
+    /**
+     * 分批逻辑insert
+     *
+     * @return
+     */
+    public boolean InBatchesInsert(List<CjDataSourceTabColInfo> list) {
+        int size = list.size();
+        //一次性插入数据
+        int unitNum = 100;
+        int startIndex = 0;
+        int endIndex = 0;
+        while (size > 0) {
+            if (size > unitNum) {
+                endIndex = startIndex + unitNum;
+            } else {
+                endIndex = startIndex + size;
+            }
+            List<CjDataSourceTabColInfo> insertData = list.subList(startIndex, endIndex);
+            iCjDataSourceTabColInfoService.insertBatch(insertData);
+            size = size - unitNum;
+            startIndex = endIndex;
+        }
+        return true;
+    }
 
 }

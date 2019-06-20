@@ -49,6 +49,7 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
     public List<CjDataSourceConnDefine> findListBySystemID(String[] ides) {
         return cjDataSourceConnDefineMapper.findListBySystemID(ides);
     }
+
     @Override
     public String selectBySystemID(String syid) {
         return cjDataSourceConnDefineMapper.selectBySystemID(syid);
@@ -57,6 +58,11 @@ public class CjDataSourceConnDefineServiceImpl implements ICjDataSourceConnDefin
     @Override
     public String selectSystemName(String businessSystemNameShortName) {
         return cjDataSourceConnDefineMapper.selectSystemName(businessSystemNameShortName);
+    }
+
+    @Override
+    public CjDataSourceConnDefine selectDataBaseType(String sysname, String schema) {
+        return cjDataSourceConnDefineMapper.selectDataBaseType(sysname, schema);
     }
 
 }
