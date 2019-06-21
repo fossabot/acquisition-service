@@ -1,14 +1,8 @@
 package com.acquisition.controller;
 
-import com.acquisition.entity.CjDataSourceConnDefine;
-import com.acquisition.entity.CjDataSourceSystemInfo;
-import com.acquisition.entity.CjDataSourceTabColInfo;
-import com.acquisition.entity.CjDataSourceTabInfo;
+import com.acquisition.entity.*;
 import com.acquisition.entity.excel.EtuInfo;
-import com.acquisition.service.ICjDataSourceConnDefineService;
-import com.acquisition.service.ICjDataSourceSystemInfoService;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
+import com.acquisition.service.*;
 import com.acquisition.util.EasyExcelUtil;
 import com.acquisition.util.Result;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -26,7 +20,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +46,9 @@ public class ConvertMetadata {
 
     @Resource(name = "cjDataSourceTabInfoServiceImpl")
     ICjDataSourceTabInfoService iCjDataSourceTabInfoService;
+
+    @Resource(name = "cjDataSourceUniqueIndexInfoServiceImpl")
+    CjDataSourceUniqueIndexInfoService cjDataSourceUniqueIndexInfoService;
 
 
     @ApiOperation(" 上传excel并转成map数据")
@@ -95,12 +94,12 @@ public class ConvertMetadata {
 
     @ApiOperation(value = "导入元数据", notes = "List<EtuInfo> 复杂对象", produces = "application/json")
     @PostMapping("/importingMetadata")
-    public Result importingMetadata(@RequestBody List<EtuInfo> etuEntity) {
+    public Result importingMetadata(@RequestBody List<EtuInfo> reqParmsEtu) {
         Result result = new Result();
-        if (!etuEntity.isEmpty()) {
+        if (!reqParmsEtu.isEmpty()) {
             List<CjDataSourceSystemInfo> listSysEntity = new ArrayList<>();
             List<CjDataSourceTabColInfo> datasourcetabcolInfo = new ArrayList<>();
-            for (EtuInfo etuInfo : etuEntity) {
+            for (EtuInfo etuInfo : reqParmsEtu) {
                 Connection con = null;
                 Statement st = null;
                 ResultSet rs = null;
@@ -223,7 +222,7 @@ public class ConvertMetadata {
                 iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
             }
 
-            if (datasourcetabcolInfo.size() > 0 && InBatchesInsert(datasourcetabcolInfo)) {
+            if (datasourcetabcolInfo.size() > 0 && inBatchesInsert(datasourcetabcolInfo)) {
                 List<CjDataSourceTabColInfo> tabcolinfo = iCjDataSourceTabColInfoService.findListOnlyTable(listSysEntity);
                 List<CjDataSourceTabInfo> arrDataSourceTabInfo = new ArrayList<>();
                 if (tabcolinfo != null) {
@@ -262,7 +261,7 @@ public class ConvertMetadata {
      *
      * @return
      */
-    public boolean InBatchesInsert(List<CjDataSourceTabColInfo> list) {
+    public boolean inBatchesInsert(List<CjDataSourceTabColInfo> list) {
         int size = list.size();
         //一次性插入数据
         int unitNum = 100;
@@ -281,5 +280,122 @@ public class ConvertMetadata {
         }
         return true;
     }
+
+
+    @ApiOperation(value = "导入索引", notes = "List<EtuInfo> ", produces = "application/json")
+    @PostMapping("/importIndex")
+    public Result importIndex(@RequestBody List<EtuInfo> reqParmsEtu) {
+        Result result = new Result();
+        if (!reqParmsEtu.isEmpty()) {
+
+            List<CjDataSourceUniqueIndexInfo> listModel = new ArrayList<>();
+
+            for (EtuInfo etuEnt : reqParmsEtu) {
+                Connection con = null;
+
+                Statement st = null;
+
+                ResultSet rs = null;
+
+                CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.selectDataBaseType(etuEnt.getBusinessSystemNameShortName(), etuEnt.getDataSourceSchema());
+
+                try {
+                    con = GroupPoolFactory.getInstance((etuEnt.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuEnt.getDataSourceSchema() : "-"))).getConnection();
+
+                    if (con == null) {
+                        continue;
+                    }
+
+                    st = con.createStatement();
+
+                    String executeSql = reqSql(connDefine.getDataBaseType(), etuEnt);
+
+                    rs = st.executeQuery(executeSql);
+
+                    while (rs.next()) {
+
+                        CjDataSourceUniqueIndexInfo model = new CjDataSourceUniqueIndexInfo();
+                        model.setBusinessSystemId(connDefine.getBusinessSystemId());
+                        model.setBusinessSystemNameShortName(etuEnt.getBusinessSystemNameShortName());
+                        model.setDataSourceSchema(etuEnt.getDataSourceSchema());
+                        model.setDataSourceTable(etuEnt.getDataSourceTable());
+                        model.setUniqueIndexName(rs.getString("index_name"));
+                        model.setDataSourceColName(rs.getString("column_name"));
+                        model.setDataSourceColOrder(rs.getString("column_position"));
+                        model.setLastModifyDt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                        /*model.setLastModifyBy(rs.getString("data_source_schema"));*/
+                        listModel.add(model);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (con != null) {
+                        try {
+                            rs.close();
+
+                            st.close();
+
+                            con.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            if (cjDataSourceUniqueIndexInfoService.insertBatch(listModel) > 0) {
+                result.success("");
+            } else {
+                result.error(200, "源库未新增表");
+            }
+
+        } else {
+            result.error(500, "请选择数据");
+        }
+        return result;
+    }
+
+
+    /**
+     * 获取sql
+     *
+     * @param dataBaseType
+     * @return
+     */
+    private String reqSql(String dataBaseType, EtuInfo etuEnt) {
+        String sql = "";
+        if (dataBaseType.equals("mysql")) {
+            sql = "SELECT " +
+                    " tab1.table_schema as owner, " +
+                    " tab1.table_name, " +
+                    " tab1.index_name, " +
+                    " tab1.column_name as column_name, " +
+                    " tab1.seq_in_index as column_position " +
+                    " from INFORMATION_SCHEMA.STATISTICS tab1 " +
+                    " where tab1.non_unique=0 and tab1.table_schema='" + etuEnt.getDataSourceSchema() + "' " +
+                    " and tab1.table_name='" + etuEnt.getDataSourceTable() + "' " +
+                    " order by tab1.table_schema,tab1.table_name,tab1.seq_in_index;";
+        } else if (dataBaseType.equals("sqlserver")) {
+            sql = "SELECT '" + etuEnt.getDataSourceSchema() + "' AS owner, t4.name AS table_name,t1.name AS index_name,t3.name AS column_name,t3.colid AS column_position " +
+                    "FROM sys.indexes t1 " +
+                    "join sys.index_columns t2  " +
+                    "on (t1.object_id=t2.object_id and t1.index_id=t2.index_id and t1.is_unique='true') " +
+                    "join syscolumns t3  " +
+                    "on (t3.id=t1.object_id and t3.colid=t2.column_id) " +
+                    "join sys.sysobjects t4 " +
+                    "on (t4.id=t1.object_id and t4.xtype='U') " +
+                    "WHERE T4.NAME='" + etuEnt.getDataSourceTable() + "';";
+        } else if (dataBaseType.equals("oracle")) {
+            sql = "SELECT tab1.owner,tab1.table_name,tab1.index_name,tab2.column_name,tab2.column_position " +
+                    "FROM all_indexes tab1 JOIN ALL_ind_columns tab2 " +
+                    "ON (tab1.owner=tab2.INDEX_owner AND tab1.table_name=tab2.table_name " +
+                    "AND tab1.uniqueness='UNIQUE' AND tab1.index_name=tab2.index_name) " +
+                    "WHERE tab2.INDEX_owner='" + etuEnt.getDataSourceSchema() + "' AND tab2.table_name='" + etuEnt.getDataSourceTable() + "'" +
+                    "ORDER BY tab1.owner,tab1.table_name,tab1.index_name,tab2.column_position;";
+        }
+        return sql;
+    }
+
 
 }
