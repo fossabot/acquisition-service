@@ -31,7 +31,7 @@
 
 
     <delete id="deleteBatch" parameterType="java.util.List">
-        delete cj_data_source_unique_index_info where
+        delete from cj_data_source_unique_index_info where
         (business_system_name_short_name,data_source_schema,data_source_table) in
         <foreach item="item" index="index" collection="list" separator="," open="(" close=")">
             (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})
