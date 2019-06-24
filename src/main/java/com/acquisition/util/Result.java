@@ -1,50 +1,36 @@
 package com.acquisition.util;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 /**
  * @author yxk
  * @Description: http请求返回Bean
  * @create 2019/5/31
  * @since 1.0.0
  */
+@ApiModel(value = "Result", description = "返回类型")
+@Data
 public class Result<T> {
     /**
      * 错误码.
      */
+    @ApiModelProperty(value = "返回状态码", name = "code")
     private Integer code;
 
     /**
      * 提示信息.
      */
+    @ApiModelProperty(value = "提示信息", name = "msg")
     private String msg;
 
     /**
-     * 具体的内容.
+     * 具体的内容
      */
+    @ApiModelProperty(value = "返回data", name = "data")
     private T data;
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 
     public Result success(T object) {
         this.setCode(200);
