@@ -2,11 +2,8 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjDwCrtTabDdlInfoService;
+import com.acquisition.service.*;
 import com.acquisition.util.*;
-import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -33,6 +30,9 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping(value = "/hiveCreateTable")
 public class HiveCreateTableController {
+
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    public ICjDataSourceConnDefineService cjDataSourceConnDefineService;
 
     @Resource(name = "cjDataSourceTabColInfoServiceImpl")
     public ICjDataSourceTabColInfoService cjDataSourceTabColInfoService;
@@ -204,6 +204,9 @@ public class HiveCreateTableController {
                     colComment=colName;
                     colName=PinyinUtil.getPinYin(colName);
                 }
+                if(colName.equals("src_table_name")){
+                    colName = "src_table_name_dl";
+                }
                 colType=cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
                 dwddl.append("    `"+colName+"`    "+colType+"    "+"comment '"+colComment+"'"+",\n");
             }
@@ -305,6 +308,8 @@ public class HiveCreateTableController {
         String colName = "";
         String colComment = "";
         String odsTableName="";
+        CjDataSourceConnDefine cjDataSourceConnDefine;
+        String businessSystemId="";
         StringBuffer odsDDL = new StringBuffer();
         Result result=new Result();
 
@@ -358,7 +363,13 @@ public class HiveCreateTableController {
                 preparedStatement = connection.prepareStatement(odsDDL.toString());
                 preparedStatement.execute();
 
-                cjOdsCrtTabDdlInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
+                if(cjDataSourceTabInfo.getBusinessSystemId()==null){
+                    cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfo.getBusinessSystemNameShortName(), cjDataSourceTabInfo.getDataSourceSchema());
+                    businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+                }else {
+                    businessSystemId = cjDataSourceTabInfo.getBusinessSystemId();
+                }
+                cjOdsCrtTabDdlInfo.setBusinessSystemId(businessSystemId);
                 cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
                 cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
                 cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());

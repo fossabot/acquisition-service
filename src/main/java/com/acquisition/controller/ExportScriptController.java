@@ -70,7 +70,7 @@ public class ExportScriptController {
      * 保存ODS脚本到本地文件夹
      */
     @ApiOperation("导出ODS脚本")
-    @GetMapping(value = "/exportOdsScript")
+    @PostMapping(value = "/exportOdsScript")
     public void exportOdsScript(@RequestBody String data,
                                 HttpServletResponse response) {
         OutputStream output = null;

@@ -19,6 +19,8 @@ import lombok.Setter;
 @Data
 public class EtuInfo extends BaseRowModel {
 
+    private String index;
+
     @ApiModelProperty(value = "源系统缩写", name = "businessSystemNameShortName", required = true)
     @ExcelProperty(value = {"源系统缩写"}, index = 0)
     private String businessSystemNameShortName;
@@ -30,5 +32,7 @@ public class EtuInfo extends BaseRowModel {
     @ApiModelProperty(value = "源表名", name = "dataSourceTable", required = true)
     @ExcelProperty(value = {"源表名"}, index = 2)
     private String dataSourceTable;
+
+    private String isExists;
 
 }

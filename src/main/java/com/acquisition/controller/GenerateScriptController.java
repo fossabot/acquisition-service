@@ -123,6 +123,8 @@ public class GenerateScriptController {
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
 
         for (CjDataSourceTabInfo cjDataSourceTabInfo:cjDataSourceTabInfos){
+            String odsColName;
+            String dwColName;
             String dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
             String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
             String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
@@ -139,7 +141,7 @@ public class GenerateScriptController {
                 odsTableName= PinyinUtil.getPinYin(odsTableName);
             }
             StringBuffer dwInitScript=new StringBuffer();
-            String colName;
+
             //通过系统名、数据模式、表名获取表的字段信息
             List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
 
@@ -149,14 +151,18 @@ public class GenerateScriptController {
             dwInitScript.append("insert overwrite table "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
             dwInitScript.append("select\n");
             for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
-                colName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
+                odsColName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
                 //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
                 p = Pattern.compile("[\u4e00-\u9fa5]");
-                m = p.matcher(colName);
+                m = p.matcher(odsColName);
                 if (m.find()) {
-                    colName= PinyinUtil.getPinYin(colName);
+                    odsColName= PinyinUtil.getPinYin(odsColName);
                 }
-                dwInitScript.append("`" + colName + "`    as    " + colName + ",\n");
+                dwColName=odsColName;
+                if(dwColName.equals("src_table_name")){
+                    dwColName = "src_table_name_dl";
+                }
+                dwInitScript.append("`" + odsColName + "`    as    " + dwColName + ",\n");
             }
 
 
@@ -238,6 +244,8 @@ public class GenerateScriptController {
      */
     public Result spliceSqoopScript(List<CjDataSourceTabInfo>  tabInfos){
         Result result =  new Result();
+        CjDataSourceConnDefine cjDataSourceConnDefine;
+        String businessSystemId="";
         String str1 = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
         String columns = "";
         String str2 = " no no init \"\" \"\" ";
@@ -285,7 +293,13 @@ public class GenerateScriptController {
 //            if (m.find()) {
 //                odsTableName= PinyinUtil.getPinYin(odsTableName);
 //            }
-            cjOdsDataScriptDefInfo.setBusinessSystemId(table.getBusinessSystemId());
+            if(table.getBusinessSystemId()==null){
+                cjDataSourceConnDefine = iCjDataSourceConnDefineService.selectDataBaseType(table.getBusinessSystemNameShortName(), table.getDataSourceSchema());
+                businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+            }else {
+                businessSystemId = table.getBusinessSystemId();
+            }
+            cjOdsDataScriptDefInfo.setBusinessSystemId(businessSystemId);
             cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(table.getBusinessSystemNameShortName());
             cjOdsDataScriptDefInfo.setDataSourceSchema(table.getDataSourceSchema());
             cjOdsDataScriptDefInfo.setDataSourceTable(table.getDataSourceTable());
