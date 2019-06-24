@@ -1,0 +1,94 @@
+
+h2. 定义 {anchor:definitions}
+
+h3. CjDataSourceSystemInfo {anchor:cjdatasourcesysteminfo}
+
+||名称||说明||类型||
+|*businessSystemId*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*businessSystemNameShortName*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataSourceSchema*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*lastModifyBy*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*lastModifyDt*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+
+
+h3. CjDataSourceTabInfo {anchor:cjdatasourcetabinfo}
+
+||名称||说明||类型||
+|*businessSystemId*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*businessSystemNameShortName*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtDwDll*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtDwHive*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtDwScript*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtOdsDll*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtOdsHive*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForCrtOdsScript*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForGetCols*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataFlagForGetRows*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataSourceSchema*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataSourceTable*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataSourceTableComment*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*date*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dwCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*lastModifyBy*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*lastModifyDt*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*odsCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*tableCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+
+
+h3. ExclePropertyModel {anchor:exclepropertymodel}
+
+||名称||说明||类型||
+|*businessSystemNameShortName*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dataSourceSchema*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*date*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*dwCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*odsCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*tableCount*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+
+
+h3. Page {anchor:page}
+
+||名称||说明||类型||
+|*pagenum*\\ \\ _可选_||*样例* : {noformat}0{noformat}||integer (int32)|
+|*pagesize*\\ \\ _可选_||*样例* : {noformat}0{noformat}||integer (int32)|
+|*query*\\ \\ _可选_||*样例* : {noformat}[ "string" ]{noformat}||< string > array|
+
+
+h3. PageGeorge<T>«CjDataSourceTabInfo» {anchor:7f4ba0f109180f5993eeb37df6fb2a04}
+page筛选对象
+
+
+||名称||说明||类型||
+|*pagenum*\\ \\ _必填_||当前页数\\ \\ *样例* : {noformat}0{noformat}||integer (int32)|
+|*pagesize*\\ \\ _必填_||页面大小\\ \\ *样例* : {noformat}0{noformat}||integer (int32)|
+|*query*\\ \\ _必填_||数据\\ \\ *样例* : {noformat}"[#cjdatasourcetabinfo]"{noformat}||[CjDataSourceTabInfo|#cjdatasourcetabinfo]|
+
+
+h3. PageGeorge<T>«List«string»» {anchor:ca8e551132bc628e96a324037be3936d}
+page筛选对象
+
+
+||名称||说明||类型||
+|*pagenum*\\ \\ _必填_||当前页数\\ \\ *样例* : {noformat}0{noformat}||integer (int32)|
+|*pagesize*\\ \\ _必填_||页面大小\\ \\ *样例* : {noformat}0{noformat}||integer (int32)|
+|*query*\\ \\ _必填_||数据\\ \\ *样例* : {noformat}[ "string" ]{noformat}||< string > array|
+
+
+h3. Result {anchor:result}
+
+||名称||说明||类型||
+|*code*\\ \\ _可选_||*样例* : {noformat}0{noformat}||integer (int32)|
+|*data*\\ \\ _可选_||*样例* : {noformat}"object"{noformat}||object|
+|*msg*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+
+
+h3. ViewSourceSystemEntity {anchor:viewsourcesystementity}
+
+||名称||说明||类型||
+|*business_system_ID*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*business_system_name_short_name*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*data_base_type*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+|*status*\\ \\ _可选_||*样例* : {noformat}"string"{noformat}||string|
+
+
+

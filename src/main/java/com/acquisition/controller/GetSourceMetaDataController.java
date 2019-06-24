@@ -93,6 +93,9 @@ public class GetSourceMetaDataController {
                         systeminfo.setBusinessSystemId(table.getBusinessSystemId());
                         DataSourceSystemInfo.add(systeminfo);
                     }
+                    for(int i=0;i<DataSourceSystemInfo.size();i++){
+                        System.out.println(DataSourceSystemInfo.get(i));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -112,10 +115,10 @@ public class GetSourceMetaDataController {
             if (DataSourceSystemInfo.size() > 0 && iCjDataSourceSystemInfoService.insertBatch(DataSourceSystemInfo) > 0) {
                 result.success("");
             } else {
-                result.error(500, "cj_data_source_system_info 导入失败");
+                result.error(500, "导入失败");
             }
         } else {
-            result.error(500, "cj_data_source_conn_define 查询数据null");
+            result.error(500, "连接未配置");
         }
         return result;
     }
@@ -154,7 +157,7 @@ public class GetSourceMetaDataController {
     }
 
 
-    @ApiOperation(value = "导入元数据", notes = "List<CjDataSourceSystemInfo> 复杂对象", produces = "application/json")
+    @ApiOperation(value = "按schema导入元数据", notes = "List<CjDataSourceSystemInfo> 复杂对象", produces = "application/json")
     @PostMapping("/importingMetadata")
     public Result importingMetadata(@RequestBody List<CjDataSourceSystemInfo> sourcesysteminfo) {
         Result result = new Result();

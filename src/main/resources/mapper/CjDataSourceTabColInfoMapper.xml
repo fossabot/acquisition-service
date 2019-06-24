@@ -497,6 +497,15 @@
             #{item.dataSourceSchema}
         </foreach>
     </select>
+    <select id="selectTabInfoByTable" resultMap="BaseResultMap" parameterType="java.util.List">
+        SELECT distinct
+        business_system_ID,business_system_name_short_name,data_source_schema,data_source_table,data_source_table_comment
+        FROM cj_data_source_tab_col_info
+        WHERE
+        business_system_name_short_name = #{item.businessSystemNameShortName}
+        AND data_source_schema = #{item.dataSourceSchema}
+        AND data_source_table = #{item.dataSourceTable}
+    </select>
 
     <delete id="deleteBySystemName" parameterType="java.lang.String">
     delete from cj_data_source_tab_col_info

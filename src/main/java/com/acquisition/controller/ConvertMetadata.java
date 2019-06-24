@@ -99,10 +99,13 @@ public class ConvertMetadata {
         if (!reqParmsEtu.isEmpty()) {
             List<CjDataSourceSystemInfo> listSysEntity = new ArrayList<>();
             List<CjDataSourceTabColInfo> datasourcetabcolInfo = new ArrayList<>();
+            List<CjDataSourceTabInfo> cjDataSourceTabInfos = new ArrayList<>();
             for (EtuInfo etuInfo : reqParmsEtu) {
                 Connection con = null;
                 Statement st = null;
                 ResultSet rs = null;
+                String dataSourceSchema="";
+                String dataSourceColComment="";
                 CjDataSourceSystemInfo model = new CjDataSourceSystemInfo();
                 model.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
                 model.setDataSourceSchema(etuInfo.getDataSourceSchema());
@@ -187,25 +190,60 @@ public class ConvertMetadata {
                                 "ORDER BY T.OWNER,T.TABLE_name ,T.column_id ";
                     }
                     rs = st.executeQuery(sql);
-                    while (rs.next()) {
-                        CjDataSourceTabColInfo sourcetabcolinfo = new CjDataSourceTabColInfo();
-                        sourcetabcolinfo.setBusinessSystemId(connDefine.getBusinessSystemId());
-                        sourcetabcolinfo.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
-                        sourcetabcolinfo.setDataSourceSchema(rs.getString("data_source_schema"));
-                        sourcetabcolinfo.setDataSourceTable(rs.getString("data_source_table"));
-                        sourcetabcolinfo.setDataSourceTableComment(rs.getString("data_source_table_comment"));
-                        sourcetabcolinfo.setDataSourceColName(rs.getString("data_source_col_name"));
-                        sourcetabcolinfo.setDataSourceColOrder(rs.getString("data_source_col_order"));
-                        sourcetabcolinfo.setDataSourceColPrimarykeyFlag(rs.getString("data_source_col_primarykey"));
-                        sourcetabcolinfo.setDataSourceColIsnullFlag(rs.getString("data_source_col_isnull_flag"));
-                        sourcetabcolinfo.setDataSourceColDatatype(rs.getString("data_source_col_datatype"));
-                        sourcetabcolinfo.setDataSourceColLen(rs.getString("data_source_col_len"));
-                        sourcetabcolinfo.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
-                        sourcetabcolinfo.setDataSourceColScale(rs.getString("data_source_col_scale"));
-                        sourcetabcolinfo.setDataSourceColComment(rs.getString("data_source_col_comment"));
-                        datasourcetabcolInfo.add(sourcetabcolinfo);
+                    if(rs.next()){
+                        System.out.println("--------------pass1---------------------");
+                        CjDataSourceTabColInfo sourcetabcolinfo1 = new CjDataSourceTabColInfo();
+                        dataSourceSchema=rs.getString("data_source_schema");
+                        dataSourceColComment=rs.getString("data_source_table_comment");
+                        sourcetabcolinfo1.setBusinessSystemId(connDefine.getBusinessSystemId());
+                        sourcetabcolinfo1.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
+                        sourcetabcolinfo1.setDataSourceSchema(rs.getString("data_source_schema"));
+                        sourcetabcolinfo1.setDataSourceTable(rs.getString("data_source_table"));
+                        sourcetabcolinfo1.setDataSourceTableComment(rs.getString("data_source_table_comment"));
+                        sourcetabcolinfo1.setDataSourceColName(rs.getString("data_source_col_name"));
+                        sourcetabcolinfo1.setDataSourceColOrder(rs.getString("data_source_col_order"));
+                        sourcetabcolinfo1.setDataSourceColPrimarykeyFlag(rs.getString("data_source_col_primarykey"));
+                        sourcetabcolinfo1.setDataSourceColIsnullFlag(rs.getString("data_source_col_isnull_flag"));
+                        sourcetabcolinfo1.setDataSourceColDatatype(rs.getString("data_source_col_datatype"));
+                        sourcetabcolinfo1.setDataSourceColLen(rs.getString("data_source_col_len"));
+                        sourcetabcolinfo1.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
+                        sourcetabcolinfo1.setDataSourceColScale(rs.getString("data_source_col_scale"));
+                        sourcetabcolinfo1.setDataSourceColComment(rs.getString("data_source_col_comment"));
+                        datasourcetabcolInfo.add(sourcetabcolinfo1);
+                        while (rs.next()) {
+                            CjDataSourceTabColInfo sourcetabcolinfo = new CjDataSourceTabColInfo();
+                            dataSourceSchema=rs.getString("data_source_schema");
+                            dataSourceColComment=rs.getString("data_source_table_comment");
+                            sourcetabcolinfo.setBusinessSystemId(connDefine.getBusinessSystemId());
+                            sourcetabcolinfo.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
+                            sourcetabcolinfo.setDataSourceSchema(rs.getString("data_source_schema"));
+                            sourcetabcolinfo.setDataSourceTable(rs.getString("data_source_table"));
+                            sourcetabcolinfo.setDataSourceTableComment(rs.getString("data_source_table_comment"));
+                            sourcetabcolinfo.setDataSourceColName(rs.getString("data_source_col_name"));
+                            sourcetabcolinfo.setDataSourceColOrder(rs.getString("data_source_col_order"));
+                            sourcetabcolinfo.setDataSourceColPrimarykeyFlag(rs.getString("data_source_col_primarykey"));
+                            sourcetabcolinfo.setDataSourceColIsnullFlag(rs.getString("data_source_col_isnull_flag"));
+                            sourcetabcolinfo.setDataSourceColDatatype(rs.getString("data_source_col_datatype"));
+                            sourcetabcolinfo.setDataSourceColLen(rs.getString("data_source_col_len"));
+                            sourcetabcolinfo.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
+                            sourcetabcolinfo.setDataSourceColScale(rs.getString("data_source_col_scale"));
+                            sourcetabcolinfo.setDataSourceColComment(rs.getString("data_source_col_comment"));
+                            datasourcetabcolInfo.add(sourcetabcolinfo);
+                        }
+                        iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
+                        CjDataSourceTabInfo cjDataSourceTabInfo = new CjDataSourceTabInfo();
+                        cjDataSourceTabInfo.setBusinessSystemId(connDefine.getBusinessSystemId());
+                        cjDataSourceTabInfo.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
+                        cjDataSourceTabInfo.setDataSourceSchema(dataSourceSchema);
+                        cjDataSourceTabInfo.setDataSourceTable(etuInfo.getDataSourceTable());
+                        cjDataSourceTabInfo.setDataSourceTableComment(dataSourceColComment);
+                        cjDataSourceTabInfo.setDataFlagForGetCols("1");
+                        cjDataSourceTabInfos.add(cjDataSourceTabInfo);
+                        etuInfo.setIsExists("Y");
+                    }else{
+                        System.out.println("--------------pass2---------------------");
+                        etuInfo.setIsExists("N");
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -219,40 +257,11 @@ public class ConvertMetadata {
                         }
                     }
                 }
-                iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
             }
-
-            if (datasourcetabcolInfo.size() > 0 && inBatchesInsert(datasourcetabcolInfo)) {
-                List<CjDataSourceTabColInfo> tabcolinfo = iCjDataSourceTabColInfoService.findListOnlyTable(listSysEntity);
-                List<CjDataSourceTabInfo> arrDataSourceTabInfo = new ArrayList<>();
-                if (tabcolinfo != null) {
-                    for (CjDataSourceTabColInfo model : tabcolinfo) {
-                        CjDataSourceTabInfo en = new CjDataSourceTabInfo();
-                        en.setBusinessSystemId(model.getBusinessSystemId());
-                        en.setBusinessSystemNameShortName(model.getBusinessSystemNameShortName());
-                        en.setDataSourceSchema(model.getDataSourceSchema());
-                        en.setDataSourceTable(model.getDataSourceTable());
-                        en.setDataSourceTableComment(model.getDataSourceTableComment());
-                        en.setDataFlagForGetCols("1");
-                        arrDataSourceTabInfo.add(en);
-                    }
-                    if (arrDataSourceTabInfo.size() > 0 && iCjDataSourceTabInfoService.insertBatch(arrDataSourceTabInfo) > 0) {
-                        result.success("");
-                    } else {
-                        result.error(200, "源库未新增表");
-                    }
-                } else {
-                    result.error(500, "查询失败");
-                }
-            } else {
-                result.error(200, "该schema下没有表");
-            }
-
-        } else {
-            result.error(500, "请选择数据");
+            inBatchesInsert(datasourcetabcolInfo);
+            iCjDataSourceTabInfoService.insertBatch(cjDataSourceTabInfos);
         }
-
-        return result;
+        return result.success(reqParmsEtu);
     }
 
 

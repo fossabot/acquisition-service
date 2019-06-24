@@ -2,17 +2,16 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.*;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjDwCrtTabDdlInfoService;
+import com.acquisition.service.*;
 import com.acquisition.util.*;
-import com.acquisition.service.ICjOdsCrtTabDdlInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.sql.Connection;
@@ -27,9 +26,13 @@ import java.util.regex.Pattern;
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
+@Api(tags = "hiveCreateTable", description = "hive建表")
 @RestController
 @RequestMapping(value = "/hiveCreateTable")
 public class HiveCreateTableController {
+
+    @Resource(name = "cjDataSourceConnDefineServiceImpl")
+    public ICjDataSourceConnDefineService cjDataSourceConnDefineService;
 
     @Resource(name = "cjDataSourceTabColInfoServiceImpl")
     public ICjDataSourceTabColInfoService cjDataSourceTabColInfoService;
@@ -50,6 +53,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("获取dw建表页面的筛选列表")
     @GetMapping(value = "/getDWSystemAndSchemaFilterList")
     public Result getDWSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtDwTabList();
@@ -83,6 +87,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("获取ods建表页面的筛选列表")
     @GetMapping(value = "/getODSSystemAndSchemaFilterList")
     public Result getODSSystemAndSchemaFilterList(){
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findDistSystemAndSchemaFromCjVGetPrepareCrtOdsTabList();
@@ -116,7 +121,7 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
-
+    @ApiOperation("dw建表页面按系统名和schema筛选接口")
     @PostMapping(value = "/getDWCreateTabListByFilter")
     public Result getDWCreateTabListByFilter(@RequestBody PageGeorge<List<String>> reqParams){
         Result result=new Result();
@@ -133,15 +138,16 @@ public class HiveCreateTableController {
      * @Param: * @param null 1
      * @return:
      */
+    @ApiOperation("ODS建表页面按系统名和schema筛选接口")
     @PostMapping(value = "/getODSCreateTabListByFilter")
     public Result getODSCreateTabListByFilter(@RequestBody Page reqParams){
         Result result=new Result();
-        System.out.println(reqParams.getQuery());
         PageHelper.startPage(reqParams.getPagenum(),reqParams.getPagesize());
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = cjDataSourceTabInfoService.findFromCjVGetPrepareCrtOdsTabListBySystemAndSchema(reqParams.getQuery().get(0), reqParams.getQuery().get(1));
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(cjDataSourceTabInfos);
         return result.success(page);
     }
+    @ApiOperation("dw建表页面获取表清单接口")
     @GetMapping(value = "/getDWCreateTabList")
     public Result getDWCreateTabList(Page reqParams) {
         Result result=new Result();
@@ -153,6 +159,7 @@ public class HiveCreateTableController {
         return result.success(page);
     }
 
+    @ApiOperation("dw建表接口")
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
@@ -196,6 +203,9 @@ public class HiveCreateTableController {
                 if (m.find()) {
                     colComment=colName;
                     colName=PinyinUtil.getPinYin(colName);
+                }
+                if(colName.equals("src_table_name")){
+                    colName = "src_table_name_dl";
                 }
                 colType=cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
                 dwddl.append("    `"+colName+"`    "+colType+"    "+"comment '"+colComment+"'"+",\n");
@@ -268,7 +278,8 @@ public class HiveCreateTableController {
     /**
      * @return 返回已经导入清单，但没有在ODS建表的表
      */
-    @RequestMapping(value = "/getODSTableInfo")
+    @ApiOperation("ods建表页面获取表清单接口")
+    @RequestMapping(value = "/getODSTableInfo" ,method = RequestMethod.GET)
     @ResponseBody
     public Result getODSTable(PageGeorge reqParams) {
         Result result=new Result();
@@ -281,6 +292,7 @@ public class HiveCreateTableController {
     /**
      * @return 获取前端传来的需要去ODS创建的表信息
      */
+    @ApiOperation("ods建表接口")
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
@@ -296,6 +308,8 @@ public class HiveCreateTableController {
         String colName = "";
         String colComment = "";
         String odsTableName="";
+        CjDataSourceConnDefine cjDataSourceConnDefine;
+        String businessSystemId="";
         StringBuffer odsDDL = new StringBuffer();
         Result result=new Result();
 
@@ -349,7 +363,13 @@ public class HiveCreateTableController {
                 preparedStatement = connection.prepareStatement(odsDDL.toString());
                 preparedStatement.execute();
 
-                cjOdsCrtTabDdlInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
+                if(cjDataSourceTabInfo.getBusinessSystemId()==null){
+                    cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfo.getBusinessSystemNameShortName(), cjDataSourceTabInfo.getDataSourceSchema());
+                    businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+                }else {
+                    businessSystemId = cjDataSourceTabInfo.getBusinessSystemId();
+                }
+                cjOdsCrtTabDdlInfo.setBusinessSystemId(businessSystemId);
                 cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
                 cjOdsCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
                 cjOdsCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());

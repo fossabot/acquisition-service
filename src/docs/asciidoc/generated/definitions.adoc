@@ -1,0 +1,179 @@
+
+[[_definitions]]
+== 定义
+
+[[_cjdatasourcesysteminfo]]
+=== CjDataSourceSystemInfo
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**businessSystemId** +
+__可选__|**样例** : `"string"`|string
+|**businessSystemNameShortName** +
+__可选__|**样例** : `"string"`|string
+|**dataSourceSchema** +
+__可选__|**样例** : `"string"`|string
+|**lastModifyBy** +
+__可选__|**样例** : `"string"`|string
+|**lastModifyDt** +
+__可选__|**样例** : `"string"`|string
+|===
+
+
+[[_cjdatasourcetabinfo]]
+=== CjDataSourceTabInfo
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**businessSystemId** +
+__可选__|**样例** : `"string"`|string
+|**businessSystemNameShortName** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtDwDll** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtDwHive** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtDwScript** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtOdsDll** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtOdsHive** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForCrtOdsScript** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForGetCols** +
+__可选__|**样例** : `"string"`|string
+|**dataFlagForGetRows** +
+__可选__|**样例** : `"string"`|string
+|**dataSourceSchema** +
+__可选__|**样例** : `"string"`|string
+|**dataSourceTable** +
+__可选__|**样例** : `"string"`|string
+|**dataSourceTableComment** +
+__可选__|**样例** : `"string"`|string
+|**date** +
+__可选__|**样例** : `"string"`|string
+|**dwCount** +
+__可选__|**样例** : `"string"`|string
+|**lastModifyBy** +
+__可选__|**样例** : `"string"`|string
+|**lastModifyDt** +
+__可选__|**样例** : `"string"`|string
+|**odsCount** +
+__可选__|**样例** : `"string"`|string
+|**tableCount** +
+__可选__|**样例** : `"string"`|string
+|===
+
+
+[[_exclepropertymodel]]
+=== ExclePropertyModel
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**businessSystemNameShortName** +
+__可选__|**样例** : `"string"`|string
+|**dataSourceSchema** +
+__可选__|**样例** : `"string"`|string
+|**date** +
+__可选__|**样例** : `"string"`|string
+|**dwCount** +
+__可选__|**样例** : `"string"`|string
+|**odsCount** +
+__可选__|**样例** : `"string"`|string
+|**tableCount** +
+__可选__|**样例** : `"string"`|string
+|===
+
+
+[[_page]]
+=== Page
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**pagenum** +
+__可选__|**样例** : `0`|integer (int32)
+|**pagesize** +
+__可选__|**样例** : `0`|integer (int32)
+|**query** +
+__可选__|**样例** : `[ "string" ]`|< string > array
+|===
+
+
+[[_7f4ba0f109180f5993eeb37df6fb2a04]]
+=== PageGeorge<T>«CjDataSourceTabInfo»
+page筛选对象
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**pagenum** +
+__必填__|当前页数 +
+**样例** : `0`|integer (int32)
+|**pagesize** +
+__必填__|页面大小 +
+**样例** : `0`|integer (int32)
+|**query** +
+__必填__|数据 +
+**样例** : `"<<_cjdatasourcetabinfo>>"`|<<_cjdatasourcetabinfo,CjDataSourceTabInfo>>
+|===
+
+
+[[_ca8e551132bc628e96a324037be3936d]]
+=== PageGeorge<T>«List«string»»
+page筛选对象
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**pagenum** +
+__必填__|当前页数 +
+**样例** : `0`|integer (int32)
+|**pagesize** +
+__必填__|页面大小 +
+**样例** : `0`|integer (int32)
+|**query** +
+__必填__|数据 +
+**样例** : `[ "string" ]`|< string > array
+|===
+
+
+[[_result]]
+=== Result
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**code** +
+__可选__|**样例** : `0`|integer (int32)
+|**data** +
+__可选__|**样例** : `"object"`|object
+|**msg** +
+__可选__|**样例** : `"string"`|string
+|===
+
+
+[[_viewsourcesystementity]]
+=== ViewSourceSystemEntity
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|名称|说明|类型
+|**business_system_ID** +
+__可选__|**样例** : `"string"`|string
+|**business_system_name_short_name** +
+__可选__|**样例** : `"string"`|string
+|**data_base_type** +
+__可选__|**样例** : `"string"`|string
+|**status** +
+__可选__|**样例** : `"string"`|string
+|===
+
+
+

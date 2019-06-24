@@ -70,11 +70,11 @@ public class EnterHuOverview {
     }
 
 
-    @ApiOperation("根据表明获取表的详细信息")
+    @ApiOperation("根据表名获取表的详细信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "systemname", value = "系统名", required = true, dataType = "String"),
             @ApiImplicitParam(name = "schema", value = "schema", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "tablename", value = "表明", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "tablename", value = "表名", required = true, dataType = "String"),
     })
     @GetMapping("/getByTableInfo")
     public Result selectByTable(@RequestParam(value = "systemname") String systemname, @RequestParam(value = "schema") String schema, @RequestParam(value = "tablename") String tablename) {

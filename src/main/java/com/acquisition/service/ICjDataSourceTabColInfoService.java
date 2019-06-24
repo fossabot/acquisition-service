@@ -29,4 +29,6 @@ public interface ICjDataSourceTabColInfoService {
 
     List<CjDataSourceTabColInfo> selectByTable(String systemname, String schema, String tablename);
 
+    List<CjDataSourceTabColInfo> findTabInfoByTable(String systemname, String schema, String tablename);
+
 }
