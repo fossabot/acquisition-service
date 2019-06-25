@@ -65,7 +65,7 @@ public class DatalakeTableStatusContrller {
     /**
      * @return 返回筛选后的数据
      */
-    @PostMapping(value = "/getStatusBySys")
+    /*@PostMapping(value = "/getStatusBySys")
     public Result getStatusBySys(@RequestBody PageGeorge<CjDataSourceTabInfo> reqParams) {
         Result result = new Result();
         PageHelper.startPage(reqParams.getPagenum(), reqParams.getPagesize());
@@ -75,7 +75,7 @@ public class DatalakeTableStatusContrller {
         result.setMsg("查询成功！！！");
         result.setCode(200);
         return result;
-    }
+    }*/
 
     /**
      * 导出成excle

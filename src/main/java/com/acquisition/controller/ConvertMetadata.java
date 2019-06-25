@@ -51,6 +51,10 @@ public class ConvertMetadata {
     CjDataSourceUniqueIndexInfoService cjDataSourceUniqueIndexInfoService;
 
 
+    @Resource(name = "cjDataSourceTabRowsServiceImpl")
+    CjDataSourceTabRowsService cjDataSourceTabRowsService;
+
+
     @ApiOperation(" 上传excel并转成map数据")
     @ApiImplicitParam(name = "file", value = "excel", dataType = "MultipartFile", required = true)
     @PostMapping("/uploadExcel")
@@ -104,8 +108,8 @@ public class ConvertMetadata {
                 Connection con = null;
                 Statement st = null;
                 ResultSet rs = null;
-                String dataSourceSchema="";
-                String dataSourceColComment="";
+                String dataSourceSchema = "";
+                String dataSourceColComment = "";
                 CjDataSourceSystemInfo model = new CjDataSourceSystemInfo();
                 model.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
                 model.setDataSourceSchema(etuInfo.getDataSourceSchema());
@@ -190,11 +194,11 @@ public class ConvertMetadata {
                                 "ORDER BY T.OWNER,T.TABLE_name ,T.column_id ";
                     }
                     rs = st.executeQuery(sql);
-                    if(rs.next()){
+                    if (rs.next()) {
                         System.out.println("--------------pass1---------------------");
                         CjDataSourceTabColInfo sourcetabcolinfo1 = new CjDataSourceTabColInfo();
-                        dataSourceSchema=rs.getString("data_source_schema");
-                        dataSourceColComment=rs.getString("data_source_table_comment");
+                        dataSourceSchema = rs.getString("data_source_schema");
+                        dataSourceColComment = rs.getString("data_source_table_comment");
                         sourcetabcolinfo1.setBusinessSystemId(connDefine.getBusinessSystemId());
                         sourcetabcolinfo1.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
                         sourcetabcolinfo1.setDataSourceSchema(rs.getString("data_source_schema"));
@@ -212,8 +216,8 @@ public class ConvertMetadata {
                         datasourcetabcolInfo.add(sourcetabcolinfo1);
                         while (rs.next()) {
                             CjDataSourceTabColInfo sourcetabcolinfo = new CjDataSourceTabColInfo();
-                            dataSourceSchema=rs.getString("data_source_schema");
-                            dataSourceColComment=rs.getString("data_source_table_comment");
+                            dataSourceSchema = rs.getString("data_source_schema");
+                            dataSourceColComment = rs.getString("data_source_table_comment");
                             sourcetabcolinfo.setBusinessSystemId(connDefine.getBusinessSystemId());
                             sourcetabcolinfo.setBusinessSystemNameShortName(etuInfo.getBusinessSystemNameShortName());
                             sourcetabcolinfo.setDataSourceSchema(rs.getString("data_source_schema"));
@@ -240,7 +244,7 @@ public class ConvertMetadata {
                         cjDataSourceTabInfo.setDataFlagForGetCols("1");
                         cjDataSourceTabInfos.add(cjDataSourceTabInfo);
                         etuInfo.setIsExists("Y");
-                    }else{
+                    } else {
                         System.out.println("--------------pass2---------------------");
                         etuInfo.setIsExists("N");
                     }
@@ -317,7 +321,7 @@ public class ConvertMetadata {
 
                     st = con.createStatement();
 
-                    String executeSql = reqSql(connDefine.getDataBaseType(), etuEnt);
+                    String executeSql = reqSqlIndex(connDefine.getDataBaseType(), etuEnt);
 
                     rs = st.executeQuery(executeSql);
 
@@ -372,7 +376,7 @@ public class ConvertMetadata {
      * @param dataBaseType
      * @return
      */
-    private String reqSql(String dataBaseType, EtuInfo etuEnt) {
+    private String reqSqlIndex(String dataBaseType, EtuInfo etuEnt) {
         String sql = "";
         if (dataBaseType.equals("mysql")) {
             sql = "SELECT " +
@@ -406,5 +410,126 @@ public class ConvertMetadata {
         return sql;
     }
 
+
+
+
+
+    @ApiOperation(value = "获取容量", notes = "List<EtuInfo> ", produces = "application/json")
+    @PostMapping("/getCapacity")
+    public Result getCapacity(@RequestBody List<EtuInfo> reqParmsEtu) {
+        Result result = new Result();
+
+        if (!reqParmsEtu.isEmpty()) {
+
+            List<CjDataSourceTabRows> listModel = new ArrayList<>();
+
+            for (EtuInfo etuEnt : reqParmsEtu) {
+                Connection con = null;
+
+                Statement st = null;
+
+                ResultSet rs = null;
+
+                CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.selectDataBaseType(etuEnt.getBusinessSystemNameShortName(), etuEnt.getDataSourceSchema());
+
+                try {
+                    con = GroupPoolFactory.getInstance((etuEnt.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuEnt.getDataSourceSchema() : "-"))).getConnection();
+
+                    if (con == null) {
+                        continue;
+                    }
+
+                    st = con.createStatement();
+
+                    String executeSql = reqSqlCapacity(connDefine.getDataBaseType(), etuEnt);
+
+                    rs = st.executeQuery(executeSql);
+
+                    while (rs.next()) {
+
+                        CjDataSourceTabRows model = new CjDataSourceTabRows();
+                        model.setBusinessSystemId(connDefine.getBusinessSystemId());
+                        model.setBusinessSystemNameShortName(etuEnt.getBusinessSystemNameShortName());
+                        model.setDataSourceSchema(etuEnt.getDataSourceSchema());
+                        model.setDataSourceTable(etuEnt.getDataSourceTable());
+                        model.setDataSourceTabRows(rs.getString("data_source_tab_rows"));
+                        model.setDataSourceTabSizes(rs.getString("data_source_tab_sizes"));
+                        model.setLastModifyDt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                        /*model.setLastModifyBy(rs.getString("data_source_schema"));*/
+                        listModel.add(model);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (con != null) {
+                        try {
+                            rs.close();
+
+                            st.close();
+
+                            con.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            if (cjDataSourceTabRowsService.insertBatch(listModel) > 0) {
+                result.success("");
+            } else {
+                result.error(200, "源库未新增表");
+            }
+
+        } else {
+            result.error(500, "请选择数据");
+        }
+
+
+        return result;
+    }
+
+
+
+    /**
+     * 获取sql
+     *
+     * @param dataBaseType
+     * @return
+     */
+    private String reqSqlCapacity(String dataBaseType, EtuInfo etuEnt) {
+        String sql = "";
+        if (dataBaseType.equals("mysql")) {
+            sql = "select  " +
+                    "tab1.table_schema as data_source_schema, " +
+                    "tab1.table_name as data_source_table, " +
+                    "tab1.table_rows as data_source_tab_rows, " +
+                    "ROUND(tab1.data_length/1024/1024,2) as data_source_tab_sizes " +
+                    "from INFORMATION_SCHEMA.TABLES tab1 " +
+                    "where tab1.table_type='base table'  " +
+                    "and tab1.table_schema='"+etuEnt.getDataSourceSchema()+"' " +
+                    "and tab1.table_name='"+etuEnt.getDataSourceTable()+"';";
+        } else if (dataBaseType.equals("sqlserver")) {
+            sql = "select  " +
+                    "'"+etuEnt.getDataSourceSchema()+"' as data_source_schema, " +
+                    "b.name as data_source_table, " +
+                    "a.rows as data_source_tab_rows, " +
+                    "convert(decimal(18,2),8*a.dpages/1024) as data_source_tab_sizes " +
+                    "from sysindexes a inner join sysobjects b  " +
+                    "on a.id = b.id " +
+                    "where a.indid in (1,0) and b.type = 'u'  " +
+                    "and b.name='"+etuEnt.getDataSourceTable()+"'";
+        } else if (dataBaseType.equals("oracle")) {
+            sql = "SELECT " +
+                    "tab1.owner as data_source_schema, " +
+                    "tab1.table_name as data_source_table, " +
+                    "tab1.num_rows AS data_source_tab_rows, " +
+                    "round((tab1.num_rows * tab1.avg_row_len)/1024/1024,2) " +
+                    "FROM all_tables tab1 WHERE tab1.owner=UPPER('"+etuEnt.getDataSourceSchema()+"')  " +
+                    "AND tab1.table_name=UPPER('"+etuEnt.getDataSourceTable()+"')";
+        }
+        return sql;
+    }
 
 }

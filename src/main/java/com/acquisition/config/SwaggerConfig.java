@@ -33,7 +33,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("采集官方API文档")
-                .description("描述：伊利采集官方API")
+                .description("描述：采集官方API")
                 .version("1.0")
                 .build();
     }
