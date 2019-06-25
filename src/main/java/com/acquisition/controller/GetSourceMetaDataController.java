@@ -172,6 +172,7 @@ public class GetSourceMetaDataController {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((table.getBusinessSystemNameShortName() + (basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
                     if (con == null) {
+                        System.out.println("获取:"+table.getBusinessSystemNameShortName()+(basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-")+"的连接为空值");
                         continue;
                     }
                     st = con.createStatement();
@@ -231,7 +232,7 @@ public class GetSourceMetaDataController {
                                 ",CASE WHEN tab1.nullable='N' THEN '0' WHEN tab1.nullable='Y' THEN '1' ELSE tab1.nullable end AS isnullflag " +
                                 ",'' AS data_length,nvl(tab1.data_precision,tab1.data_length) AS data_precision,tab1.data_scale " +
                                 ",CASE WHEN tab3.primaryKEY IS NOT NULL THEN  'true' ELSE '' END  AS primaryKEY,tab1.OWNER  " +
-                                "from all_tab_columns tab1 JOIN all_tab_comments tab2  " +
+                                "from all_tab_columns tab1 LEFT JOIN all_tab_comments tab2  " +
                                 "on (tab1.TABLE_name=tab2.TABLE_name AND tab1.owner=tab2.owner AND tab2.table_type<>'VIEW') " +
                                 "LEFT JOIN ( " +
                                 "SELECT DISTINCT  " +

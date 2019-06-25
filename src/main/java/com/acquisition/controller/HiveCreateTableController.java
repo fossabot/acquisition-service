@@ -208,13 +208,13 @@ public class HiveCreateTableController {
                     colName = "src_table_name_dl";
                 }
                 colType=cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
-                dwddl.append("    `"+colName+"`    "+colType+"    "+"comment '"+colComment+"'"+",\n");
+                dwddl.append("    `"+colName+"`    "+colType+"    "+"comment \""+colComment+"\""+",\n");
             }
-            dwddl.append("    `src_sys_row_id`    string    comment '源系统pk',\n");
-            dwddl.append("    `src_sys_cd`    string    comment '源系统代码',\n");
-            dwddl.append("    `src_table_name`    string    comment '源表名',\n");
-            dwddl.append("    `etl_dt`    string    comment 'etl处理时间',\n");
-            dwddl.append("    `data_dt`    string    comment '数据日期'\n");
+            dwddl.append("    `src_sys_row_id`    string    comment \"源系统pk\",\n");
+            dwddl.append("    `src_sys_cd`    string    comment \"源系统代码\",\n");
+            dwddl.append("    `src_table_name`    string    comment \"源表名\",\n");
+            dwddl.append("    `etl_dt`    string    comment \"etl处理时间\",\n");
+            dwddl.append("    `data_dt`    string    comment \"数据日期\"\n");
             dwddl.append(")"+"\n");
             dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
 
@@ -346,9 +346,9 @@ public class HiveCreateTableController {
                     colName=PinyinUtil.getPinYin(colName);
                 }
                 if (i < infoList.size() - 1) {
-                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colComment + "'" + ",\n");
+                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment \"" + colComment + "\"" + ",\n");
                 } else {
-                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment '" + colComment + "'" + "\n");
+                    odsDDL.append("    `" + colName + "`    " + "string" + "    " + "comment \"" + colComment + "\"" + "\n");
                 }
             }
             odsDDL.append(")" + "\n");

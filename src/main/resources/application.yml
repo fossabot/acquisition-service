@@ -1,9 +1,9 @@
 #默认使用配置
 spring:
   profiles:
-#    active: prod
+    active: prod
 #    active: test
-    active: dev
+#    active: dev
 server:
   port: 6269
 #公共配置与profiles选择无关
