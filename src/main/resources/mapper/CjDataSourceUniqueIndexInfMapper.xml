@@ -38,5 +38,11 @@
         </foreach>
     </delete>
 
-
+    <select id="selectUniqueIndexByTable" resultMap="cjDataSourceUniqueIndexInfoMap">
+        select unique_index_name,data_source_col_name from cj_data_source_unique_index_info
+        where business_system_name_short_name = #{businessSystemNameShortName}
+        and data_source_schema = #{dataSourceSchema}
+        and data_source_table = #{dataSourceTable}
+        order by unique_index_name,data_source_col_order
+    </select>
 </mapper>

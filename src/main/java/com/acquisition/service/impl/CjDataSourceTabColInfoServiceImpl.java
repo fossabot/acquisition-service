@@ -74,5 +74,15 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
         return cjDataSourceTabColInfoMapper.selectTabInfoByTable(systemname,schema,tablename);
     }
 
+    @Override
+    public List<CjDataSourceTabColInfo> findIncrementCol(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectIncrementCol(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
+    @Override
+    public List<CjDataSourceTabColInfo> findPartitionKey(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectPartitionKey(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
 
 }

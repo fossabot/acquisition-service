@@ -17,4 +17,9 @@ public class Constant {
     public static final String DW_CRT_SCRIPT="1";
     public static final String DW_HIVE_SCHEMA="acquisition_dw";
     public static final String ODS_HIVE_SCHEMA="acquisition_ods";
+    public static final int ODS_INCREMENT_TABLE_SIZE=0;
+    public static final String ODS_PARTITION_KEY="data_dt";
+    public static final String ODS_PARTITION_UNIT="month";
+    public static final String ODS_INCREMENT_EXTRACT="increment";
+    public static final String ODS_FULL_EXTRACT="full";
 }

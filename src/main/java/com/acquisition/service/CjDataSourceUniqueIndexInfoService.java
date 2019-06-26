@@ -1,6 +1,8 @@
 package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceUniqueIndexInfo;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -9,5 +11,8 @@ import java.util.List;
 public interface CjDataSourceUniqueIndexInfoService {
 
     int insertBatch(List<CjDataSourceUniqueIndexInfo> list);
+
+    List<CjDataSourceUniqueIndexInfo> findUniqueIndexByTable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
 }
 

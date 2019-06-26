@@ -461,7 +461,63 @@
         and data_source_table = #{dataSourceTable}
         order by cast(data_source_col_order AS SIGNED) asc
     </select>
+    <select id="selectPartitionKey" resultMap="BaseResultMap"
+            parameterType="com.acquisition.entity.CjDataSourceTabColInfo">
+        select
+        col.*
+        from cj_data_source_tab_col_info col
+        LEFT JOIN cj_ods_crt_tab_rule_info rule
+        on UPPER(col.data_source_col_name) = rule.rule_col_1
+        where col.business_system_name_short_name = #{businessSystemNameShortName}
+        and col.data_source_schema = #{dataSourceSchema}
+        and col.data_source_table = #{dataSourceTable}
+        and col.data_source_col_isnull_flag = '0'
+        and col.data_source_col_datatype in ('DATE','datetime')
+        and rule.rule_type = 'partition_field_list'
+    </select>
+    <select id="selectIncrementCol" resultMap="BaseResultMap"
+            parameterType="com.acquisition.entity.CjDataSourceTabColInfo">
+        select
+        col.*
+        from cj_data_source_tab_col_info col
+        LEFT JOIN cj_ods_crt_tab_rule_info rule
+        on UPPER(col.data_source_col_name) = rule.rule_col_1
+        where col.business_system_name_short_name = #{businessSystemNameShortName}
+        and col.data_source_schema = #{dataSourceSchema}
+        and col.data_source_table = #{dataSourceTable}
+        and col.data_source_col_isnull_flag = '0'
+        and col.data_source_col_datatype in ('DATE','datetime')
+        and rule.rule_type = 'Incremental_field_list'
+    </select>
 
+    <select id="selectSplictColNoIndex" resultType="java.lang.String">
+        select distinct col.data_source_col_name
+        from cj_data_source_tab_col_info col
+        LEFT JOIN cj_ods_crt_tab_rule_info rule
+		on UPPER(col.data_source_col_datatype) = rule.rule_col_1
+		where col.business_system_name_short_name = #{businessSystemNameShortName}
+        and col.data_source_schema = #{dataSourceSchema}
+        and col.data_source_table = #{dataSourceTable}
+        and col.data_source_col_isnull_flag = '0'
+        and rule.rule_type = 'splict_field_type_list'
+    </select>
+
+    <select id="selectSplictColHaveIndex" resultType="java.lang.String">
+        select distinct col.data_source_col_name
+        from cj_data_source_tab_col_info col
+        LEFT JOIN cj_ods_crt_tab_rule_info rule
+        on UPPER(col.data_source_col_datatype) = rule.rule_col_1
+        JOIN cj_data_source_unique_index_info unique_index
+		on col.business_system_name_short_name = unique_index.business_system_name_short_name
+		and col.data_source_schema = unique_index.data_source_schema
+		and col.data_source_table = unique_index.data_source_table
+		and col.data_source_col_name = unique_index.data_source_col_name
+        where col.business_system_name_short_name = #{businessSystemNameShortName}
+        and col.data_source_schema = #{dataSourceSchema}
+        and col.data_source_table = #{dataSourceTable}
+        and col.data_source_col_isnull_flag = '0'
+        and rule.rule_type = 'splict_field_type_list'
+    </select>
 
     <insert id="insertBatch" parameterType="java.util.List">
         insert into cj_data_source_tab_col_info (business_system_name_short_name, data_source_schema,

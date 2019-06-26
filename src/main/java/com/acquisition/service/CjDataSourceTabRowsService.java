@@ -2,6 +2,7 @@ package com.acquisition.service;
 
 
 import com.acquisition.entity.CjDataSourceTabRows;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,5 +15,7 @@ import java.util.List;
 public interface CjDataSourceTabRowsService {
 
     int insertBatch(List<CjDataSourceTabRows> list);
+
+    Integer findTabSizeBytable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 }
 

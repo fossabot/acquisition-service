@@ -12,6 +12,9 @@ import com.github.pagehelper.PageInfo;
 import com.yili.pool.pool.GroupPoolFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.MultiMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.sql.Connection;
@@ -46,6 +49,14 @@ public class HiveCreateTableController {
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
     public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
+    @Resource(name = "cjDataSourceTabRowsServiceImpl")
+    public CjDataSourceTabRowsService cjDataSourceTabRowsService;
+
+    @Resource(name = "cjDataSourceUniqueIndexInfoServiceImpl")
+    public CjDataSourceUniqueIndexInfoService cjDataSourceUniqueIndexInfoService;
+
+    @Resource(name = "cjOdsTableLoadModeInfoServiceImpl")
+    public CjOdsTableLoadModeInfoService cjOdsTableLoadModeInfoService;
     /**
      * @Author: zhangdongmao
      * @Date: 2019/6/5
@@ -407,4 +418,92 @@ public class HiveCreateTableController {
         result.setCode(200);
         return result;
     }
+
+    @ApiOperation(value = "判断ODS抽取策略和分区字段")
+    @PostMapping("/getODSLoadMode")
+    public void getODSLoadMode(@RequestBody List<CjDataSourceTabInfo> cjDataSourceTabInfos){
+        List<CjOdsTableLoadModeInfo> cjOdsTableLoadModeInfos=new ArrayList<>();
+        CjDataSourceConnDefine cjDataSourceConnDefine;
+        String odsTableName="";
+        for(CjDataSourceTabInfo cjDataSourceTabInfo:cjDataSourceTabInfos){
+            String businessSystemId;
+            if(cjDataSourceTabInfo.getBusinessSystemId()==null){
+                cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfo.getBusinessSystemNameShortName(), cjDataSourceTabInfo.getDataSourceSchema());
+                businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+            }else {
+                businessSystemId = cjDataSourceTabInfo.getBusinessSystemId();
+            }
+            CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo = new CjOdsTableLoadModeInfo();
+            String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
+            String dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
+            String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
+
+            odsTableName=cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+ "_" +cjDataSourceTabInfo.getDataSourceSchema().toLowerCase()+"_"+ cjDataSourceTabInfo.getDataSourceTable().toLowerCase();
+            //判断表名中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(odsTableName);
+            if (m.find()) {
+                odsTableName=PinyinUtil.getPinYin(odsTableName);
+            }
+            cjOdsTableLoadModeInfo.setBusinessSystemId(businessSystemId);
+            cjOdsTableLoadModeInfo.setBusinessSystemNameShortName(businessSystemNameShortName);
+            cjOdsTableLoadModeInfo.setDataSourceSchema(dataSourceSchema);
+            cjOdsTableLoadModeInfo.setOdsDataSchema(Constant.ODS_HIVE_SCHEMA);
+            cjOdsTableLoadModeInfo.setOdsDataTable(odsTableName);
+            cjOdsTableLoadModeInfo.setDataSourceTable(dataSourceTable);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            cjOdsTableLoadModeInfo.setLastModifyDt(df.format(new Date()));
+            Integer tableSize = cjDataSourceTabRowsService.findTabSizeBytable(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+            if(tableSize >= Constant.ODS_INCREMENT_TABLE_SIZE){
+                List<CjDataSourceTabColInfo> incrementCols = cjDataSourceTabColInfoService.findIncrementCol(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                if(incrementCols != null && incrementCols.size()>0){
+                    //取list中的第一个值做增量字段
+                    cjOdsTableLoadModeInfo.setOdsTableIncrementColName(incrementCols.get(0).getDataSourceColName());
+                    //查询表的唯一索引
+                    List<CjDataSourceUniqueIndexInfo> uniqueIndexs = cjDataSourceUniqueIndexInfoService.findUniqueIndexByTable(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                    if(uniqueIndexs != null && uniqueIndexs.size()>0){
+                        MultiValueMap<String,String> uniqueIndexMap = new LinkedMultiValueMap();
+                        for(CjDataSourceUniqueIndexInfo cjDataSourceUniqueIndexInfo: uniqueIndexs){
+                            uniqueIndexMap.add(cjDataSourceUniqueIndexInfo.getUniqueIndexName(),cjDataSourceUniqueIndexInfo.getDataSourceColName());
+                        }
+                        Set<String> keySet = uniqueIndexMap.keySet();
+                        int size=100;
+                        String indexKey="";
+                        //唯一索引可能是由多个字段联合组成的，取字段个数最少的联合唯一索引作为ODS表的唯一索引
+                        for (String key : keySet) {
+                            if(size>uniqueIndexMap.get(key).size()){
+                                size = uniqueIndexMap.get(key).size();
+                                indexKey = key;
+                            }
+                        }
+                        List<String> indexs = uniqueIndexMap.get(indexKey);
+                        String index = String.join(",", indexs);
+                        cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_INCREMENT_EXTRACT);
+
+                        //获取表的分区字段
+                        List<CjDataSourceTabColInfo> partitionKeys = cjDataSourceTabColInfoService.findPartitionKey(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                        if(partitionKeys != null && partitionKeys.size()>0){
+                            cjOdsTableLoadModeInfo.setOdsTablePartitionColName(Constant.ODS_PARTITION_KEY);
+                            cjOdsTableLoadModeInfo.setOdsTablePartitionUnit(Constant.ODS_PARTITION_UNIT);
+                            cjOdsTableLoadModeInfo.setOdsTablePartitionColNameSource(partitionKeys.get(0).getDataSourceColName());
+                        }
+                        cjOdsTableLoadModeInfo.setOdsTablePrimaryColName(index);
+                    } else {
+                        //无索引，抽取方式为全量
+                        cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_FULL_EXTRACT);
+                    }
+                } else {
+                    //无增量字段，抽取方式为全量
+                    cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_FULL_EXTRACT);
+                }
+            } else {
+                // 表大小小于2G，抽取方式为全量，无分区
+                cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_FULL_EXTRACT);
+            }
+            cjOdsTableLoadModeInfos.add(cjOdsTableLoadModeInfo);
+        }
+        cjOdsTableLoadModeInfoService.insertBatch(cjOdsTableLoadModeInfos);
+    }
+
+
 }

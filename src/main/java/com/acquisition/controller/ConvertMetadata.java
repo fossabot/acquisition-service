@@ -195,7 +195,6 @@ public class ConvertMetadata {
                     }
                     rs = st.executeQuery(sql);
                     if (rs.next()) {
-                        System.out.println("--------------pass1---------------------");
                         CjDataSourceTabColInfo sourcetabcolinfo1 = new CjDataSourceTabColInfo();
                         dataSourceSchema = rs.getString("data_source_schema");
                         dataSourceColComment = rs.getString("data_source_table_comment");
@@ -245,7 +244,6 @@ public class ConvertMetadata {
                         cjDataSourceTabInfos.add(cjDataSourceTabInfo);
                         etuInfo.setIsExists("Y");
                     } else {
-                        System.out.println("--------------pass2---------------------");
                         etuInfo.setIsExists("N");
                     }
                 } catch (Exception e) {

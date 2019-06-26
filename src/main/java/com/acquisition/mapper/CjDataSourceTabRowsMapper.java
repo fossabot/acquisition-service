@@ -2,6 +2,7 @@ package com.acquisition.mapper;
 
 
 import com.acquisition.entity.CjDataSourceTabRows;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface CjDataSourceTabRowsMapper {
     int insertBatch(List<CjDataSourceTabRows> list);
 
     int deleteBatch(List<CjDataSourceTabRows> list);
+
+    Integer selectTabSizeBytable(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
 }

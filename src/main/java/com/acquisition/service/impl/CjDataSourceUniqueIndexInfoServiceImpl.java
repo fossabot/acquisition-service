@@ -23,4 +23,9 @@ public class CjDataSourceUniqueIndexInfoServiceImpl implements CjDataSourceUniqu
         
         return cjDataSourceUniqueIndexInfoMapper.insertBatch(list);
     }
+
+    @Override
+    public List<CjDataSourceUniqueIndexInfo> findUniqueIndexByTable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceUniqueIndexInfoMapper.selectUniqueIndexByTable(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
 }

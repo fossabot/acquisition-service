@@ -2,6 +2,7 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjDataSourceSystemInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import com.acquisition.entity.CjDataSourceTabColInfo;
 
@@ -30,5 +31,10 @@ public interface ICjDataSourceTabColInfoService {
     List<CjDataSourceTabColInfo> selectByTable(String systemname, String schema, String tablename);
 
     List<CjDataSourceTabColInfo> findTabInfoByTable(String systemname, String schema, String tablename);
+
+    List<CjDataSourceTabColInfo> findIncrementCol(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
+    List<CjDataSourceTabColInfo> findPartitionKey(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
 
 }

@@ -35,6 +35,10 @@ public interface CjDataSourceTabColInfoMapper {
 
     List<CjDataSourceTabColInfo> selectAllBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
+    List<CjDataSourceTabColInfo> selectIncrementCol(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
+
+    List<CjDataSourceTabColInfo> selectPartitionKey(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
+
     List<CjDwCrtDdlColPojo> selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
     int insertBatch(List<CjDataSourceTabColInfo> list);
@@ -46,5 +50,9 @@ public interface CjDataSourceTabColInfoMapper {
     List<CjDataSourceTabColInfo> selectByTable(@Param("systemname") String systemname, @Param("schema") String schema, @Param("tablename") String tablename);
 
     List<CjDataSourceTabColInfo> selectTabInfoByTable(@Param("systemname") String businessSystemNameShortName, @Param("schema") String dataSourceSchema, @Param("tablename") String dataSourceTable);
+
+    List<String> selectSplictColNoIndex(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
+
+    List<String> selectSplictColHaveIndex(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
 }

@@ -25,4 +25,9 @@ public class CjDataSourceTabRowsServiceImpl implements CjDataSourceTabRowsServic
 
         return cjDataSourceTabRowsMapper.insertBatch(list);
     }
+
+    @Override
+    public Integer findTabSizeBytable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabRowsMapper.selectTabSizeBytable(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
 }
