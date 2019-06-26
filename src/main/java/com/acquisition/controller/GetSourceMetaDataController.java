@@ -20,7 +20,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -93,7 +95,7 @@ public class GetSourceMetaDataController {
                         systeminfo.setBusinessSystemId(table.getBusinessSystemId());
                         DataSourceSystemInfo.add(systeminfo);
                     }
-                    for(int i=0;i<DataSourceSystemInfo.size();i++){
+                    for (int i = 0; i < DataSourceSystemInfo.size(); i++) {
                         System.out.println(DataSourceSystemInfo.get(i));
                     }
                 } catch (Exception e) {
@@ -172,7 +174,7 @@ public class GetSourceMetaDataController {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((table.getBusinessSystemNameShortName() + (basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
                     if (con == null) {
-                        System.out.println("获取:"+table.getBusinessSystemNameShortName()+(basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-")+"的连接为空值");
+                        System.out.println("获取:" + table.getBusinessSystemNameShortName() + (basetype.equals("sqlserver") ? table.getDataSourceSchema() : "-") + "的连接为空值");
                         continue;
                     }
                     st = con.createStatement();
@@ -264,6 +266,7 @@ public class GetSourceMetaDataController {
                         sourcetabcolinfo.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
                         sourcetabcolinfo.setDataSourceColScale(rs.getString("data_source_col_scale"));
                         sourcetabcolinfo.setDataSourceColComment(rs.getString("data_source_col_comment"));
+                        sourcetabcolinfo.setLastModifyDt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                         datasourcetabcolInfo.add(sourcetabcolinfo);
                     }
 
@@ -281,7 +284,7 @@ public class GetSourceMetaDataController {
                     }
                 }
 
-                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName(), table.getDataSourceSchema(),null);
+                iCjDataSourceTabColInfoService.deleteBySystemName(table.getBusinessSystemNameShortName(), table.getDataSourceSchema(), null);
                 /*iCjDataSourceTabInfoService.deleteBySystemName(table.getBusinessSystemNameShortName());*/
             }
 
