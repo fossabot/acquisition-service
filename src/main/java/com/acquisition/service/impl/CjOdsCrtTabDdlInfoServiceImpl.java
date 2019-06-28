@@ -49,5 +49,16 @@ public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService
         return false;
     }
 
+    @Override
+    public int insertBatch(List<CjOdsCrtTabDdlInfo> list) {
+        for (CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo:list){
+            System.out.println(cjOdsCrtTabDdlInfo.getBusinessSystemNameShortName()+":"+
+            cjOdsCrtTabDdlInfo.getDataSourceSchema()+":"+
+            cjOdsCrtTabDdlInfo.getOdsDataTable());
+        }
+        cjOdsCrtTabDdlInfoMapper.deleteBatch(list);
+        return cjOdsCrtTabDdlInfoMapper.insertBatch(list);
+    }
+
 
 }

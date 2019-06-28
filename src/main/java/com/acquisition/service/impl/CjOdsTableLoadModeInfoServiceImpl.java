@@ -1,6 +1,8 @@
 package com.acquisition.service.impl;
 
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
+import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
+import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
 import com.acquisition.mapper.CjOdsTableLoadModeInfoMapper;
 import com.acquisition.service.CjOdsTableLoadModeInfoService;
 import org.springframework.stereotype.Service;
@@ -21,5 +23,15 @@ public class CjOdsTableLoadModeInfoServiceImpl implements CjOdsTableLoadModeInfo
     public int insertBatch(List<CjOdsTableLoadModeInfo> cjOdsTableLoadModeInfos) {
         cjOdsTableLoadModeInfoMapper.deleteBatch(cjOdsTableLoadModeInfos);
         return cjOdsTableLoadModeInfoMapper.insertBatch(cjOdsTableLoadModeInfos);
+    }
+
+    @Override
+    public List<CjOdsTableLoadModeInfo> findByExample(CjOdsTableLoadModeInfoExample example) {
+        return cjOdsTableLoadModeInfoMapper.selectByExample(example);
+    }
+
+    @Override
+    public CjOdsTableLoadModeInfo findByPrimaryKey(CjOdsTableLoadModeInfoKey key) {
+        return cjOdsTableLoadModeInfoMapper.selectByPrimaryKey(key);
     }
 }

@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.acquisition.mapper.CjOdsCrtTabDdlInfoMapper" >
-  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsCrtTabDdlInfo" >
+<mapper namespace="com.acquisition.mapper.CjOdsTableColInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsTableColInfo" >
     <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
     <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
     <id column="data_source_table" property="dataSourceTable" jdbcType="VARCHAR" />
-    <id column="ods_data_schema" property="odsDataSchema" jdbcType="VARCHAR" />
     <id column="ods_data_table" property="odsDataTable" jdbcType="VARCHAR" />
+    <id column="ods_table_col_name" property="odsTableColName" jdbcType="VARCHAR" />
     <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
-    <result column="ods_data_table_ddl_info" property="odsDataTableDdlInfo" jdbcType="VARCHAR" />
+    <result column="ods_data_schema" property="odsDataSchema" jdbcType="VARCHAR" />
+    <result column="ods_table_comment" property="odsTableComment" jdbcType="VARCHAR" />
+    <result column="ods_table_col_order" property="odsTableColOrder" jdbcType="VARCHAR" />
+    <result column="ods_table_col_type" property="odsTableColType" jdbcType="VARCHAR" />
+    <result column="ods_table_col_comment" property="odsTableColComment" jdbcType="VARCHAR" />
+    <result column="ods_table_partition_flag" property="odsTablePartitionFlag" jdbcType="CHAR" />
     <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
     <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
   </resultMap>
@@ -71,16 +76,18 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    business_system_name_short_name, data_source_schema, data_source_table, ods_data_schema, 
-    ods_data_table, business_system_ID, ods_data_table_ddl_info, last_modify_dt, last_modify_by
+    business_system_name_short_name, data_source_schema, data_source_table, ods_data_table, 
+    ods_table_col_name, business_system_ID, ods_data_schema, ods_table_comment, ods_table_col_order, 
+    ods_table_col_type, ods_table_col_comment, ods_table_partition_flag, last_modify_dt, 
+    last_modify_by
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfoExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTableColInfoExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from cj_ods_crt_tab_ddl_info
+    from cj_ods_table_col_info
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -88,42 +95,46 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfoKey" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTableColInfoKey" >
     select 
     <include refid="Base_Column_List" />
-    from cj_ods_crt_tab_ddl_info
+    from cj_ods_table_col_info
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
-      and ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+      and ods_table_col_name = #{odsTableColName,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfoKey" >
-    delete from cj_ods_crt_tab_ddl_info
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableColInfoKey" >
+    delete from cj_ods_table_col_info
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
-      and ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+      and ods_table_col_name = #{odsTableColName,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfoExample" >
-    delete from cj_ods_crt_tab_ddl_info
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsTableColInfoExample" >
+    delete from cj_ods_table_col_info
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfo" >
-    insert into cj_ods_crt_tab_ddl_info (business_system_name_short_name, data_source_schema,
-      data_source_table, ods_data_schema, ods_data_table, 
-      business_system_ID, ods_data_table_ddl_info, 
-      last_modify_dt, last_modify_by)
+  <insert id="insert" parameterType="com.acquisition.entity.CjOdsTableColInfo" >
+    insert into cj_ods_table_col_info (business_system_name_short_name, data_source_schema, 
+      data_source_table, ods_data_table, ods_table_col_name, 
+      business_system_ID, ods_data_schema, ods_table_comment, 
+      ods_table_col_order, ods_table_col_type, ods_table_col_comment, 
+      ods_table_partition_flag, last_modify_dt, last_modify_by
+      )
     values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
-      #{dataSourceTable,jdbcType=VARCHAR}, #{odsDataSchema,jdbcType=VARCHAR}, #{odsDataTable,jdbcType=VARCHAR}, 
-      #{businessSystemId,jdbcType=VARCHAR}, #{odsDataTableDdlInfo,jdbcType=VARCHAR}, 
-      #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR})
+      #{dataSourceTable,jdbcType=VARCHAR}, #{odsDataTable,jdbcType=VARCHAR}, #{odsTableColName,jdbcType=VARCHAR}, 
+      #{businessSystemId,jdbcType=VARCHAR}, #{odsDataSchema,jdbcType=VARCHAR}, #{odsTableComment,jdbcType=VARCHAR}, 
+      #{odsTableColOrder,jdbcType=VARCHAR}, #{odsTableColType,jdbcType=VARCHAR}, #{odsTableColComment,jdbcType=VARCHAR}, 
+      #{odsTablePartitionFlag,jdbcType=CHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfo" >
-    insert into cj_ods_crt_tab_ddl_info
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsTableColInfo" >
+    insert into cj_ods_table_col_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="businessSystemNameShortName != null" >
         business_system_name_short_name,
@@ -134,17 +145,32 @@
       <if test="dataSourceTable != null" >
         data_source_table,
       </if>
-      <if test="odsDataSchema != null" >
-        ods_data_schema,
-      </if>
       <if test="odsDataTable != null" >
         ods_data_table,
+      </if>
+      <if test="odsTableColName != null" >
+        ods_table_col_name,
       </if>
       <if test="businessSystemId != null" >
         business_system_ID,
       </if>
-      <if test="odsDataTableDdlInfo != null" >
-        ods_data_table_ddl_info,
+      <if test="odsDataSchema != null" >
+        ods_data_schema,
+      </if>
+      <if test="odsTableComment != null" >
+        ods_table_comment,
+      </if>
+      <if test="odsTableColOrder != null" >
+        ods_table_col_order,
+      </if>
+      <if test="odsTableColType != null" >
+        ods_table_col_type,
+      </if>
+      <if test="odsTableColComment != null" >
+        ods_table_col_comment,
+      </if>
+      <if test="odsTablePartitionFlag != null" >
+        ods_table_partition_flag,
       </if>
       <if test="lastModifyDt != null" >
         last_modify_dt,
@@ -163,17 +189,32 @@
       <if test="dataSourceTable != null" >
         #{dataSourceTable,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataSchema != null" >
-        #{odsDataSchema,jdbcType=VARCHAR},
-      </if>
       <if test="odsDataTable != null" >
         #{odsDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColName != null" >
+        #{odsTableColName,jdbcType=VARCHAR},
       </if>
       <if test="businessSystemId != null" >
         #{businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataTableDdlInfo != null" >
-        #{odsDataTableDdlInfo,jdbcType=VARCHAR},
+      <if test="odsDataSchema != null" >
+        #{odsDataSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableComment != null" >
+        #{odsTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColOrder != null" >
+        #{odsTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColType != null" >
+        #{odsTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColComment != null" >
+        #{odsTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTablePartitionFlag != null" >
+        #{odsTablePartitionFlag,jdbcType=CHAR},
       </if>
       <if test="lastModifyDt != null" >
         #{lastModifyDt,jdbcType=VARCHAR},
@@ -183,14 +224,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfoExample" resultType="java.lang.Integer" >
-    select count(*) from cj_ods_crt_tab_ddl_info
+  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsTableColInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_ods_table_col_info
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update cj_ods_crt_tab_ddl_info
+    update cj_ods_table_col_info
     <set >
       <if test="record.businessSystemNameShortName != null" >
         business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
@@ -201,17 +242,32 @@
       <if test="record.dataSourceTable != null" >
         data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsDataSchema != null" >
-        ods_data_schema = #{record.odsDataSchema,jdbcType=VARCHAR},
-      </if>
       <if test="record.odsDataTable != null" >
         ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableColName != null" >
+        ods_table_col_name = #{record.odsTableColName,jdbcType=VARCHAR},
       </if>
       <if test="record.businessSystemId != null" >
         business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsDataTableDdlInfo != null" >
-        ods_data_table_ddl_info = #{record.odsDataTableDdlInfo,jdbcType=VARCHAR},
+      <if test="record.odsDataSchema != null" >
+        ods_data_schema = #{record.odsDataSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableComment != null" >
+        ods_table_comment = #{record.odsTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableColOrder != null" >
+        ods_table_col_order = #{record.odsTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableColType != null" >
+        ods_table_col_type = #{record.odsTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableColComment != null" >
+        ods_table_col_comment = #{record.odsTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTablePartitionFlag != null" >
+        ods_table_partition_flag = #{record.odsTablePartitionFlag,jdbcType=CHAR},
       </if>
       <if test="record.lastModifyDt != null" >
         last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
@@ -225,28 +281,48 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update cj_ods_crt_tab_ddl_info
+    update cj_ods_table_col_info
     set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
       data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
       data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
-      ods_data_schema = #{record.odsDataSchema,jdbcType=VARCHAR},
       ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
+      ods_table_col_name = #{record.odsTableColName,jdbcType=VARCHAR},
       business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
-      ods_data_table_ddl_info = #{record.odsDataTableDdlInfo,jdbcType=VARCHAR},
+      ods_data_schema = #{record.odsDataSchema,jdbcType=VARCHAR},
+      ods_table_comment = #{record.odsTableComment,jdbcType=VARCHAR},
+      ods_table_col_order = #{record.odsTableColOrder,jdbcType=VARCHAR},
+      ods_table_col_type = #{record.odsTableColType,jdbcType=VARCHAR},
+      ods_table_col_comment = #{record.odsTableColComment,jdbcType=VARCHAR},
+      ods_table_partition_flag = #{record.odsTablePartitionFlag,jdbcType=CHAR},
       last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
       last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfo" >
-    update cj_ods_crt_tab_ddl_info
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsTableColInfo" >
+    update cj_ods_table_col_info
     <set >
       <if test="businessSystemId != null" >
         business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataTableDdlInfo != null" >
-        ods_data_table_ddl_info = #{odsDataTableDdlInfo,jdbcType=VARCHAR},
+      <if test="odsDataSchema != null" >
+        ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableComment != null" >
+        ods_table_comment = #{odsTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColOrder != null" >
+        ods_table_col_order = #{odsTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColType != null" >
+        ods_table_col_type = #{odsTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableColComment != null" >
+        ods_table_col_comment = #{odsTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTablePartitionFlag != null" >
+        ods_table_partition_flag = #{odsTablePartitionFlag,jdbcType=CHAR},
       </if>
       <if test="lastModifyDt != null" >
         last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
@@ -258,39 +334,48 @@
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
-      and ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+      and ods_table_col_name = #{odsTableColName,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsCrtTabDdlInfo" >
-    update cj_ods_crt_tab_ddl_info
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableColInfo" >
+    update cj_ods_table_col_info
     set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
-      ods_data_table_ddl_info = #{odsDataTableDdlInfo,jdbcType=VARCHAR},
+      ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR},
+      ods_table_comment = #{odsTableComment,jdbcType=VARCHAR},
+      ods_table_col_order = #{odsTableColOrder,jdbcType=VARCHAR},
+      ods_table_col_type = #{odsTableColType,jdbcType=VARCHAR},
+      ods_table_col_comment = #{odsTableColComment,jdbcType=VARCHAR},
+      ods_table_partition_flag = #{odsTablePartitionFlag,jdbcType=CHAR},
       last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
       last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
-      and ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+      and ods_table_col_name = #{odsTableColName,jdbcType=VARCHAR}
   </update>
+
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into cj_ods_crt_tab_ddl_info
+    insert into cj_ods_table_col_info
     (business_system_name_short_name, data_source_schema,
-    data_source_table, ods_data_schema, ods_data_table,
-    business_system_ID, ods_data_table_ddl_info,
-    last_modify_dt, last_modify_by)
+    data_source_table, ods_data_table, ods_table_col_name,
+    business_system_ID, ods_data_schema, ods_table_comment,
+    ods_table_col_order, ods_table_col_type, ods_table_col_comment,
+    ods_table_partition_flag, last_modify_dt, last_modify_by)
     values
     <foreach collection="list" index="index" item="item" separator=",">
       (#{item.businessSystemNameShortName,jdbcType=VARCHAR}, #{item.dataSourceSchema,jdbcType=VARCHAR},
-      #{item.dataSourceTable,jdbcType=VARCHAR}, #{item.odsDataSchema,jdbcType=VARCHAR}, #{item.odsDataTable,jdbcType=VARCHAR},
-      #{item.businessSystemId,jdbcType=VARCHAR}, #{item.odsDataTableDdlInfo,jdbcType=VARCHAR},
-      #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR})
+      #{item.dataSourceTable,jdbcType=VARCHAR}, #{item.odsDataTable,jdbcType=VARCHAR}, #{item.odsTableColName,jdbcType=VARCHAR},
+      #{item.businessSystemId,jdbcType=VARCHAR}, #{item.odsDataSchema,jdbcType=VARCHAR}, #{item.odsTableComment,jdbcType=VARCHAR},
+      #{item.odsTableColOrder,jdbcType=VARCHAR}, #{item.odsTableColType,jdbcType=VARCHAR}, #{item.odsTableColComment,jdbcType=VARCHAR},
+      #{item.odsTablePartitionFlag,jdbcType=CHAR}, #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR}
+      )
     </foreach>
   </insert>
 
 
   <delete id="deleteBatch" parameterType="java.util.List">
-    delete from cj_ods_crt_tab_ddl_info where
+    delete from cj_ods_table_col_info where
     (business_system_name_short_name,data_source_schema,data_source_table) in
     <foreach item="item" index="index" collection="list" separator="," open="(" close=")">
       (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})

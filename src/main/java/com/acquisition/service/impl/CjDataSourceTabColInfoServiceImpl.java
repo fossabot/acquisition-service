@@ -84,5 +84,15 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
         return cjDataSourceTabColInfoMapper.selectPartitionKey(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
 
+    @Override
+    public List<String> findSplictColNoIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectSplictColNoIndex(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
+    @Override
+    public List<String> findSplictColWithIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectSplictColWithIndex(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
 
 }

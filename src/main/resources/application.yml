@@ -9,8 +9,8 @@ server:
 #公共配置与profiles选择无关
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
 
 
 ---
@@ -32,7 +32,7 @@ spring:
       mode: HTML5
   #kafka配置
   kafka:
-    bootstrap-servers: 10.30.140.53:9092
+    bootstrap-servers: 10.30.140.36:9092
     consumer:
       group-id: kafka2
       auto-offset-reset: earliest
@@ -45,7 +45,7 @@ spring:
       batch-size: 65536
       buffer-memory: 524288
   datasource:
-    url: jdbc:mysql://10.30.140.53:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.30.140.36:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
@@ -55,9 +55,9 @@ spring:
     initialSize: 5
     minIdle: 5
     maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
+    maxWait: 6000
+    timeBetweenEvictionRunsMillis: 1500
+    minEvictableIdleTimeMillis: 2000
     validationQuery: SELECT 1 FROM DUAL
     testWhileIdle: true
     testOnBorrow: false
@@ -103,9 +103,9 @@ spring:
     initialSize: 5
     minIdle: 5
     maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
+    maxWait: 6000
+    timeBetweenEvictionRunsMillis: 1500
+    minEvictableIdleTimeMillis: 2000
     validationQuery: SELECT 1 FROM DUAL
     testWhileIdle: true
     testOnBorrow: false
@@ -152,9 +152,9 @@ spring:
     initialSize: 5
     minIdle: 5
     maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
+    maxWait: 6000
+    timeBetweenEvictionRunsMillis: 1500
+    minEvictableIdleTimeMillis: 2000
     validationQuery: SELECT 1 FROM DUAL
     testWhileIdle: true
     testOnBorrow: false

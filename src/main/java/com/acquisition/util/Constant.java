@@ -16,10 +16,14 @@ public class Constant {
     public static final String DW_CRT_DDL="1";
     public static final String DW_CRT_SCRIPT="1";
     public static final String DW_HIVE_SCHEMA="acquisition_dw";
-    public static final String ODS_HIVE_SCHEMA="acquisition_ods";
+    public static final String ODS_HIVE_FULL_SCHEMA="acquisition_ods";
+    public static final String ODS_HIVE_INCREMENT_SCHEMA="acquisition_ods_inc";
     public static final int ODS_INCREMENT_TABLE_SIZE=0;
     public static final String ODS_PARTITION_KEY="data_dt";
     public static final String ODS_PARTITION_UNIT="month";
     public static final String ODS_INCREMENT_EXTRACT="increment";
     public static final String ODS_FULL_EXTRACT="full";
+    public static final String ODS_COL_TYPE="string";
+    public static final String TABLE_OPTION_SUCCESS="success";
+    public static final String TABLE_OPTION_FAILED="failed";
 }

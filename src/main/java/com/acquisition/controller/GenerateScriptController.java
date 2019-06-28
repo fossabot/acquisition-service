@@ -171,7 +171,7 @@ public class GenerateScriptController {
             dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
             dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
             dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt\n");
-            dwInitScript.append("from "+Constant.ODS_HIVE_SCHEMA+"."+odsTableName);
+            dwInitScript.append("from "+Constant.ODS_HIVE_FULL_SCHEMA+"."+odsTableName);
             CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
             cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
             cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());

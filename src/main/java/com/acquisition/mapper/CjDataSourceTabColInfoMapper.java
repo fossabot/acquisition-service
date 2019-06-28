@@ -53,6 +53,6 @@ public interface CjDataSourceTabColInfoMapper {
 
     List<String> selectSplictColNoIndex(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
-    List<String> selectSplictColHaveIndex(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
+    List<String> selectSplictColWithIndex(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
 }

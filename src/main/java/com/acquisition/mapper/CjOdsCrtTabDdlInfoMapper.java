@@ -5,6 +5,7 @@ import java.util.List;
 import com.acquisition.entity.CjOdsCrtTabDdlInfo;
 import com.acquisition.entity.CjOdsCrtTabDdlInfoExample;
 import com.acquisition.entity.CjOdsCrtTabDdlInfoKey;
+import com.acquisition.entity.CjOdsTableColInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjOdsCrtTabDdlInfoMapper {
@@ -29,4 +30,8 @@ public interface CjOdsCrtTabDdlInfoMapper {
     int updateByPrimaryKeySelective(CjOdsCrtTabDdlInfo record);
 
     int updateByPrimaryKey(CjOdsCrtTabDdlInfo record);
+
+    int insertBatch(List<CjOdsCrtTabDdlInfo> list);
+
+    int deleteBatch(List<CjOdsCrtTabDdlInfo> list);
 }

@@ -36,5 +36,9 @@ public interface ICjDataSourceTabColInfoService {
 
     List<CjDataSourceTabColInfo> findPartitionKey(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 
+    List<String> findSplictColNoIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
+    List<String> findSplictColWithIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
 
 }

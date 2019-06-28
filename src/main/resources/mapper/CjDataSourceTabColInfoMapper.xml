@@ -126,7 +126,7 @@
     where business_system_name_short_name = #{businessSystemNameShortName}
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
-    order by col.data_source_col_order asc
+    order by cast(col.data_source_col_order as SIGNED) asc
   </select>
 
     <select id="selectByExample" resultMap="BaseResultMap"
@@ -502,7 +502,7 @@
         and rule.rule_type = 'splict_field_type_list'
     </select>
 
-    <select id="selectSplictColHaveIndex" resultType="java.lang.String">
+    <select id="selectSplictColWithIndex" resultType="java.lang.String">
         select distinct col.data_source_col_name
         from cj_data_source_tab_col_info col
         LEFT JOIN cj_ods_crt_tab_rule_info rule

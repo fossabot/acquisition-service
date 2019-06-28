@@ -1,15 +1,15 @@
 package com.acquisition.entity;
 
-public class CjOdsCrtTabDdlInfoKey {
+public class CjOdsTableColInfoKey {
     private String businessSystemNameShortName;
 
     private String dataSourceSchema;
 
     private String dataSourceTable;
 
-    private String odsDataSchema;
-
     private String odsDataTable;
+
+    private String odsTableColName;
 
     public String getBusinessSystemNameShortName() {
         return businessSystemNameShortName;
@@ -35,19 +35,19 @@ public class CjOdsCrtTabDdlInfoKey {
         this.dataSourceTable = dataSourceTable == null ? null : dataSourceTable.trim();
     }
 
-    public String getOdsDataSchema() {
-        return odsDataSchema;
-    }
-
-    public void setOdsDataSchema(String odsDataSchema) {
-        this.odsDataSchema = odsDataSchema == null ? null : odsDataSchema.trim();
-    }
-
     public String getOdsDataTable() {
         return odsDataTable;
     }
 
     public void setOdsDataTable(String odsDataTable) {
         this.odsDataTable = odsDataTable == null ? null : odsDataTable.trim();
+    }
+
+    public String getOdsTableColName() {
+        return odsTableColName;
+    }
+
+    public void setOdsTableColName(String odsTableColName) {
+        this.odsTableColName = odsTableColName == null ? null : odsTableColName.trim();
     }
 }

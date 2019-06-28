@@ -15,4 +15,5 @@ public interface ICjOdsCrtTabDdlInfoService {
     String GetODSTableName(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
     String getODSTableInfo(List<CjDataSourceTabInfo> CjDataSourceTabInfos);
     boolean saveDDLAndCreateTable(CjOdsCrtTabDdlInfo CjDataSourceTabInfos);
+    int insertBatch(List<CjOdsCrtTabDdlInfo> list);
 }
