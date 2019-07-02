@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.acquisition.mapper.CjDataSourceTabRowsMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.acquisition.entity.CjDataSourceTabRows" id="cjDataSourceTabRowsMap">
+        <result property="businessSystemId" column="business_system_ID"/>
+        <result property="businessSystemNameShortName" column="business_system_name_short_name"/>
+        <result property="dataSourceSchema" column="data_source_schema"/>
+        <result property="dataSourceTable" column="data_source_table"/>
+        <result property="dataSourceTabRows" column="data_source_tab_rows"/>
+        <result property="dataSourceTabSizes" column="data_source_tab_sizes"/>
+        <result property="lastModifyDt" column="last_modify_dt"/>
+        <result property="lastModifyBy" column="last_modify_by"/>
+    </resultMap>
+
+
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into cj_data_source_tab_rows
+        (business_system_ID,business_system_name_short_name,data_source_schema,data_source_table,data_source_tab_rows,data_source_tab_sizes,last_modify_dt,last_modify_by)
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.businessSystemId}, #{item.businessSystemNameShortName},
+            #{item.dataSourceSchema}, #{item.dataSourceTable}, #{item.dataSourceTabRows},
+            #{item.dataSourceTabSizes}, #{item.lastModifyDt},
+            #{item.lastModifyBy})
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete from cj_data_source_tab_rows where
+        (business_system_name_short_name,data_source_schema,data_source_table) in
+        <foreach item="item" index="index" collection="list" separator="," open="(" close=")">
+            (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})
+        </foreach>
+    </delete>
+
+    <select id="selectTabSizeBytable" resultType="java.lang.Integer" >
+        select data_source_tab_sizes from cj_data_source_tab_rows
+        where business_system_name_short_name = #{businessSystemNameShortName}
+        and data_source_schema = #{dataSourceSchema}
+        and data_source_table = #{dataSourceTable}
+    </select>
+</mapper>
