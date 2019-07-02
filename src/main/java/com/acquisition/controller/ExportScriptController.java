@@ -124,7 +124,7 @@ public class ExportScriptController {
      * 保存DW脚本到本地文件夹
      */
     @ApiOperation("导出dw脚本")
-    @GetMapping(value = "/exportDwScript")
+    @PostMapping(value = "/exportDwScript")
     public void exportDwScript(@RequestBody String data,
                                HttpServletResponse response) {
         OutputStream output = null;

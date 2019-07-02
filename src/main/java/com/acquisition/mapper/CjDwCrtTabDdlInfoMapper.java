@@ -2,10 +2,7 @@ package com.acquisition.mapper;
 
 import java.util.List;
 
-import com.acquisition.entity.CjDataSourceTabInfo;
-import com.acquisition.entity.CjDwCrtTabDdlInfo;
-import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
-import com.acquisition.entity.CjDwCrtTabDdlInfoKey;
+import com.acquisition.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjDwCrtTabDdlInfoMapper {
@@ -30,4 +27,8 @@ public interface CjDwCrtTabDdlInfoMapper {
     int updateByPrimaryKeySelective(CjDwCrtTabDdlInfo record);
 
     int updateByPrimaryKey(CjDwCrtTabDdlInfo record);
+
+    int insertBatch(List<CjDwCrtTabDdlInfo> list);
+
+    int deleteBatch(List<CjDwCrtTabDdlInfo> list);
 }

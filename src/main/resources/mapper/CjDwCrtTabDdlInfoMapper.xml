@@ -273,4 +273,27 @@
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
       and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
   </update>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into cj_dw_crt_tab_ddl_info
+    (business_system_name_short_name, data_source_schema,
+    data_source_table, ods_data_table, dw_data_table,
+    business_system_ID, dw_data_table_ddl_info, last_modify_dt,
+    last_modify_by)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.businessSystemNameShortName,jdbcType=VARCHAR}, #{item.dataSourceSchema,jdbcType=VARCHAR},
+      #{item.dataSourceTable,jdbcType=VARCHAR}, #{item.odsDataTable,jdbcType=VARCHAR}, #{item.dwDataTable,jdbcType=VARCHAR},
+      #{item.businessSystemId,jdbcType=VARCHAR}, #{item.dwDataTableDdlInfo,jdbcType=VARCHAR}, #{item.lastModifyDt,jdbcType=VARCHAR},
+      #{item.lastModifyBy,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete from cj_dw_crt_tab_ddl_info where
+    (business_system_name_short_name,data_source_schema,data_source_table,dw_data_table) in
+    <foreach item="item" index="index" collection="list" separator="," open="(" close=")">
+      (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable},#{item.dwDataTable})
+    </foreach>
+  </delete>
 </mapper>

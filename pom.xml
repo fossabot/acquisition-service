@@ -307,6 +307,44 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- 指定入口函数 -->
+							<mainClass>com.acquisition.SurgingApplication</mainClass>
+							<!-- 是否添加依赖的jar路径配置 -->
+							<addClasspath>true</addClasspath>
+							<!-- 依赖的jar包存放位置，和生成的jar放在同一级目录下 -->
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+					<excludes>
+						<exclude>**/kafka/**</exclude>
+						<exclude>com/acquisition/controller/KafkaTestController.class</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
@@ -341,6 +379,15 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<!--<resources>-->
+			<!--<resource>-->
+				<!--<filtering>false</filtering>-->
+				<!--<directory>src/main/resources</directory>-->
+				<!--<excludes>-->
+					<!--<exclude>templates/**</exclude>-->
+				<!--</excludes>-->
+			<!--</resource>-->
+		<!--</resources>-->
 	</build>
 	<!--swagger2导出插件相关依赖-->
 	<repositories>

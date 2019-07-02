@@ -30,6 +30,7 @@
         <result column="data_source_col_primarykey_flag" property="dataSourceColPrimarykeyFlag" jdbcType="CHAR"/>
         <result column="data_source_col_isnull_flag" property="dataSourceColIsnullFlag" jdbcType="CHAR"/>
         <result column="data_source_col_name" property="dataSourceColName" jdbcType="VARCHAR"/>
+        <result column="data_source_col_order" property="dataSourceColOrder" jdbcType="VARCHAR"/>
         <result column="data_source_col_datatype" property="dataSourceColDatatype" jdbcType="VARCHAR"/>
         <result column="data_source_col_len" property="dataSourceColLen" jdbcType="VARCHAR"/>
         <result column="data_source_col_precision" property="dataSourceColPrecision" jdbcType="VARCHAR"/>
@@ -112,6 +113,7 @@
     col.data_source_table as data_source_table,
     col.data_source_table_comment as data_source_table_comment,
     col.data_source_col_name as data_source_col_name,
+    col.data_source_col_order as data_source_col_order,
     col.data_source_col_primarykey_flag as data_source_col_primarykey_flag,
     col.data_source_col_isnull_flag as data_source_col_isnull_flag,
     col.data_source_col_datatype as data_source_col_datatype,

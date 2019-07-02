@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class TableOptionPojo {
 
+    private String index;
+
     private String businessSystemNameShortName;
 
     private String dataSourceSchema;

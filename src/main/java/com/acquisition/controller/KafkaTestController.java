@@ -1,8 +1,6 @@
 package com.acquisition.controller;
 
 import com.acquisition.kafka.KafkaSender;
-import com.acquisition.service.ICjDwCrtTabDdlInfoService;
-import com.acquisition.util.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

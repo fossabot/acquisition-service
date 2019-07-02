@@ -3,6 +3,7 @@ package com.acquisition.controller;
 import com.acquisition.entity.*;
 import com.acquisition.entity.excel.EtuInfo;
 import com.acquisition.service.*;
+import com.acquisition.util.Constant;
 import com.acquisition.util.EasyExcelUtil;
 import com.acquisition.util.Result;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -119,6 +120,7 @@ public class ConvertMetadataContrller {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((etuInfo.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuInfo.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
                     if (con == null) {
+                        etuInfo.setMetaStatus(Constant.CONNECTION_NOT_EXISTS);
                         continue;
                     }
                     st = con.createStatement();
@@ -242,9 +244,9 @@ public class ConvertMetadataContrller {
                         cjDataSourceTabInfo.setDataSourceTableComment(dataSourceColComment);
                         cjDataSourceTabInfo.setDataFlagForGetCols("1");
                         cjDataSourceTabInfos.add(cjDataSourceTabInfo);
-                        etuInfo.setIsExists("Y");
+                        etuInfo.setMetaStatus(Constant.META_EXISTS);
                     } else {
-                        etuInfo.setIsExists("N");
+                        etuInfo.setMetaStatus(Constant.META_NOT_EXISTS);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

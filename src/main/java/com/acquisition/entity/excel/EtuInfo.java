@@ -33,6 +33,6 @@ public class EtuInfo extends BaseRowModel {
     @ExcelProperty(value = {"源表名"}, index = 2)
     private String dataSourceTable;
 
-    private String isExists;
+    private String metaStatus;
 
 }

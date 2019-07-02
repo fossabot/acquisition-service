@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDwTableColInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDwTableColInfo" >
+    <id column="dw_business_topic_domain" property="dwBusinessTopicDomain" jdbcType="VARCHAR" />
+    <id column="dw_data_schema" property="dwDataSchema" jdbcType="VARCHAR" />
+    <id column="dw_data_table" property="dwDataTable" jdbcType="VARCHAR" />
+    <id column="dw_table_col_name" property="dwTableColName" jdbcType="VARCHAR" />
+    <result column="dw_table_belong_domain" property="dwTableBelongDomain" jdbcType="VARCHAR" />
+    <result column="dw_table_comment" property="dwTableComment" jdbcType="VARCHAR" />
+    <result column="dw_table_col_order" property="dwTableColOrder" jdbcType="VARCHAR" />
+    <result column="dw_table_col_type" property="dwTableColType" jdbcType="VARCHAR" />
+    <result column="dw_table_col_comment" property="dwTableColComment" jdbcType="VARCHAR" />
+    <result column="dw_table_partition_flag" property="dwTablePartitionFlag" jdbcType="CHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    dw_business_topic_domain, dw_data_schema, dw_data_table, dw_table_col_name, dw_table_belong_domain, 
+    dw_table_comment, dw_table_col_order, dw_table_col_type, dw_table_col_comment, dw_table_partition_flag, 
+    last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableColInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableColInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_info
+    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
+      and dw_data_schema = #{dwDataSchema,jdbcType=VARCHAR}
+      and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_col_name = #{dwTableColName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectColInfoByTopicAndTab" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_info
+    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
+    and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+    order by cast(dw_table_col_order as SIGNED) asc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableColInfoKey" >
+    delete from cj_dw_table_col_info
+    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
+      and dw_data_schema = #{dwDataSchema,jdbcType=VARCHAR}
+      and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_col_name = #{dwTableColName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDwTableColInfoExample" >
+    delete from cj_dw_table_col_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDwTableColInfo" >
+    insert into cj_dw_table_col_info (dw_business_topic_domain, dw_data_schema, 
+      dw_data_table, dw_table_col_name, dw_table_belong_domain, 
+      dw_table_comment, dw_table_col_order, dw_table_col_type, 
+      dw_table_col_comment, dw_table_partition_flag, last_modify_dt, 
+      last_modify_by)
+    values (#{dwBusinessTopicDomain,jdbcType=VARCHAR}, #{dwDataSchema,jdbcType=VARCHAR}, 
+      #{dwDataTable,jdbcType=VARCHAR}, #{dwTableColName,jdbcType=VARCHAR}, #{dwTableBelongDomain,jdbcType=VARCHAR}, 
+      #{dwTableComment,jdbcType=VARCHAR}, #{dwTableColOrder,jdbcType=VARCHAR}, #{dwTableColType,jdbcType=VARCHAR}, 
+      #{dwTableColComment,jdbcType=VARCHAR}, #{dwTablePartitionFlag,jdbcType=CHAR}, #{lastModifyDt,jdbcType=VARCHAR}, 
+      #{lastModifyBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDwTableColInfo" >
+    insert into cj_dw_table_col_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dwBusinessTopicDomain != null" >
+        dw_business_topic_domain,
+      </if>
+      <if test="dwDataSchema != null" >
+        dw_data_schema,
+      </if>
+      <if test="dwDataTable != null" >
+        dw_data_table,
+      </if>
+      <if test="dwTableColName != null" >
+        dw_table_col_name,
+      </if>
+      <if test="dwTableBelongDomain != null" >
+        dw_table_belong_domain,
+      </if>
+      <if test="dwTableComment != null" >
+        dw_table_comment,
+      </if>
+      <if test="dwTableColOrder != null" >
+        dw_table_col_order,
+      </if>
+      <if test="dwTableColType != null" >
+        dw_table_col_type,
+      </if>
+      <if test="dwTableColComment != null" >
+        dw_table_col_comment,
+      </if>
+      <if test="dwTablePartitionFlag != null" >
+        dw_table_partition_flag,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dwBusinessTopicDomain != null" >
+        #{dwBusinessTopicDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="dwDataSchema != null" >
+        #{dwDataSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="dwDataTable != null" >
+        #{dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColName != null" >
+        #{dwTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableBelongDomain != null" >
+        #{dwTableBelongDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableComment != null" >
+        #{dwTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColOrder != null" >
+        #{dwTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColType != null" >
+        #{dwTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColComment != null" >
+        #{dwTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTablePartitionFlag != null" >
+        #{dwTablePartitionFlag,jdbcType=CHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDwTableColInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_dw_table_col_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_dw_table_col_info
+    <set >
+      <if test="record.dwBusinessTopicDomain != null" >
+        dw_business_topic_domain = #{record.dwBusinessTopicDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwDataSchema != null" >
+        dw_data_schema = #{record.dwDataSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwDataTable != null" >
+        dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableColName != null" >
+        dw_table_col_name = #{record.dwTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableBelongDomain != null" >
+        dw_table_belong_domain = #{record.dwTableBelongDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableComment != null" >
+        dw_table_comment = #{record.dwTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableColOrder != null" >
+        dw_table_col_order = #{record.dwTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableColType != null" >
+        dw_table_col_type = #{record.dwTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTableColComment != null" >
+        dw_table_col_comment = #{record.dwTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTablePartitionFlag != null" >
+        dw_table_partition_flag = #{record.dwTablePartitionFlag,jdbcType=CHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_dw_table_col_info
+    set dw_business_topic_domain = #{record.dwBusinessTopicDomain,jdbcType=VARCHAR},
+      dw_data_schema = #{record.dwDataSchema,jdbcType=VARCHAR},
+      dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      dw_table_col_name = #{record.dwTableColName,jdbcType=VARCHAR},
+      dw_table_belong_domain = #{record.dwTableBelongDomain,jdbcType=VARCHAR},
+      dw_table_comment = #{record.dwTableComment,jdbcType=VARCHAR},
+      dw_table_col_order = #{record.dwTableColOrder,jdbcType=VARCHAR},
+      dw_table_col_type = #{record.dwTableColType,jdbcType=VARCHAR},
+      dw_table_col_comment = #{record.dwTableColComment,jdbcType=VARCHAR},
+      dw_table_partition_flag = #{record.dwTablePartitionFlag,jdbcType=CHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDwTableColInfo" >
+    update cj_dw_table_col_info
+    <set >
+      <if test="dwTableBelongDomain != null" >
+        dw_table_belong_domain = #{dwTableBelongDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableComment != null" >
+        dw_table_comment = #{dwTableComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColOrder != null" >
+        dw_table_col_order = #{dwTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColType != null" >
+        dw_table_col_type = #{dwTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTableColComment != null" >
+        dw_table_col_comment = #{dwTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTablePartitionFlag != null" >
+        dw_table_partition_flag = #{dwTablePartitionFlag,jdbcType=CHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
+      and dw_data_schema = #{dwDataSchema,jdbcType=VARCHAR}
+      and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_col_name = #{dwTableColName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableColInfo" >
+    update cj_dw_table_col_info
+    set dw_table_belong_domain = #{dwTableBelongDomain,jdbcType=VARCHAR},
+      dw_table_comment = #{dwTableComment,jdbcType=VARCHAR},
+      dw_table_col_order = #{dwTableColOrder,jdbcType=VARCHAR},
+      dw_table_col_type = #{dwTableColType,jdbcType=VARCHAR},
+      dw_table_col_comment = #{dwTableColComment,jdbcType=VARCHAR},
+      dw_table_partition_flag = #{dwTablePartitionFlag,jdbcType=CHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
+      and dw_data_schema = #{dwDataSchema,jdbcType=VARCHAR}
+      and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_col_name = #{dwTableColName,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into cj_dw_table_col_info
+    (dw_business_topic_domain, dw_data_schema,
+    dw_data_table, dw_table_col_name, dw_table_belong_domain,
+    dw_table_comment, dw_table_col_order, dw_table_col_type,
+    dw_table_col_comment, dw_table_partition_flag, last_modify_dt,
+    last_modify_by)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.dwBusinessTopicDomain,jdbcType=VARCHAR}, #{item.dwDataSchema,jdbcType=VARCHAR},
+      #{item.dwDataTable,jdbcType=VARCHAR}, #{item.dwTableColName,jdbcType=VARCHAR}, #{item.dwTableBelongDomain,jdbcType=VARCHAR},
+      #{item.dwTableComment,jdbcType=VARCHAR}, #{item.dwTableColOrder,jdbcType=VARCHAR}, #{item.dwTableColType,jdbcType=VARCHAR},
+      #{item.dwTableColComment,jdbcType=VARCHAR}, #{item.dwTablePartitionFlag,jdbcType=CHAR}, #{item.lastModifyDt,jdbcType=VARCHAR},
+      #{item.lastModifyBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+</mapper>

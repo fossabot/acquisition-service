@@ -1,6 +1,8 @@
 package com.acquisition.controller;
 
 import com.acquisition.entity.*;
+import com.acquisition.entity.dto.CjDataSourceTabInfoDto;
+import com.acquisition.entity.dto.CjDwCrtTabDdlInfoDto;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.entity.pojo.TableOptionPojo;
 import com.acquisition.service.*;
@@ -48,7 +50,7 @@ public class HiveCreateTableController {
     public ICjOdsCrtTabDdlInfoService cjOdsCrtTabDdlInfoService;
 
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
-    public ICjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
+    public CjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
     @Resource(name = "cjDataSourceTabRowsServiceImpl")
     public CjDataSourceTabRowsService cjDataSourceTabRowsService;
@@ -62,6 +64,8 @@ public class HiveCreateTableController {
     @Resource(name = "cjOdsTableColInfoServiceImpl")
     public CjOdsTableColInfoService cjOdsTableColInfoService;
 
+    @Resource(name = "cjDwTableColInfoServiceImpl")
+    public CjDwTableColInfoService cjDwTableColInfoService;
     /**
      * @Author: zhangdongmao
      * @Date: 2019/6/5
@@ -182,113 +186,105 @@ public class HiveCreateTableController {
     @ApiOperation("dw建表接口")
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("建表成功");
         JSONObject jsonObject = JSONObject.parseObject(data);
         data = jsonObject.getString("params");
-        List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(data, CjDataSourceTabInfo.class);
+        List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos = JSONObject.parseArray(data, CjDataSourceTabInfoDto.class);
+        System.out.println(cjDataSourceTabInfoDtos.get(0).getIndex());
+        List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = saveDwBakTableInfos(cjDataSourceTabInfoDtos);
+        List<TableOptionPojo> tableOptionPojos = hiveCreateDwBakTableBatch(cjDwCrtTabDdlInfoDtos);
+
+        for(TableOptionPojo tableOptionPojo : tableOptionPojos){
+            if(tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)){
+                CjDataSourceTabInfo cjDataSourceTabInfo = new CjDataSourceTabInfo();
+//                生成DW建表语句成功，设置状态表中的相应状态字段
+                cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
+                cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
+                //将状态改变更新到数据库
+                CjDataSourceTabInfoExample cjDataSourceTabInfoExample = new CjDataSourceTabInfoExample();
+                CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
+                //where条件使用业务系统缩写、数据模式和表名做限制
+                criteria.andBusinessSystemNameShortNameEqualTo(tableOptionPojo.getBusinessSystemNameShortName());
+                criteria.andDataSourceSchemaEqualTo(tableOptionPojo.getDataSourceSchema());
+                criteria.andDataSourceTableEqualTo(tableOptionPojo.getDataSourceTable());
+                cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo, cjDataSourceTabInfoExample);
+            } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED) || tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_AVAIL)){
+                result.setCode(500);
+                result.setMsg("部分表建表失败");
+            }
+        }
+        result.setData(tableOptionPojos);
+        return result;
+    }
+
+    public List<CjDwCrtTabDdlInfoDto> saveDwBakTableInfos(List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos) {
         String businessSystemNameShortName;
+        String businessSystemId;
         String dataSourceSchema;
         String dataSourceTable;
         String dwTableName;
-        String odsTableName = "";
-        String colName;
-        String colType;
-        String colComment;
-        Result result = new Result();
+        String odsTableName;
+        List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos = new ArrayList<>();
+        List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = new ArrayList<>();
+
 //        //遍历每张表，生成DW建表语句
-        for (CjDataSourceTabInfo cjDataSourceTabInfo : cjDataSourceTabInfos) {
-            businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
-            dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
-            dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
+        for (CjDataSourceTabInfoDto cjDataSourceTabInfoDto : cjDataSourceTabInfoDtos) {
+            businessSystemNameShortName = cjDataSourceTabInfoDto.getBusinessSystemNameShortName();
+            dataSourceSchema = cjDataSourceTabInfoDto.getDataSourceSchema();
+            dataSourceTable = cjDataSourceTabInfoDto.getDataSourceTable();
             odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
             dwTableName = CreateTableUtil.getDwTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-            //使用StringBuffer拼接DW建表语句
-            StringBuffer dwddl = new StringBuffer();
-            dwddl.append("create external table if not exists " + Constant.DW_HIVE_SCHEMA + "." + dwTableName + "\n");
-            dwddl.append("(" + "\n");
-            //通过系统名、数据模式、表名获取表的字段信息
-            List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-            for (int i = 0; i < cjDwCrtDdlColPojos.size(); i++) {
-                colName = cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
-                colComment = cjDwCrtDdlColPojos.get(i).getDataSourceColComment();
-                if (colComment == null) {
-                    colComment = "";
+
+            String dwBakDdl = generateDwBakDdl(cjDataSourceTabInfoDto);
+
+            if(dwBakDdl != null && !dwBakDdl.equals("")){
+                /**
+                 * 将dw建表语句存入mysql中
+                 */
+                if (cjDataSourceTabInfoDto.getBusinessSystemId() == null) {
+                    CjDataSourceConnDefine cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfoDto.getBusinessSystemNameShortName(), cjDataSourceTabInfoDto.getDataSourceSchema());
+                    businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+                } else {
+                    businessSystemId = cjDataSourceTabInfoDto.getBusinessSystemId();
                 }
-                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
-                Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-                Matcher m = p.matcher(colName);
-                if (m.find()) {
-                    colComment = colName;
-                    colName = PinyinUtil.getPinYin(colName);
-                }
-                if (colName.equals("src_table_name")) {
-                    colName = "src_table_name_dl";
-                }
-                colType = cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
-                dwddl.append("    `" + colName + "`    " + colType + "    " + "comment \"" + colComment + "\"" + ",\n");
+                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
+                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
+                cjDwCrtTabDdlInfoDto.setBusinessSystemId(businessSystemId);
+                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
+                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
+                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
+                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
+                CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
+                BeanUtils.copyProperties(cjDwCrtTabDdlInfoDto,cjDwCrtTabDdlInfo);
+                cjDwCrtTabDdlInfos.add(cjDwCrtTabDdlInfo);
+                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
+
+            } else {
+                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
+                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
+                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
+                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
+                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
+                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
+                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
             }
-            dwddl.append("    `src_sys_row_id`    string    comment \"源系统pk\",\n");
-            dwddl.append("    `src_sys_cd`    string    comment \"源系统代码\",\n");
-            dwddl.append("    `src_table_name`    string    comment \"源表名\",\n");
-            dwddl.append("    `etl_dt`    string    comment \"etl处理时间\",\n");
-            dwddl.append("    `data_dt`    string    comment \"数据日期\"\n");
-            dwddl.append(")" + "\n");
-            dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
 
-
-            /**
-             * 将dw建表语句存入mysql中
-             */
-
-            CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
-            cjDwCrtTabDdlInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
-            cjDwCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
-            cjDwCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
-            cjDwCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwCrtTabDdlInfo.setOdsDataTable(odsTableName);
-            cjDwCrtTabDdlInfo.setDwDataTable(dwTableName);
-            cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwddl.toString());
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            cjDwCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
-            GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
-            Connection connection = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                connection = instance.getConnection();
-                preparedStatement = connection.prepareStatement(dwddl.toString());
-                preparedStatement.execute();
-                cjDwCrtTabDdlInfoService.deleteByPrimaryKey(cjDwCrtTabDdlInfo);
-                if (cjDwCrtTabDdlInfoService.save(cjDwCrtTabDdlInfo).equals("保存成功")) {
-                    //生成DW建表语句成功，设置状态表中的相应状态字段
-                    cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
-                    cjDataSourceTabInfo.setDataFlagForCrtDwHive(Constant.DW_CRT_HIVE);
-                    //将状态改变更新到数据库
-                    CjDataSourceTabInfoExample cjDataSourceTabInfoExample = new CjDataSourceTabInfoExample();
-                    CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
-                    //where条件使用业务系统缩写、数据模式和表名做限制
-                    criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
-                    criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
-                    criteria.andDataSourceTableEqualTo(dataSourceTable);
-                    cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo, cjDataSourceTabInfoExample);
-                }
-                dwddl.setLength(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-                dwddl.setLength(0);
-                return result.error(500, "建表失败");
-            } finally {
-                if (connection != null) {
-                    try {
-                        preparedStatement.close();
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+            if(cjDwCrtTabDdlInfos != null && cjDwCrtTabDdlInfos.size()>0){
+                cjDwCrtTabDdlInfoService.insertBatch(cjDwCrtTabDdlInfos);
             }
         }
-        result.setCode(200);
-        result.setMsg("建表成功");
-        return result;
+
+        return cjDwCrtTabDdlInfoDtos;
     }
 
     /**
@@ -396,9 +392,7 @@ public class HiveCreateTableController {
             }
             cjOdsTableLoadModeInfos.add(cjOdsTableLoadModeInfo);
         }
-//        for (CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo:cjOdsTableLoadModeInfos){
-//            System.out.println(cjOdsTableLoadModeInfo.getDataSourceTable()+"-------------asdfasdfasf");
-//        }
+
         if (cjOdsTableLoadModeInfoService.insertBatch(cjOdsTableLoadModeInfos) > 0) {
             result.setCode(200);
             result.setMsg("定义ODS加载策略成功");
@@ -415,11 +409,14 @@ public class HiveCreateTableController {
     @ApiOperation("ods建表接口")
     @PostMapping("/createODSTable")
     public Result createODSTable(@RequestBody String data) {
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("建表成功");
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
         List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos = saveOdsTableInfos(cjDataSourceTabInfos);
-        List<TableOptionPojo> tableOptionPojos = hiveCreateTableBatch(cjOdsCrtTabDdlInfos);
+        List<TableOptionPojo> tableOptionPojos = hiveCreateOdsTableBatch(cjOdsCrtTabDdlInfos);
         for (TableOptionPojo tableOptionPojo : tableOptionPojos) {
             if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)){
                 cjDataSourceTabInfoService.updateODSFlg(
@@ -427,11 +424,13 @@ public class HiveCreateTableController {
                         tableOptionPojo.getBusinessSystemNameShortName(),
                         tableOptionPojo.getDataSourceSchema(),
                         tableOptionPojo.getDataSourceTable());
+            } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED)){
+                result.setCode(500);
+                result.setMsg("部分表建表失败");
             }
         }
-
-
-        return new Result().success(tableOptionPojos);
+        result.setData(tableOptionPojos);
+        return result;
     }
 
     /**
@@ -499,12 +498,152 @@ public class HiveCreateTableController {
                 cjOdsCrtTabDdlInfos.add(cjOdsCrtTabDdlInfoInc);
                 odsIncrementDdl = "";
             }
-
         }
         cjOdsCrtTabDdlInfoService.insertBatch(cjOdsCrtTabDdlInfos);
         return cjOdsCrtTabDdlInfos;
     }
 
+    /**
+     * 生成dw备用区建表语句
+     * @param cjDataSourceTabInfoDto
+     * @return
+     */
+    public String generateDwBakDdl(CjDataSourceTabInfoDto cjDataSourceTabInfoDto) {
+        String businessSystemNameShortName;
+        String dataSourceSchema;
+        String dataSourceTable;
+        String dwTableName;
+        String tableComment="";
+        String colName;
+        String colType;
+        String colComment;
+        List<CjDwTableColInfo> cjDwTableColInfos = new ArrayList<>();
+
+        businessSystemNameShortName = cjDataSourceTabInfoDto.getBusinessSystemNameShortName();
+        dataSourceSchema = cjDataSourceTabInfoDto.getDataSourceSchema();
+        dataSourceTable = cjDataSourceTabInfoDto.getDataSourceTable();
+        dwTableName = CreateTableUtil.getDwTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+
+        //使用StringBuffer拼接DW建表语句
+        StringBuffer dwddl = new StringBuffer();
+        //通过系统名、数据模式、表名获取表的字段信息
+        List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+        if(cjDwCrtDdlColPojos != null && cjDwCrtDdlColPojos.size()>0){
+            dwddl.append("create external table if not exists " + Constant.DW_HIVE_SCHEMA + "." + dwTableName + "\n");
+            dwddl.append("(" + "\n");
+            for (int i = 0; i < cjDwCrtDdlColPojos.size(); i++) {
+                tableComment = cjDwCrtDdlColPojos.get(i).getDataSourceTableComment();
+                colName = cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
+                colComment = cjDwCrtDdlColPojos.get(i).getDataSourceColComment();
+                if (colComment == null) {
+                    colComment = "";
+                }
+                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+                Matcher m = p.matcher(colName);
+                if (m.find()) {
+                    colComment = colName;
+                    colName = PinyinUtil.getPinYin(colName);
+                }
+                if (colName.equals("src_table_name")) {
+                    colName = "src_table_name_dl";
+                }
+                colType = cjDwCrtDdlColPojos.get(i).getColMapper().toLowerCase();
+                dwddl.append("    `" + colName + "`    " + colType + "    " + "comment \"" + colComment + "\"" + ",\n");
+                CjDwTableColInfo cjDwTableColInfo = new CjDwTableColInfo();
+                cjDwTableColInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+                cjDwTableColInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+                cjDwTableColInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+                cjDwTableColInfo.setDwDataTable(dwTableName);
+                cjDwTableColInfo.setDwTableColName(colName);
+                cjDwTableColInfo.setDwTableColType(colType);
+                cjDwTableColInfo.setDwTableColComment(colComment);
+                cjDwTableColInfo.setDwTableColOrder(cjDwCrtDdlColPojos.get(i).getDataSourceColOrder());
+                cjDwTableColInfo.setDwTableComment(tableComment);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwTableColInfo.setLastModifyDt(df.format(new Date()));
+                cjDwTableColInfos.add(cjDwTableColInfo);
+            }
+
+            dwddl.append("    `src_sys_row_id`    string    comment \"源系统pk\",\n");
+            dwddl.append("    `src_sys_cd`    string    comment \"源系统代码\",\n");
+            dwddl.append("    `src_table_name`    string    comment \"源表名\",\n");
+            dwddl.append("    `etl_dt`    string    comment \"etl处理时间\",\n");
+            dwddl.append("    `data_dt`    string    comment \"数据日期\"\n");
+
+            CjDwTableColInfo srcSysRowIdInfo = new CjDwTableColInfo();
+            srcSysRowIdInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+            srcSysRowIdInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+            srcSysRowIdInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+            srcSysRowIdInfo.setDwDataTable(dwTableName);
+            srcSysRowIdInfo.setDwTableColName("src_sys_row_id");
+            srcSysRowIdInfo.setDwTableColType("string");
+            srcSysRowIdInfo.setDwTableColComment("源系统pk");
+            srcSysRowIdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+1+"");
+            srcSysRowIdInfo.setDwTableComment(tableComment);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            srcSysRowIdInfo.setLastModifyDt(df.format(new Date()));
+            cjDwTableColInfos.add(srcSysRowIdInfo);
+
+            CjDwTableColInfo srcSysCdInfo = new CjDwTableColInfo();
+            srcSysCdInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+            srcSysCdInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+            srcSysCdInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+            srcSysCdInfo.setDwDataTable(dwTableName);
+            srcSysCdInfo.setDwTableColName("src_sys_cd");
+            srcSysCdInfo.setDwTableColType("string");
+            srcSysCdInfo.setDwTableColComment("源系统代码");
+            srcSysCdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+2+"");
+            srcSysCdInfo.setDwTableComment(tableComment);
+            srcSysCdInfo.setLastModifyDt(df.format(new Date()));
+            cjDwTableColInfos.add(srcSysCdInfo);
+
+            CjDwTableColInfo srcTableNameInfo = new CjDwTableColInfo();
+            srcTableNameInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+            srcTableNameInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+            srcTableNameInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+            srcTableNameInfo.setDwDataTable(dwTableName);
+            srcTableNameInfo.setDwTableColName("src_table_name");
+            srcTableNameInfo.setDwTableColType("string");
+            srcTableNameInfo.setDwTableColComment("源表名");
+            srcTableNameInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+3+"");
+            srcTableNameInfo.setDwTableComment(tableComment);
+            srcTableNameInfo.setLastModifyDt(df.format(new Date()));
+            cjDwTableColInfos.add(srcTableNameInfo);
+
+            CjDwTableColInfo etlDtInfo = new CjDwTableColInfo();
+            etlDtInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+            etlDtInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+            etlDtInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+            etlDtInfo.setDwDataTable(dwTableName);
+            etlDtInfo.setDwTableColName("etl_dt");
+            etlDtInfo.setDwTableColType("string");
+            etlDtInfo.setDwTableColComment("etl处理时间");
+            etlDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+4+"");
+            etlDtInfo.setDwTableComment(tableComment);
+            etlDtInfo.setLastModifyDt(df.format(new Date()));
+            cjDwTableColInfos.add(etlDtInfo);
+
+            CjDwTableColInfo dataDtInfo = new CjDwTableColInfo();
+            dataDtInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
+            dataDtInfo.setDwTableBelongDomain(Constant.DW_BAK_DOMAIN);
+            dataDtInfo.setDwDataSchema(Constant.DW_HIVE_SCHEMA);
+            dataDtInfo.setDwDataTable(dwTableName);
+            dataDtInfo.setDwTableColName("data_dt");
+            dataDtInfo.setDwTableColType("string");
+            dataDtInfo.setDwTableColComment("数据日期");
+            dataDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+5+"");
+            dataDtInfo.setDwTableComment(tableComment);
+            dataDtInfo.setLastModifyDt(df.format(new Date()));
+            cjDwTableColInfos.add(dataDtInfo);
+            dwddl.append(")" + "\n");
+            dwddl.append("row format delimited fields terminated by '\\001' lines terminated by '\\n' stored as orc");
+
+            cjDwTableColInfoService.insertBatch(cjDwTableColInfos);
+        }
+
+        return dwddl.toString();
+    }
     public String generateOdsFullDdl(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
         StringBuffer odsDDL = new StringBuffer();
         String odsTableComment = "";
@@ -546,7 +685,23 @@ public class HiveCreateTableController {
             odsDDL.append("    `" + colName + "`    " + Constant.ODS_COL_TYPE + "    " + "comment \"" + colComment + "\"" + ",\n");
             cjOdsTableColInfos.add(cjOdsTableColInfo);
         }
-        odsDDL.append("    etl_dt    string    comment \"ETL时间\"\n");
+        odsDDL.append("    etl_dt    string    comment \"etl处理时间\"\n");
+        CjOdsTableColInfo etlColInfo = new CjOdsTableColInfo();
+        etlColInfo.setBusinessSystemId(cjOdsTableLoadModeInfo.getBusinessSystemId());
+        etlColInfo.setBusinessSystemNameShortName(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName());
+        etlColInfo.setDataSourceSchema(cjOdsTableLoadModeInfo.getDataSourceSchema());
+        etlColInfo.setDataSourceTable(cjOdsTableLoadModeInfo.getDataSourceTable());
+        etlColInfo.setOdsDataSchema(Constant.ODS_HIVE_FULL_SCHEMA);
+        etlColInfo.setOdsDataTable(cjOdsTableLoadModeInfo.getOdsDataTable());
+        etlColInfo.setOdsTableComment("etl处理时间");
+        etlColInfo.setOdsTableColName("etl_dt");
+        etlColInfo.setOdsTableColType(Constant.ODS_COL_TYPE);
+        etlColInfo.setOdsTableColComment("etl处理时间");
+        etlColInfo.setOdsTableColOrder(infoList.size() + 1 + "");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        etlColInfo.setLastModifyDt(df.format(new Date()));
+        cjOdsTableColInfos.add(etlColInfo);
+
         odsDDL.append(")" + "\n");
         //如果该表加载策略中有分区字段，则生成建表语句时加入分区
         if (cjOdsTableLoadModeInfo.getOdsTablePartitionColName() != null) {
@@ -562,9 +717,8 @@ public class HiveCreateTableController {
             cjOdsTableColInfo.setOdsTableColName(cjOdsTableLoadModeInfo.getOdsTablePartitionColName());
             cjOdsTableColInfo.setOdsTableColType(Constant.ODS_COL_TYPE);
             cjOdsTableColInfo.setOdsTableColComment("分区字段");
-            cjOdsTableColInfo.setOdsTableColOrder(infoList.size() + 1 + "");
+            cjOdsTableColInfo.setOdsTableColOrder(infoList.size() + 2 + "");
             cjOdsTableColInfo.setOdsTablePartitionFlag("1");
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjOdsTableColInfo.setLastModifyDt(df.format(new Date()));
             cjOdsTableColInfos.add(cjOdsTableColInfo);
         }
@@ -603,7 +757,7 @@ public class HiveCreateTableController {
             odsDDL.append("    `" + colName + "`    " + Constant.ODS_COL_TYPE + "    " + "comment \"" + colComment + "\"" + ",\n");
         }
 
-        odsDDL.append("    etl_dt    string    comment \"ETL时间\"\n");
+        odsDDL.append("    etl_dt    string    comment \"etl处理时间\"\n");
         odsDDL.append(")" + "\n");
         odsDDL.append("partitioned by (" + Constant.ODS_PARTITION_KEY + " string)\n");
         odsDDL.append("row format delimited fields terminated by '\\001' lines terminated by '\\n'");
@@ -611,7 +765,7 @@ public class HiveCreateTableController {
     }
 
 
-    public List<TableOptionPojo> hiveCreateTableBatch(List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos) {
+    public List<TableOptionPojo> hiveCreateOdsTableBatch(List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos) {
         GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -631,6 +785,7 @@ public class HiveCreateTableController {
                 tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
             } catch (Exception e) {
                 tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
+                e.printStackTrace();
             } finally {
                 if (connection != null) {
                     try {
@@ -646,4 +801,45 @@ public class HiveCreateTableController {
         return tableOptionPojos;
     }
 
+    public List<TableOptionPojo> hiveCreateDwBakTableBatch(List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos) {
+        GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        TableOptionPojo tableOptionPojo;
+        List<TableOptionPojo> tableOptionPojos = new ArrayList<>();
+
+        for (CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto : cjDwCrtTabDdlInfoDtos) {
+
+            tableOptionPojo = new TableOptionPojo();
+            tableOptionPojo.setBusinessSystemNameShortName(cjDwCrtTabDdlInfoDto.getBusinessSystemNameShortName());
+            tableOptionPojo.setDataSourceSchema(cjDwCrtTabDdlInfoDto.getDataSourceSchema());
+            tableOptionPojo.setDataSourceTable(cjDwCrtTabDdlInfoDto.getDataSourceTable());
+            tableOptionPojo.setIndex(cjDwCrtTabDdlInfoDto.getIndex());
+            if(cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo() != null && cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo().length()>0){
+                try {
+                    connection = instance.getConnection();
+                    preparedStatement = connection.prepareStatement(cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo());
+                    preparedStatement.execute();
+                    tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
+                } catch (Exception e) {
+                    tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            preparedStatement.close();
+                            connection.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else {
+                tableOptionPojo.setResult(Constant.TABLE_OPTION_AVAIL);
+            }
+
+            tableOptionPojos.add(tableOptionPojo);
+        }
+        return tableOptionPojos;
+    }
 }
