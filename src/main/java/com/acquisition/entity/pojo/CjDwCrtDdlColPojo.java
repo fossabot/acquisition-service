@@ -17,6 +17,8 @@ public class CjDwCrtDdlColPojo {
 
     private String dataSourceColName;
 
+    private String dataSourceColOrder;
+
     private String dataSourceColDatatype;
 
     private String dataSourceColLen;
@@ -141,4 +143,11 @@ public class CjDwCrtDdlColPojo {
         this.dataSourceColComment = dataSourceColComment == null ? null : dataSourceColComment.trim();
     }
 
+    public String getDataSourceColOrder() {
+        return dataSourceColOrder;
+    }
+
+    public void setDataSourceColOrder(String dataSourceColOrder) {
+        this.dataSourceColOrder = dataSourceColOrder;
+    }
 }

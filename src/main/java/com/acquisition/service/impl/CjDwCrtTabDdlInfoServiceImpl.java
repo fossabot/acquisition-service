@@ -4,37 +4,27 @@ import com.acquisition.entity.CjDwCrtTabDdlInfo;
 import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
 import com.acquisition.entity.CjDwCrtTabDdlInfoKey;
 import com.acquisition.mapper.CjDwCrtTabDdlInfoMapper;
-import com.acquisition.service.ICjDwCrtTabDdlInfoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.acquisition.service.CjDwCrtTabDdlInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+
 
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
 @Service
-public class CjDwCrtTabDdlInfoServiceImpl implements ICjDwCrtTabDdlInfoService{
+public class CjDwCrtTabDdlInfoServiceImpl implements CjDwCrtTabDdlInfoService {
 
     @Resource(name = "cjDwCrtTabDdlInfoMapper")
     public CjDwCrtTabDdlInfoMapper cjDwCrtTabDdlInfoMapper;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CjDwCrtTabDdlInfoServiceImpl.class);
 
     @Override
-    public String save(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo) {
-
-        try {
-            int insert = cjDwCrtTabDdlInfoMapper.insert(cjDwCrtTabDdlInfo);
-            if(insert>0){
-                return "保存成功";
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return "保存失败";
+    public int insertBatch(List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos) {
+        cjDwCrtTabDdlInfoMapper.deleteBatch(cjDwCrtTabDdlInfos);
+        return cjDwCrtTabDdlInfoMapper.insertBatch(cjDwCrtTabDdlInfos);
     }
 
     @Override
@@ -68,6 +58,21 @@ public class CjDwCrtTabDdlInfoServiceImpl implements ICjDwCrtTabDdlInfoService{
             e.printStackTrace();
         }
         return "删除失败";
+    }
+
+    @Override
+    public String findOdsDataTableByDwDataTable(String dwDataTable) {
+        return cjDwCrtTabDdlInfoMapper.selectOdsDataTableByDwDataTable(dwDataTable);
+    }
+
+    @Override
+    public CjDwCrtTabDdlInfo findByDwDataTable(String dwDataTable) {
+        return cjDwCrtTabDdlInfoMapper.selectByDwDataTable(dwDataTable);
+    }
+
+    @Override
+    public int saveByOne(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo) {
+        return cjDwCrtTabDdlInfoMapper.insertByOne(cjDwCrtTabDdlInfo);
     }
 
 }

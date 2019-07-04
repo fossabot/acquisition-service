@@ -1,9 +1,8 @@
 package com.acquisition.controller;
 
 import com.acquisition.entity.CjDataSourceTabInfo;
-import com.acquisition.entity.Page;
-import com.acquisition.entity.PageGeorge;
 import com.acquisition.entity.ExclePropertyModel;
+import com.acquisition.entity.Page;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.excel.ExcelWriter;
@@ -11,7 +10,6 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.util.IOUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +21,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+
 
 /**
  * @Author : Francis Du

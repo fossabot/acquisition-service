@@ -1,12 +1,13 @@
 package com.acquisition.mapper;
 
-import java.util.List;
-
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfoExample;
 import com.acquisition.entity.CjOdsDataScriptDefInfoKey;
-import com.acquisition.entity.CjOdsTableColInfo;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+
 
 public interface CjOdsDataScriptDefInfoMapper {
     int countByExample(CjOdsDataScriptDefInfoExample example);
@@ -35,7 +36,9 @@ public interface CjOdsDataScriptDefInfoMapper {
                             @Param("dataSourceSchema") String dataSourceSchema,
                             @Param("dataSourceTable") String dataSourceTable
     );
+
     int insertBatch(List<CjOdsDataScriptDefInfo> list);
 
     int deleteBatch(List<CjOdsDataScriptDefInfo> list);
+
 }

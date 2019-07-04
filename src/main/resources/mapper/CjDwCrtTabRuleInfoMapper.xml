@@ -273,4 +273,10 @@
       last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
     where rule_name = #{ruleName,jdbcType=VARCHAR}
   </update>
+  <select id="selectPolicyByTopic" resultType="java.lang.String">
+    select rule_col_2
+    from cj_dw_crt_tab_rule_info
+    where rule_type = 'topic_policy'
+    and rule_col_1 = #{topic}
+  </select>
 </mapper>

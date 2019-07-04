@@ -3,19 +3,15 @@ package com.acquisition.controller;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
-import com.acquisition.entity.Page;
-import com.acquisition.service.*;
+import com.acquisition.service.CjDwDataScriptDefInfoService;
+import com.acquisition.service.ICjDataSourceTabInfoService;
+import com.acquisition.service.ICjDwDataScriptDefInfoService;
+import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.util.IOUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,6 +21,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 /**
  * Created by zhangdongmao on 2019/6/3.
@@ -41,7 +38,7 @@ public class ExportScriptController {
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
 
     @Resource(name = "cjDwDataScriptDefInfoServiceImpl")
-    public ICjDwDataScriptDefInfoService iCjDwDataScriptDefInfoService;
+    public CjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
 
     /**
      * 获取要保存ODS脚本的表信息
@@ -125,7 +122,7 @@ public class ExportScriptController {
      * 保存DW脚本到本地文件夹
      */
     @ApiOperation("导出dw脚本")
-    @GetMapping(value = "/exportDwScript")
+    @PostMapping(value = "/exportDwScript")
     public void exportDwScript(@RequestBody String data,
                                HttpServletResponse response) {
         OutputStream output = null;
@@ -147,7 +144,7 @@ public class ExportScriptController {
             output = new FileOutputStream(file);
             //遍历获取表的元数据
             for (CjDwDataScriptDefInfo table : cjDwDataScriptDefInfos) {
-                ddl = iCjDwDataScriptDefInfoService.selectDdlInfo(
+                ddl = cjDwDataScriptDefInfoService.selectDdlInfo(
                         table.getBusinessSystemNameShortName(),
                         table.getDataSourceSchema(),
                         table.getDataSourceTable()
@@ -211,6 +208,4 @@ public class ExportScriptController {
 
         return result;
     }
-
-
 }

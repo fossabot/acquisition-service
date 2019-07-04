@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
+
 /**
  * Created by zhangdongmao on 2019/6/26.
  */
@@ -39,5 +40,9 @@ public class CjOdsTableLoadModeInfoServiceImpl implements CjOdsTableLoadModeInfo
     @Override
     public CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt) {
         return cjOdsTableLoadModeInfoMapper.findAll(etuEnt);
+    }
+    @Override
+    public CjOdsTableLoadModeInfo findByOdsDataTable(String odsDataTable) {
+        return cjOdsTableLoadModeInfoMapper.selectByOdsDataTable(odsDataTable);
     }
 }

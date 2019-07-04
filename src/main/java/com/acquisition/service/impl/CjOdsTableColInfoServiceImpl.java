@@ -2,7 +2,6 @@ package com.acquisition.service.impl;
 
 import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
-import com.acquisition.entity.excel.EtuInfo;
 import com.acquisition.mapper.CjOdsTableColInfoMapper;
 import com.acquisition.service.CjOdsTableColInfoService;
 import org.springframework.stereotype.Service;
@@ -45,6 +44,5 @@ public class CjOdsTableColInfoServiceImpl implements CjOdsTableColInfoService {
     public List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
         return cjOdsTableColInfoMapper.selectFieldByOrder(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
-
 
 }

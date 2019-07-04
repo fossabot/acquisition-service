@@ -7,6 +7,7 @@ import com.acquisition.entity.excel.EtuInfo;
 
 import java.util.List;
 
+
 /**
  * Created by zhangdongmao on 2019/6/26.
  */
@@ -19,4 +20,5 @@ public interface CjOdsTableLoadModeInfoService {
 
     CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt);
 
+    CjOdsTableLoadModeInfo findByOdsDataTable(String odsDataTable);
 }

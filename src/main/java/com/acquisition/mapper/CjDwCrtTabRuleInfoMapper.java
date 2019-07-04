@@ -28,4 +28,6 @@ public interface CjDwCrtTabRuleInfoMapper {
     int updateByPrimaryKeySelective(CjDwCrtTabRuleInfo record);
 
     int updateByPrimaryKey(CjDwCrtTabRuleInfo record);
+
+    String selectPolicyByTopic(String topic);
 }

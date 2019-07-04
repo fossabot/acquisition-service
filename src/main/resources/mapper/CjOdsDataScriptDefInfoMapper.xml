@@ -298,6 +298,7 @@
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
   </select>
+
   <insert id="insertBatch" parameterType="java.util.List">
     insert into cj_ods_data_script_def_info (business_system_name_short_name, data_source_schema,
     data_source_table, ods_data_table, business_system_ID,
@@ -333,4 +334,5 @@
       (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable},#{item.odsDataScriptType})
     </foreach>
   </delete>
+
 </mapper>

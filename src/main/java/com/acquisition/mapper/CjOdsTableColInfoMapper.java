@@ -4,9 +4,6 @@ import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
 import com.acquisition.entity.CjOdsTableColInfoKey;
 import java.util.List;
-
-import com.acquisition.entity.CjOdsTableLoadModeInfo;
-import com.acquisition.entity.excel.EtuInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjOdsTableColInfoMapper {

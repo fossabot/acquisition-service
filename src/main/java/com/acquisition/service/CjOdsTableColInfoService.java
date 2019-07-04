@@ -2,8 +2,7 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
-import com.acquisition.entity.excel.EtuInfo;
-import org.apache.ibatis.annotations.Param;
+
 
 import java.util.List;
 

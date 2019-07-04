@@ -3,7 +3,6 @@ package com.acquisition.controller;
 import com.acquisition.entity.*;
 import com.acquisition.entity.excel.EtuInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
-import com.acquisition.entity.pojo.SqoopScriptEntity;
 import com.acquisition.service.*;
 import com.acquisition.util.Constant;
 import com.acquisition.util.PinyinUtil;
@@ -11,17 +10,12 @@ import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.yili.pool.pool.GroupPoolFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +23,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -45,7 +40,8 @@ public class GenerateScriptController {
     public ICjDataSourceTabColInfoService cjDataSourceTabColInfoService;
 
     @Resource(name = "cjDwDataScriptDefInfoServiceImpl")
-    public ICjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
+    public CjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
+
 
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
@@ -122,13 +118,13 @@ public class GenerateScriptController {
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(allCjVGetPrepareScriptForDwTabList);
         return result.success(page);
     }
-    /** 
-    * @Author: zhangdongmao
-    * @Date: 2019/6/4 
-    * @Description:  生成并保存DW初始化脚本
-    * @Param: * @param null 1 
-    * @return:
-    */
+    /**
+     * @Author: zhangdongmao
+     * @Date: 2019/6/4
+     * @Description:  生成并保存DW初始化脚本
+     * @Param: * @param null 1
+     * @return:
+     */
     @ApiOperation("生成dw初始化脚本")
     @PostMapping(value = "/generateDwInitScript")
     public Result generateDwInitScript(@RequestBody String data) {
@@ -160,72 +156,74 @@ public class GenerateScriptController {
             //通过系统名、数据模式、表名获取表的字段信息
             List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
 
-            dwInitScript.append("set hive.exec.dynamic.partition=true;\n");
-            dwInitScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
-            dwInitScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n");
-            dwInitScript.append("insert overwrite table "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
-            dwInitScript.append("select\n");
-            for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
-                odsColName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
-                //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
-                p = Pattern.compile("[\u4e00-\u9fa5]");
-                m = p.matcher(odsColName);
-                if (m.find()) {
-                    odsColName= PinyinUtil.getPinYin(odsColName);
+            if(cjDwCrtDdlColPojos != null && cjDwCrtDdlColPojos.size()>0){
+                dwInitScript.append("set hive.exec.dynamic.partition=true;\n");
+                dwInitScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
+                dwInitScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n");
+                dwInitScript.append("insert overwrite table "+Constant.DW_HIVE_SCHEMA+"."+dwTableName+"\n");
+                dwInitScript.append("select\n");
+                for(int i=0;i<cjDwCrtDdlColPojos.size();i++) {
+                    odsColName=cjDwCrtDdlColPojos.get(i).getDataSourceColName().toLowerCase();
+                    //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+                    p = Pattern.compile("[\u4e00-\u9fa5]");
+                    m = p.matcher(odsColName);
+                    if (m.find()) {
+                        odsColName= PinyinUtil.getPinYin(odsColName);
+                    }
+                    dwColName=odsColName;
+                    if(dwColName.equals("src_table_name")){
+                        dwColName = "src_table_name_dl";
+                    }
+                    dwInitScript.append("`" + odsColName + "`    as    " + dwColName + ",\n");
                 }
-                dwColName=odsColName;
-                if(dwColName.equals("src_table_name")){
-                    dwColName = "src_table_name_dl";
+
+
+                dwInitScript.append("''    as src_sys_row_id,\n");
+                dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
+                dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
+                dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
+                dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt\n");
+                dwInitScript.append("from "+Constant.ODS_HIVE_FULL_SCHEMA+"."+odsTableName);
+                CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
+                cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
+                cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
+                cjDwDataScriptDefInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
+                cjDwDataScriptDefInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
+                cjDwDataScriptDefInfo.setOdsDataTable(odsTableName);
+                cjDwDataScriptDefInfo.setDwDataTable(dwTableName);
+                cjDwDataScriptDefInfo.setDwDataScriptType("init");
+                cjDwDataScriptDefInfo.setDwDataHivesqlDefine(dwInitScript.toString());
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwDataScriptDefInfo.setLastModifyDt(df.format(new Date()));
+
+                CjDwDataScriptDefInfoKey key = new CjDwDataScriptDefInfoKey();
+                key.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
+                key.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
+                key.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
+                key.setDwDataTable(dwTableName);
+                key.setOdsDataTable(odsTableName);
+                cjDwDataScriptDefInfoService.deleteByPrimaryKey(key);
+                if(cjDwDataScriptDefInfoService.save(cjDwDataScriptDefInfo).equals("保存成功")){
+                    //生成DW建表语句成功，设置状态表中的相应状态字段
+                    cjDataSourceTabInfo.setDataFlagForCrtDwScript(Constant.DW_CRT_SCRIPT);
+                    //将状态改变更新到数据库
+                    CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
+                    CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
+                    //where条件使用业务系统缩写、数据模式和表名做限制
+                    criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
+                    criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
+                    criteria.andDataSourceTableEqualTo(dataSourceTable);
+                    cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
                 }
-                dwInitScript.append("`" + odsColName + "`    as    " + dwColName + ",\n");
+                dwInitScript.setLength(0);
             }
 
-
-            dwInitScript.append("''    as src_sys_row_id,\n");
-            dwInitScript.append("'"+cjDataSourceTabInfo.getBusinessSystemNameShortName().toLowerCase()+"'    "+"as src_sys_cd,\n");
-            dwInitScript.append("'"+businessSystemNameShortName.toLowerCase()+"_"+dataSourceTable.toLowerCase()+"'    as src_table_name,\n");
-            dwInitScript.append("cast( current_timestamp() as string)    as etl_dt,\n");
-            dwInitScript.append("cast(date_format('${TX_DATE}','yyyyMMdd') as string)    as data_dt\n");
-            dwInitScript.append("from "+Constant.ODS_HIVE_FULL_SCHEMA+"."+odsTableName);
-            CjDwDataScriptDefInfo cjDwDataScriptDefInfo=new CjDwDataScriptDefInfo();
-            cjDwDataScriptDefInfo.setBusinessSystemId(cjDataSourceTabInfo.getBusinessSystemId());
-            cjDwDataScriptDefInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
-            cjDwDataScriptDefInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
-            cjDwDataScriptDefInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            cjDwDataScriptDefInfo.setOdsDataTable(odsTableName);
-            cjDwDataScriptDefInfo.setDwDataTable(dwTableName);
-            cjDwDataScriptDefInfo.setDwDataScriptType("init");
-            cjDwDataScriptDefInfo.setDwDataHivesqlDefine(dwInitScript.toString());
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            cjDwDataScriptDefInfo.setLastModifyDt(df.format(new Date()));
-
-            CjDwDataScriptDefInfoKey key = new CjDwDataScriptDefInfoKey();
-            key.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
-            key.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
-            key.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
-            key.setDwDataTable(dwTableName);
-            key.setOdsDataTable(odsTableName);
-            cjDwDataScriptDefInfoService.deleteByPrimaryKey(key);
-            if(cjDwDataScriptDefInfoService.save(cjDwDataScriptDefInfo).equals("保存成功")){
-                //生成DW建表语句成功，设置状态表中的相应状态字段
-                cjDataSourceTabInfo.setDataFlagForCrtDwScript(Constant.DW_CRT_SCRIPT);
-                //将状态改变更新到数据库
-                CjDataSourceTabInfoExample cjDataSourceTabInfoExample=new CjDataSourceTabInfoExample();
-                CjDataSourceTabInfoExample.Criteria criteria = cjDataSourceTabInfoExample.createCriteria();
-                //where条件使用业务系统缩写、数据模式和表名做限制
-                criteria.andBusinessSystemNameShortNameEqualTo(businessSystemNameShortName);
-                criteria.andDataSourceSchemaEqualTo(dataSourceSchema);
-                criteria.andDataSourceTableEqualTo(dataSourceTable);
-                cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo,cjDataSourceTabInfoExample);
-            }
-            dwInitScript.setLength(0);
         }
 
         result.setCode(200);
         result.setMsg("DW脚本初始化成功！");
         return result;
     }
-
 
     /**
      * @return 返回生成ODS脚本状态
@@ -261,7 +259,9 @@ public class GenerateScriptController {
         Result result =  new Result();
         CjDataSourceConnDefine cjDataSourceConnDefine;
         String businessSystemId="";
-        String str1 = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
+
+        String sqoopInitScriptOracle = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
+        String sqoopInitScriptSqlMyl = "sh /home/infa/zwj/ods_import.sh url username password ";
         String columns = "";
         String str2 = " no no init \"\" \"\" ";
         StringBuffer scripts = new StringBuffer();
@@ -269,13 +269,14 @@ public class GenerateScriptController {
 
         //拼接Sqooop脚本
         for (CjDataSourceTabInfo table : tabInfos) {
+            CjDataSourceConnDefine cjDataSourceConnDefine1 = iCjDataSourceConnDefineService.selectDataBaseType(table.getBusinessSystemNameShortName(), table.getDataSourceSchema());
             //判断系统名连接数
-            if (Integer.parseInt(iCjDataSourceConnDefineService.selectSystemName(table.getBusinessSystemNameShortName())) > 1){
-                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~"
+            if (cjDataSourceConnDefine1.getDataBaseType().equals("sqlserver") || cjDataSourceConnDefine1.getDataBaseType().equals("mysql")){
+                scripts.append(sqoopInitScriptSqlMyl + table.getBusinessSystemNameShortName() + "~"
                         + table.getDataSourceSchema()+ " "
                         + table.getDataSourceTable() + str2 + "\"");
             }else {
-                scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
+                scripts.append(sqoopInitScriptOracle + table.getBusinessSystemNameShortName() + " "
                         + table.getDataSourceSchema()+ "."
                         + table.getDataSourceTable() + str2 + "\"");
             }
@@ -341,6 +342,7 @@ public class GenerateScriptController {
         result.setMsg("ODS脚本初始化成功！");
         return result;
     }
+
 
     @ApiOperation(value = "初始化ods加载脚本", notes = "List<EtuInfo>", produces = "application/json")
     @PostMapping("/initOdsLoad")
@@ -469,9 +471,7 @@ public class GenerateScriptController {
             }
         }
 
-
         return result;
     }
-
 
 }

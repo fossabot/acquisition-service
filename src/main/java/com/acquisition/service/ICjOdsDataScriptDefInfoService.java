@@ -20,6 +20,8 @@ public interface ICjOdsDataScriptDefInfoService {
             @Param("dataSourceTable") String dataSourceTable
     );
 
+
     int insertBatch(List<CjOdsDataScriptDefInfo> list);
+
 
 }

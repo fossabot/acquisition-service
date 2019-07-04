@@ -19,7 +19,9 @@ public class Constant {
     public static final String ODS_HIVE_FULL_SCHEMA="acquisition_ods";
     public static final String ODS_HIVE_INCREMENT_SCHEMA="acquisition_ods_inc";
     public static final int ODS_INCREMENT_TABLE_SIZE=0;
+
     public static final String ODS_ETL_DT_COL="etl_dt";
+
     public static final String ODS_PARTITION_KEY="data_dt";
     public static final String ODS_PARTITION_UNIT="month";
     public static final String ODS_INCREMENT_EXTRACT="increment";
@@ -27,8 +29,26 @@ public class Constant {
     public static final String ODS_COL_TYPE="string";
     public static final String TABLE_OPTION_SUCCESS="success";
     public static final String TABLE_OPTION_FAILED="failed";
+
     public static final String DATABASE_SQLSERVER="sqlserver";
     public static final String DATABASE_MYSQL="mysql";
     public static final String DATABASE_ORACLE="oracle";
+
+    public static final String TABLE_OPTION_AVAIL="avail";
+    public static final String DW_BAK_DEFAULT_TOPIC_DOMAIN="nct";
+    public static final String DW_BAK_DOMAIN="0";
+    public static final String DW_USEING_DOMAIN="1";
+    public static final String META_NOT_EXISTS="not_exists";
+    public static final String META_EXISTS="exists";
+    public static final String CONNECTION_NOT_EXISTS="con_not_exists";
+    public static final String DW_PARTITION_FLAG="Y";
+    public static final String DW_PARTITION_KEY="partition_key";
+    public static final String DW_PARTITION_DATATYPE="string";
+    public static final String DW_PARTITION_COMMENT="分区键";
+    public static final String DW_POLICY_F3="F3";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY="data_dt";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY_TYPE="string";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY_COMMENT="数据日期";
+    public static final String HIVE_INSTANCE="DATALAKE-";
 
 }

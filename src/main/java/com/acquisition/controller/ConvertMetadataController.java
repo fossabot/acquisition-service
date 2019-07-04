@@ -2,8 +2,8 @@ package com.acquisition.controller;
 
 import com.acquisition.entity.*;
 import com.acquisition.entity.excel.EtuInfo;
-import com.acquisition.entity.pojo.SqoopScriptEntity;
 import com.acquisition.service.*;
+import com.acquisition.util.Constant;
 import com.acquisition.util.EasyExcelUtil;
 import com.acquisition.util.Result;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -11,8 +11,6 @@ import com.yili.pool.pool.GroupPoolFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,14 +55,6 @@ public class ConvertMetadataController {
     @Resource(name = "cjDataSourceTabRowsServiceImpl")
     CjDataSourceTabRowsService cjDataSourceTabRowsService;
 
-    @Resource(name = "cjDataSourceConnDefineServiceImpl")
-    ICjDataSourceConnDefineService cjDataSourceConnDefineService;
-
-    @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
-    ICjOdsDataScriptDefInfoService cjOdsDataScriptDefInfoService;
-
-    @Resource(name = "cjOdsTableColInfoServiceImpl")
-    CjOdsTableColInfoService cjOdsTableColInfoService;
 
     @ApiOperation(" 上传excel并转成map数据")
     @ApiImplicitParam(name = "file", value = "excel", dataType = "MultipartFile", required = true)
@@ -130,6 +120,7 @@ public class ConvertMetadataController {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((etuInfo.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuInfo.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
                     if (con == null) {
+                        etuInfo.setMetaStatus(Constant.CONNECTION_NOT_EXISTS);
                         continue;
                     }
                     st = con.createStatement();
@@ -253,9 +244,9 @@ public class ConvertMetadataController {
                         cjDataSourceTabInfo.setDataSourceTableComment(dataSourceColComment);
                         cjDataSourceTabInfo.setDataFlagForGetCols("1");
                         cjDataSourceTabInfos.add(cjDataSourceTabInfo);
-                        etuInfo.setIsExists("Y");
+                        etuInfo.setMetaStatus(Constant.META_EXISTS);
                     } else {
-                        etuInfo.setIsExists("N");
+                        etuInfo.setMetaStatus(Constant.META_NOT_EXISTS);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -540,7 +531,5 @@ public class ConvertMetadataController {
         }
         return sql;
     }
-
-
 
 }
