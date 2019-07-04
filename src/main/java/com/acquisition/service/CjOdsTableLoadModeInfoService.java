@@ -3,6 +3,7 @@ package com.acquisition.service;
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
 import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
+import com.acquisition.entity.excel.EtuInfo;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface CjOdsTableLoadModeInfoService {
     List<CjOdsTableLoadModeInfo> findByExample(CjOdsTableLoadModeInfoExample example);
 
     CjOdsTableLoadModeInfo findByPrimaryKey(CjOdsTableLoadModeInfoKey key);
+
+    CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt);
 
 }

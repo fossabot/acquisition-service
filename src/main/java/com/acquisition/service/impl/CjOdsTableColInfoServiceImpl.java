@@ -42,8 +42,8 @@ public class CjOdsTableColInfoServiceImpl implements CjOdsTableColInfoService {
     }
 
     @Override
-    public String selectFieldByOrder(EtuInfo etuInfo) {
-        return cjOdsTableColInfoMapper.selectFieldByOrder(etuInfo);
+    public List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjOdsTableColInfoMapper.selectFieldByOrder(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
 
 

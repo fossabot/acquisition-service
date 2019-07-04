@@ -34,4 +34,10 @@ public class CjOdsDataScriptDefInfoServiceImpl implements ICjOdsDataScriptDefInf
                 dataSourceSchema,
                 dataSourceTable);
     }
+
+    @Override
+    public int insertBatch(List<CjOdsDataScriptDefInfo> list) {
+//        cjOdsDataScriptDefInfoMapper.deleteBatch(list);
+        return cjOdsDataScriptDefInfoMapper.insertBatch(list);
+    }
 }

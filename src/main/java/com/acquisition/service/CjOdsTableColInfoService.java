@@ -3,6 +3,7 @@ package com.acquisition.service;
 import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
 import com.acquisition.entity.excel.EtuInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,5 +23,6 @@ public interface CjOdsTableColInfoService {
      * @param etuInfo 封装系统源，系统简称和schema的实体类
      * @return 排序好的字段
      */
-    String selectFieldByOrder(EtuInfo etuInfo);
+    List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
 }

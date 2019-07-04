@@ -5,6 +5,7 @@ import java.util.List;
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
 import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
+import com.acquisition.entity.excel.EtuInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjOdsTableLoadModeInfoMapper {
@@ -33,4 +34,6 @@ public interface CjOdsTableLoadModeInfoMapper {
     int insertBatch(List<CjOdsTableLoadModeInfo> list);
 
     int deleteBatch(List<CjOdsTableLoadModeInfo> list);
+
+    CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt);
 }

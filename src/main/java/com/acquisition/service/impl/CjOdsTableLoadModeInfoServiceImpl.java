@@ -3,6 +3,7 @@ package com.acquisition.service.impl;
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
 import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
+import com.acquisition.entity.excel.EtuInfo;
 import com.acquisition.mapper.CjOdsTableLoadModeInfoMapper;
 import com.acquisition.service.CjOdsTableLoadModeInfoService;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,10 @@ public class CjOdsTableLoadModeInfoServiceImpl implements CjOdsTableLoadModeInfo
     @Override
     public CjOdsTableLoadModeInfo findByPrimaryKey(CjOdsTableLoadModeInfoKey key) {
         return cjOdsTableLoadModeInfoMapper.selectByPrimaryKey(key);
+    }
+
+    @Override
+    public CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt) {
+        return cjOdsTableLoadModeInfoMapper.findAll(etuEnt);
     }
 }
