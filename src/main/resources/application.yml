@@ -1,8 +1,8 @@
 #默认使用配置
 spring:
   profiles:
-#    active: prod
-#    active: test
+    #    active: prod
+    #    active: test
     active: dev
 server:
   port: 6269
@@ -24,12 +24,12 @@ spring:
     resources:
       static-locations: classpath:/META-INF/resources/
   thymeleaf:
-      prefix: classpath:/templates/
-      cache: false
-      suffix: .html
-      encoding: UTF-8
-      content-type: text/html
-      mode: HTML5
+    prefix: classpath:/templates/
+    cache: false
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    mode: HTML5
   #kafka配置
   kafka:
     bootstrap-servers: 10.30.140.21:9092
@@ -41,36 +41,36 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-#每次批量发送消息的数量
+      #每次批量发送消息的数量
       batch-size: 65536
       buffer-memory: 524288
   datasource:
-     url: jdbc:mysql://10.30.140.21:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-     username: root
-     password: root
-     driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.30.140.21:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
     # 使用druid数据源
-     type: com.alibaba.druid.pool.DruidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
     #dataSource Pool configuration
 
-     initialSize: 5
-     minIdle: 5
-     maxActive: 20
-     maxWait: 6000
-     timeBetweenEvictionRunsMillis: 1500
-     minEvictableIdleTimeMillis: 2000
-     validationQuery: SELECT 1 FROM DUAL
-     testWhileIdle: true
-     testOnBorrow: false
-     exceptionSorter: true
-     testOnReturn: false
-     poolPreparedStatements: true
-     filters: stat,log4j
-     maxPoolPreparedStatementPerConnectionSize: 20
-     connectionProperties:
-       druid.stat.mergeSql: true
-       druid.stat.slowSqlMillis: 500
-     useGlobalDataSourceStat: true
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 6000
+    timeBetweenEvictionRunsMillis: 1500
+    minEvictableIdleTimeMillis: 2000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    exceptionSorter: true
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties:
+      druid.stat.mergeSql: true
+      druid.stat.slowSqlMillis: 500
+    useGlobalDataSourceStat: true
 druid:
   login:
     enabled: true

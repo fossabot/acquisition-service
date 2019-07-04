@@ -4,8 +4,6 @@ import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
 import com.acquisition.entity.CjOdsTableColInfoKey;
 import java.util.List;
-
-import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface CjOdsTableColInfoMapper {
@@ -34,4 +32,6 @@ public interface CjOdsTableColInfoMapper {
     int insertBatch(List<CjOdsTableColInfo> list);
 
     int deleteBatch(List<CjOdsTableColInfo> list);
+
+    List<String> selectFieldByOrder(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 }

@@ -19,4 +19,9 @@ public interface ICjOdsDataScriptDefInfoService {
             @Param("dataSourceSchema") String dataSourceSchema,
             @Param("dataSourceTable") String dataSourceTable
     );
+
+
+    int insertBatch(List<CjOdsDataScriptDefInfo> list);
+
+
 }

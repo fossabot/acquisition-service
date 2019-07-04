@@ -298,4 +298,41 @@
     and data_source_schema = #{dataSourceSchema}
     and data_source_table = #{dataSourceTable}
   </select>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into cj_ods_data_script_def_info (business_system_name_short_name, data_source_schema,
+    data_source_table, ods_data_table, business_system_ID,
+    ods_data_script_type, ods_data_sqoop_define,
+    ods_data_hivesql_define, last_modify_dt, last_modify_by
+    )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (
+      #{item.businessSystemNameShortName,jdbcType=VARCHAR}, #{item.dataSourceSchema,jdbcType=VARCHAR},
+      #{item.dataSourceTable,jdbcType=VARCHAR}, #{item.odsDataTable,jdbcType=VARCHAR}, #{item.businessSystemId,jdbcType=VARCHAR},
+      #{item.odsDataScriptType,jdbcType=VARCHAR}, #{item.odsDataSqoopDefine,jdbcType=VARCHAR},
+      #{item.odsDataHivesqlDefine,jdbcType=VARCHAR}, #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    business_system_name_short_name = VALUES(business_system_name_short_name),
+    data_source_schema = VALUES(data_source_schema),
+    data_source_table = VALUES(data_source_table),
+    ods_data_table = VALUES(ods_data_table),
+    business_system_ID = VALUES(business_system_ID),
+    ods_data_script_type = VALUES(ods_data_script_type),
+    ods_data_sqoop_define = VALUES(ods_data_sqoop_define),
+    ods_data_hivesql_define = VALUES(ods_data_hivesql_define),
+    last_modify_dt = VALUES(last_modify_dt),
+    last_modify_by = VALUES(last_modify_by)
+  </insert>
+
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete from cj_ods_data_script_def_info where
+    (business_system_name_short_name,data_source_schema,data_source_table,ods_data_script_type) in
+    <foreach item="item" index="index" collection="list" separator="," open="(" close=")">
+      (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable},#{item.odsDataScriptType})
+    </foreach>
+  </delete>
+
 </mapper>

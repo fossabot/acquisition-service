@@ -1,9 +1,13 @@
 package com.acquisition.mapper;
 
+import com.acquisition.entity.CjDwCrtTabDdlInfo;
+import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
+import com.acquisition.entity.CjDwCrtTabDdlInfoKey;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
-import com.acquisition.entity.*;
-import org.apache.ibatis.annotations.Param;
+
 
 public interface CjDwCrtTabDdlInfoMapper {
     int countByExample(CjDwCrtTabDdlInfoExample example);

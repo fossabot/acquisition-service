@@ -5,12 +5,11 @@ import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
 import com.acquisition.entity.CjDwCrtTabDdlInfoKey;
 import com.acquisition.mapper.CjDwCrtTabDdlInfoMapper;
 import com.acquisition.service.CjDwCrtTabDdlInfoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -20,6 +19,7 @@ public class CjDwCrtTabDdlInfoServiceImpl implements CjDwCrtTabDdlInfoService {
 
     @Resource(name = "cjDwCrtTabDdlInfoMapper")
     public CjDwCrtTabDdlInfoMapper cjDwCrtTabDdlInfoMapper;
+
 
     @Override
     public int insertBatch(List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos) {

@@ -381,4 +381,12 @@
       (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})
     </foreach>
   </delete>
+
+
+  <select id="selectFieldByOrder" resultType="java.lang.String">
+    select ods_table_col_name from cj_ods_table_col_info where business_system_name_short_name =
+    #{businessSystemNameShortName} and data_source_schema = #{dataSourceSchema} and data_source_table =
+    #{dataSourceTable} order by cast(ods_table_col_order as SIGNED)
+  </select>
+
 </mapper>

@@ -1,6 +1,7 @@
 package com.acquisition.controller;
 
 import com.acquisition.entity.*;
+import com.acquisition.entity.excel.EtuInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.service.*;
 import com.acquisition.util.Constant;
@@ -11,14 +12,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Created by zhangdongmao on 2019/5/29.
@@ -37,12 +42,18 @@ public class GenerateScriptController {
     @Resource(name = "cjDwDataScriptDefInfoServiceImpl")
     public CjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
 
+
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
 
     @Resource(name = "cjDataSourceConnDefineServiceImpl")
     public ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
 
+    @Resource(name = "cjOdsTableLoadModeInfoServiceImpl")
+    public CjOdsTableLoadModeInfoService CjOdsTableLoadModeInfoService;
+
+    @Resource(name = "cjOdsTableColInfoServiceImpl")
+    public CjOdsTableColInfoService cjOdsTableColInfoService;
     /**
     * @Author: zhangdongmao
     * @Date: 2019/6/10
@@ -107,13 +118,13 @@ public class GenerateScriptController {
         PageInfo<CjDataSourceTabInfo> page = new PageInfo<>(allCjVGetPrepareScriptForDwTabList);
         return result.success(page);
     }
-    /** 
-    * @Author: zhangdongmao
-    * @Date: 2019/6/4 
-    * @Description:  生成并保存DW初始化脚本
-    * @Param: * @param null 1 
-    * @return:
-    */
+    /**
+     * @Author: zhangdongmao
+     * @Date: 2019/6/4
+     * @Description:  生成并保存DW初始化脚本
+     * @Param: * @param null 1
+     * @return:
+     */
     @ApiOperation("生成dw初始化脚本")
     @PostMapping(value = "/generateDwInitScript")
     public Result generateDwInitScript(@RequestBody String data) {
@@ -214,7 +225,6 @@ public class GenerateScriptController {
         return result;
     }
 
-
     /**
      * @return 返回生成ODS脚本状态
      */
@@ -249,6 +259,7 @@ public class GenerateScriptController {
         Result result =  new Result();
         CjDataSourceConnDefine cjDataSourceConnDefine;
         String businessSystemId="";
+
         String sqoopInitScriptOracle = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
         String sqoopInitScriptSqlMyl = "sh /home/infa/zwj/ods_import.sh url username password ";
         String columns = "";
@@ -331,4 +342,136 @@ public class GenerateScriptController {
         result.setMsg("ODS脚本初始化成功！");
         return result;
     }
+
+
+    @ApiOperation(value = "初始化ods加载脚本", notes = "List<EtuInfo>", produces = "application/json")
+    @PostMapping("/initOdsLoad")
+    public Result initOdsLoad(@RequestBody List<EtuInfo> reqParmsEtu){
+        // 返回结果
+        Result result = new Result();
+        // 存储生成sqoop脚本后的对象
+        List<CjOdsDataScriptDefInfo> cjOdsDataScriptDefInfos = new ArrayList<>();
+        // 判断传入参数是否为空
+        if (!reqParmsEtu.isEmpty()){
+            // 遍历每个EtuInfo
+            for (EtuInfo etuEnt:reqParmsEtu){
+                    CjOdsTableLoadModeInfo odsTableLoadModeInfo = CjOdsTableLoadModeInfoService.findAll(etuEnt);
+                    // 创建sqoop脚本
+                    String odsInitSqoopScript = createSqoopInitShell(odsTableLoadModeInfo);
+                    // 创建CjOdsDataScriptDefInfo实体类
+                    CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo = new CjOdsDataScriptDefInfo();
+                    cjOdsDataScriptDefInfo.setBusinessSystemId(odsTableLoadModeInfo.getBusinessSystemId());
+                    cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(odsTableLoadModeInfo.getBusinessSystemNameShortName());
+                    cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
+                    cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
+                    cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
+                    cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
+                    cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(odsInitSqoopScript);
+                    cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
+                    // 持久化实体类
+                    cjOdsDataScriptDefInfos.add(cjOdsDataScriptDefInfo);
+            }
+            iCjOdsDataScriptDefInfoService.insertBatch(cjOdsDataScriptDefInfos);
+        }
+        result.setCode(200);
+        result.setMsg("初始化脚本初始化成功！");
+        return result;
+    }
+
+    /**
+     *
+     * @param cjOdsTableLoadModeInfo sqoop生成脚本所需字段数据
+     * @return sqoop脚本
+     */
+    private String createSqoopInitShell(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo){
+        // 返回结果
+        Result result = new Result();
+        // 拼接shell
+        StringBuffer odsInitSqoopScript = new StringBuffer();
+        String shellOrder = null;
+        String dataBaseType;
+        String systemAndSchemaAndTab;
+        try {
+            // 判断数据库类型
+            CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.
+                    selectDataBaseType(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(), cjOdsTableLoadModeInfo.getDataSourceSchema());
+            dataBaseType = connDefine.getDataBaseType();
+            if(dataBaseType.equals(Constant.DATABASE_SQLSERVER) || dataBaseType.equals(Constant.DATABASE_MYSQL)){
+                 shellOrder = "ods_import.sh";
+                systemAndSchemaAndTab = cjOdsTableLoadModeInfo.getBusinessSystemNameShortName()+"~"+cjOdsTableLoadModeInfo.getDataSourceSchema()+" "+cjOdsTableLoadModeInfo.getDataSourceTable();
+            }else {
+                shellOrder = "ods_import_new_etl.sh";
+                systemAndSchemaAndTab = cjOdsTableLoadModeInfo.getBusinessSystemNameShortName()+" "+cjOdsTableLoadModeInfo.getDataSourceSchema()+"."+cjOdsTableLoadModeInfo.getDataSourceTable();
+            }
+            String location = "/home/infa/zwj/"+ shellOrder + " url username password ";
+            odsInitSqoopScript.append("sh ").append(location);
+            odsInitSqoopScript.append(systemAndSchemaAndTab);
+        } catch (NullPointerException e) {
+            result.error(400,e.toString());
+        }
+        // 是否为分区
+        if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() == null) {
+            odsInitSqoopScript.append(" no "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" init \"\" \"\" ");
+        } else {
+            odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()
+            +" init_big \"\" \"\" ");
+        }
+        // 字段按规则排序
+        List<String> colNames = cjOdsTableColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+                cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
+        // 去掉拼接字符串最后一个逗号
+        StringJoiner stringJoiner= new StringJoiner(",");
+        for(String colName:colNames){
+            // 不拼接etl_date和data_dt
+            if (!colName.equals(Constant.ODS_ETL_DT_COL) && !colName.equals(Constant.ODS_PARTITION_KEY)){
+                stringJoiner.add(colName);
+            }
+        }
+        odsInitSqoopScript.append("\"").append(stringJoiner).append("\"");
+        return odsInitSqoopScript.toString();
+    }
+
+
+    @ApiOperation(value = "生成ods加载脚本", notes = "List<EtuInfo>", produces = "application/json")
+    @PostMapping("/createOdsLoad")
+    public Result createOdsLoad(@RequestBody List<EtuInfo> reqParmsEtu) {
+        // 返回结果
+       Result result = new Result();
+        // 存储生成sqoop脚本后的对象
+        List<CjOdsDataScriptDefInfo> cjOdsDataScriptDefInfos = new ArrayList<>();
+        if(!reqParmsEtu.isEmpty()){
+            for(EtuInfo etuEnt:reqParmsEtu){
+                CjOdsTableLoadModeInfo odsTableLoadModeInfo = CjOdsTableLoadModeInfoService.findAll(etuEnt);
+                // 全量只有无分区情况
+                if ("full".equals(odsTableLoadModeInfo.getOdsDataLoadMode())) {
+                    // 创建sqoop脚本
+                    String odsInitSqoopScript = createSqoopInitShell(odsTableLoadModeInfo);
+                    // 创建CjOdsDataScriptDefInfo实体类
+                    CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo = new CjOdsDataScriptDefInfo();
+                    cjOdsDataScriptDefInfo.setBusinessSystemId(odsTableLoadModeInfo.getBusinessSystemId());
+                    cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(odsTableLoadModeInfo.getBusinessSystemNameShortName());
+                    cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
+                    cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
+                    cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
+                    cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
+                    cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(odsInitSqoopScript);
+                    cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
+                    // 持久化实体类
+                    cjOdsDataScriptDefInfos.add(cjOdsDataScriptDefInfo);
+                    iCjOdsDataScriptDefInfoService.insertBatch(cjOdsDataScriptDefInfos);
+                    result.setCode(200);
+                    result.setMsg("ODS脚本初始化成功！");
+                    return result;
+                }else{
+                    // 增量
+                }
+
+            }
+        }
+
+        return result;
+    }
+
 }
