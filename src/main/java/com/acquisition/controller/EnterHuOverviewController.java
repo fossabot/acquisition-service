@@ -29,7 +29,7 @@ import java.util.List;
 @Api(tags = "enterHuOverview",description = "入湖总览")
 @RequestMapping("enterHuOverview")
 @RestController
-public class EnterHuOverviewContrller {
+public class EnterHuOverviewController {
 
     @Resource(name = "cjDataSourceTabInfoServiceImpl")
     ICjDataSourceTabInfoService iCjDataSourceTabInfoService;

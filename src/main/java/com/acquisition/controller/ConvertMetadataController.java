@@ -35,7 +35,7 @@ import java.util.List;
 @Api(tags = "convertMetadata", description = "定制化入湖")
 @RequestMapping("convertMetadata")
 @RestController
-public class ConvertMetadataContrller {
+public class ConvertMetadataController {
 
 
     @Resource(name = "cjDataSourceConnDefineServiceImpl")
