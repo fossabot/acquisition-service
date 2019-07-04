@@ -33,4 +33,6 @@ public interface CjOdsTableLoadModeInfoMapper {
     int insertBatch(List<CjOdsTableLoadModeInfo> list);
 
     int deleteBatch(List<CjOdsTableLoadModeInfo> list);
+
+    CjOdsTableLoadModeInfo selectByOdsDataTable(@Param("odsDataTable") String odsDataTable);
 }

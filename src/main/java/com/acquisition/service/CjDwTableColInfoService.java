@@ -17,6 +17,6 @@ public interface CjDwTableColInfoService {
 
     List<CjDwTableColInfo> selectByExample(CjDwTableColInfoExample example);
 
-    List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwBusinessTopicDomain, String dwDataTable);
+    List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwTableBelongDomain, String dwDataTable);
 
 }

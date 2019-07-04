@@ -3,6 +3,7 @@ package com.acquisition.service;
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
 import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface CjOdsTableLoadModeInfoService {
 
     CjOdsTableLoadModeInfo findByPrimaryKey(CjOdsTableLoadModeInfoKey key);
 
+    CjOdsTableLoadModeInfo findByOdsDataTable(String odsDataTable);
 }

@@ -1,22 +1,18 @@
 package com.acquisition.service.impl;
 
-import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfoKey;
-import com.acquisition.mapper.CjDataSourceTabInfoMapper;
 import com.acquisition.mapper.CjDwDataScriptDefInfoMapper;
-import com.acquisition.service.ICjDwDataScriptDefInfoService;
+import com.acquisition.service.CjDwDataScriptDefInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by zhangdongmao on 2019/5/29.
  */
 @Service
-public class CjDwDataScriptDefInfoServiceImpl implements ICjDwDataScriptDefInfoService {
+public class CjDwDataScriptDefInfoServiceImpl implements CjDwDataScriptDefInfoService {
 
     @Resource(name="cjDwDataScriptDefInfoMapper")
     CjDwDataScriptDefInfoMapper cjDwDataScriptDefInfoMapper;

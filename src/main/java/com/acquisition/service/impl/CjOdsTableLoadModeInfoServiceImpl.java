@@ -34,4 +34,9 @@ public class CjOdsTableLoadModeInfoServiceImpl implements CjOdsTableLoadModeInfo
     public CjOdsTableLoadModeInfo findByPrimaryKey(CjOdsTableLoadModeInfoKey key) {
         return cjOdsTableLoadModeInfoMapper.selectByPrimaryKey(key);
     }
+
+    @Override
+    public CjOdsTableLoadModeInfo findByOdsDataTable(String odsDataTable) {
+        return cjOdsTableLoadModeInfoMapper.selectByOdsDataTable(odsDataTable);
+    }
 }

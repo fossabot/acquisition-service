@@ -21,7 +21,7 @@ public interface CjDwTableColInfoMapper {
 
     List<CjDwTableColInfo> selectByExample(CjDwTableColInfoExample example);
 
-    List<CjDwTableColInfo> selectColInfoByTopicAndTab(@Param("dwBusinessTopicDomain") String dwBusinessTopicDomain, @Param("dwDataTable") String dwDataTable);
+    List<CjDwTableColInfo> selectColInfoByTopicAndTab(@Param("dwTableBelongDomain") String dwTableBelongDomain, @Param("dwDataTable") String dwDataTable);
 
     CjDwTableColInfo selectByPrimaryKey(CjDwTableColInfoKey key);
 

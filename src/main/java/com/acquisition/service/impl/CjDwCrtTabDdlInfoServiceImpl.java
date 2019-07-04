@@ -60,4 +60,19 @@ public class CjDwCrtTabDdlInfoServiceImpl implements CjDwCrtTabDdlInfoService {
         return "删除失败";
     }
 
+    @Override
+    public String findOdsDataTableByDwDataTable(String dwDataTable) {
+        return cjDwCrtTabDdlInfoMapper.selectOdsDataTableByDwDataTable(dwDataTable);
+    }
+
+    @Override
+    public CjDwCrtTabDdlInfo findByDwDataTable(String dwDataTable) {
+        return cjDwCrtTabDdlInfoMapper.selectByDwDataTable(dwDataTable);
+    }
+
+    @Override
+    public int saveByOne(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo) {
+        return cjDwCrtTabDdlInfoMapper.insertByOne(cjDwCrtTabDdlInfo);
+    }
+
 }

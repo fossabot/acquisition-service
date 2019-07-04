@@ -9,8 +9,8 @@ server:
 #公共配置与profiles选择无关
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印执行sql语句
 
 
 ---
@@ -45,31 +45,32 @@ spring:
       batch-size: 65536
       buffer-memory: 524288
   datasource:
-    url: jdbc:mysql://10.30.140.21:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: root
-    driver-class-name: com.mysql.jdbc.Driver
+     url: jdbc:mysql://10.30.140.21:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+     username: root
+     password: root
+     driver-class-name: com.mysql.jdbc.Driver
     # 使用druid数据源
-    type: com.alibaba.druid.pool.DruidDataSource
+     type: com.alibaba.druid.pool.DruidDataSource
     #dataSource Pool configuration
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    maxWait: 6000
-    timeBetweenEvictionRunsMillis: 1500
-    minEvictableIdleTimeMillis: 2000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    exceptionSorter: true
-    testOnReturn: false
-    poolPreparedStatements: true
-    filters: stat,log4j
-    maxPoolPreparedStatementPerConnectionSize: 20
-    connectionProperties:
-      druid.stat.mergeSql: true
-      druid.stat.slowSqlMillis: 500
-    useGlobalDataSourceStat: true
+
+     initialSize: 5
+     minIdle: 5
+     maxActive: 20
+     maxWait: 6000
+     timeBetweenEvictionRunsMillis: 1500
+     minEvictableIdleTimeMillis: 2000
+     validationQuery: SELECT 1 FROM DUAL
+     testWhileIdle: true
+     testOnBorrow: false
+     exceptionSorter: true
+     testOnReturn: false
+     poolPreparedStatements: true
+     filters: stat,log4j
+     maxPoolPreparedStatementPerConnectionSize: 20
+     connectionProperties:
+       druid.stat.mergeSql: true
+       druid.stat.slowSqlMillis: 500
+     useGlobalDataSourceStat: true
 druid:
   login:
     enabled: true

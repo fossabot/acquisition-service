@@ -35,7 +35,7 @@ public class GenerateScriptController {
     public ICjDataSourceTabColInfoService cjDataSourceTabColInfoService;
 
     @Resource(name = "cjDwDataScriptDefInfoServiceImpl")
-    public ICjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
+    public CjDwDataScriptDefInfoService cjDwDataScriptDefInfoService;
 
     @Resource(name = "cjOdsDataScriptDefInfoServiceImpl")
     public ICjOdsDataScriptDefInfoService iCjOdsDataScriptDefInfoService;
@@ -249,7 +249,8 @@ public class GenerateScriptController {
         Result result =  new Result();
         CjDataSourceConnDefine cjDataSourceConnDefine;
         String businessSystemId="";
-        String str1 = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
+        String sqoopInitScriptOracle = "sh /home/infa/zwj/ods_import_new_etl.sh url username password ";
+        String sqoopInitScriptSqlMyl = "sh /home/infa/zwj/ods_import.sh url username password ";
         String columns = "";
         String str2 = " no no init \"\" \"\" ";
         StringBuffer scripts = new StringBuffer();
@@ -259,12 +260,12 @@ public class GenerateScriptController {
         for (CjDataSourceTabInfo table : tabInfos) {
             CjDataSourceConnDefine cjDataSourceConnDefine1 = iCjDataSourceConnDefineService.selectDataBaseType(table.getBusinessSystemNameShortName(), table.getDataSourceSchema());
             //判断系统名连接数
-            if (cjDataSourceConnDefine1.getDataBaseType().equals("sqlserver")){
-                scripts.append(str1 + table.getBusinessSystemNameShortName() + "~"
+            if (cjDataSourceConnDefine1.getDataBaseType().equals("sqlserver") || cjDataSourceConnDefine1.getDataBaseType().equals("mysql")){
+                scripts.append(sqoopInitScriptSqlMyl + table.getBusinessSystemNameShortName() + "~"
                         + table.getDataSourceSchema()+ " "
                         + table.getDataSourceTable() + str2 + "\"");
             }else {
-                scripts.append(str1 + table.getBusinessSystemNameShortName() + " "
+                scripts.append(sqoopInitScriptOracle + table.getBusinessSystemNameShortName() + " "
                         + table.getDataSourceSchema()+ "."
                         + table.getDataSourceTable() + str2 + "\"");
             }

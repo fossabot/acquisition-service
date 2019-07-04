@@ -22,12 +22,6 @@ public class CjDwTableColInfoServiceImpl implements CjDwTableColInfoService{
 
     @Override
     public int insertBatch(List<CjDwTableColInfo> list) {
-        CjDwTableColInfoExample cjDwTableColInfoExample = new CjDwTableColInfoExample();
-        CjDwTableColInfoExample.Criteria criteria = cjDwTableColInfoExample.createCriteria();
-        criteria.andDwBusinessTopicDomainEqualTo(list.get(0).getDwBusinessTopicDomain());
-        criteria.andDwDataSchemaEqualTo(list.get(0).getDwDataSchema());
-        criteria.andDwDataTableEqualTo(list.get(0).getDwDataTable());
-        cjDwTableColInfoMapper.deleteByExample(cjDwTableColInfoExample);
         return cjDwTableColInfoMapper.insertBatch(list);
     }
 
@@ -37,7 +31,7 @@ public class CjDwTableColInfoServiceImpl implements CjDwTableColInfoService{
     }
 
     @Override
-    public List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwBusinessTopicDomain, String dwDataTable) {
-        return cjDwTableColInfoMapper.selectColInfoByTopicAndTab(dwBusinessTopicDomain,dwDataTable);
+    public List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwTableBelongDomain, String dwDataTable) {
+        return cjDwTableColInfoMapper.selectColInfoByTopicAndTab(dwTableBelongDomain,dwDataTable);
     }
 }

@@ -31,4 +31,11 @@ public interface CjDwCrtTabDdlInfoMapper {
     int insertBatch(List<CjDwCrtTabDdlInfo> list);
 
     int deleteBatch(List<CjDwCrtTabDdlInfo> list);
+
+    String selectOdsDataTableByDwDataTable(@Param("dwDataTable") String dwDataTable);
+
+    CjDwCrtTabDdlInfo selectByDwDataTable(@Param("dwDataTable") String dwDataTable);
+
+    int insertByOne(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
+
 }

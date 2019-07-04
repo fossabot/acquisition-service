@@ -400,4 +400,11 @@
       (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})
     </foreach>
   </delete>
+
+  <select id="selectByOdsDataTable" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cj_ods_table_load_mode_info
+    where ods_data_table = #{odsDataTable}
+  </select>
 </mapper>

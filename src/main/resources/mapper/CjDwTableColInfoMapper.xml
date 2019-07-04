@@ -101,14 +101,6 @@
       and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
       and dw_table_col_name = #{dwTableColName,jdbcType=VARCHAR}
   </select>
-  <select id="selectColInfoByTopicAndTab" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from cj_dw_table_col_info
-    where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
-    and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
-    order by cast(dw_table_col_order as SIGNED) asc
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableColInfoKey" >
     delete from cj_dw_table_col_info
     where dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR}
@@ -346,6 +338,23 @@
       #{item.lastModifyBy,jdbcType=VARCHAR}
       )
     </foreach>
+    ON DUPLICATE KEY UPDATE
+    dw_table_belong_domain = VALUES(dw_table_belong_domain),
+    dw_table_comment = VALUES(dw_table_comment),
+    dw_table_col_order = VALUES(dw_table_col_order),
+    dw_table_col_type = VALUES(dw_table_col_type),
+    dw_table_col_comment = VALUES(dw_table_col_comment),
+    dw_table_partition_flag = VALUES(dw_table_partition_flag),
+    last_modify_dt = VALUES(last_modify_dt),
+    last_modify_by = VALUES(last_modify_by)
   </insert>
 
+  <select id="selectColInfoByTopicAndTab" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_info
+    where dw_table_belong_domain = #{dwTableBelongDomain,jdbcType=VARCHAR}
+    and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+    order by cast(dw_table_col_order as SIGNED) asc
+  </select>
 </mapper>

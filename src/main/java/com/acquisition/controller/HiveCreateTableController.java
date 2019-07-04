@@ -3,6 +3,7 @@ package com.acquisition.controller;
 import com.acquisition.entity.*;
 import com.acquisition.entity.dto.CjDataSourceTabInfoDto;
 import com.acquisition.entity.dto.CjDwCrtTabDdlInfoDto;
+import com.acquisition.entity.dto.CjDwTableColInfoDto;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.entity.pojo.TableOptionPojo;
 import com.acquisition.service.*;
@@ -183,7 +184,7 @@ public class HiveCreateTableController {
         return result.success(page);
     }
 
-    @ApiOperation("dw建表接口")
+    @ApiOperation("dw备用区建表接口")
     @PostMapping(value = "/dWCreateTable")
     public Result dWCreateTable(@RequestBody String data) {
         Result result = new Result();
@@ -218,75 +219,6 @@ public class HiveCreateTableController {
         result.setData(tableOptionPojos);
         return result;
     }
-
-    public List<CjDwCrtTabDdlInfoDto> saveDwBakTableInfos(List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos) {
-        String businessSystemNameShortName;
-        String businessSystemId;
-        String dataSourceSchema;
-        String dataSourceTable;
-        String dwTableName;
-        String odsTableName;
-        List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos = new ArrayList<>();
-        List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = new ArrayList<>();
-
-//        //遍历每张表，生成DW建表语句
-        for (CjDataSourceTabInfoDto cjDataSourceTabInfoDto : cjDataSourceTabInfoDtos) {
-            businessSystemNameShortName = cjDataSourceTabInfoDto.getBusinessSystemNameShortName();
-            dataSourceSchema = cjDataSourceTabInfoDto.getDataSourceSchema();
-            dataSourceTable = cjDataSourceTabInfoDto.getDataSourceTable();
-            odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-            dwTableName = CreateTableUtil.getDwTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-
-            String dwBakDdl = generateDwBakDdl(cjDataSourceTabInfoDto);
-
-            if(dwBakDdl != null && !dwBakDdl.equals("")){
-                /**
-                 * 将dw建表语句存入mysql中
-                 */
-                if (cjDataSourceTabInfoDto.getBusinessSystemId() == null) {
-                    CjDataSourceConnDefine cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfoDto.getBusinessSystemNameShortName(), cjDataSourceTabInfoDto.getDataSourceSchema());
-                    businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
-                } else {
-                    businessSystemId = cjDataSourceTabInfoDto.getBusinessSystemId();
-                }
-                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
-                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
-                cjDwCrtTabDdlInfoDto.setBusinessSystemId(businessSystemId);
-                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
-                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
-                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
-                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
-                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
-                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
-                CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
-                BeanUtils.copyProperties(cjDwCrtTabDdlInfoDto,cjDwCrtTabDdlInfo);
-                cjDwCrtTabDdlInfos.add(cjDwCrtTabDdlInfo);
-                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
-
-            } else {
-                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
-                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
-                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
-                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
-                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
-                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
-                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
-                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
-                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
-            }
-
-            if(cjDwCrtTabDdlInfos != null && cjDwCrtTabDdlInfos.size()>0){
-                cjDwCrtTabDdlInfoService.insertBatch(cjDwCrtTabDdlInfos);
-            }
-        }
-
-        return cjDwCrtTabDdlInfoDtos;
-    }
-
     /**
      * @return 返回已经导入清单，但没有在ODS建表的表
      */
@@ -432,7 +364,6 @@ public class HiveCreateTableController {
         result.setData(tableOptionPojos);
         return result;
     }
-
     /**
      * @return 拼接并保存SQL, 返回状态码
      */
@@ -440,6 +371,8 @@ public class HiveCreateTableController {
         String businessSystemId;
         String odsFullDdl = "";
         String odsIncrementDdl = "";
+        String odsTmpDdl = "";
+        String odsDdl = "";
         List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos = new ArrayList<>();
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
@@ -460,11 +393,18 @@ public class HiveCreateTableController {
 
             if(cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_INCREMENT_EXTRACT)){
                 //如果是增量抽取，生成ODS全量表和增量表建表
-                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo);
+                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(),cjOdsTableLoadModeInfo);
                 odsIncrementDdl = generateOdsIncrementDdl(cjOdsTableLoadModeInfo);
+                odsDdl = odsFullDdl + ";\n" + odsIncrementDdl;
             } else if(cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_FULL_EXTRACT)){
                 //如果是增量抽取，生成ODS全量表和增量表建表
-                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo);
+                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(),cjOdsTableLoadModeInfo);
+                odsDdl = odsFullDdl;
+            }
+            //如果该表存在分区，需要建一张tmp表
+            if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() != null) {
+                odsTmpDdl = generateOdstmpDdl(cjOdsTableLoadModeInfo);
+                odsDdl = odsDdl + ";\n" + odsTmpDdl;
             }
 
             if (cjDataSourceTabInfo.getBusinessSystemId() == null) {
@@ -501,6 +441,74 @@ public class HiveCreateTableController {
         }
         cjOdsCrtTabDdlInfoService.insertBatch(cjOdsCrtTabDdlInfos);
         return cjOdsCrtTabDdlInfos;
+    }
+
+    public List<CjDwCrtTabDdlInfoDto> saveDwBakTableInfos(List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos) {
+        String businessSystemNameShortName;
+        String businessSystemId;
+        String dataSourceSchema;
+        String dataSourceTable;
+        String dwTableName;
+        String odsTableName;
+        List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos = new ArrayList<>();
+        List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = new ArrayList<>();
+
+//        //遍历每张表，生成DW建表语句
+        for (CjDataSourceTabInfoDto cjDataSourceTabInfoDto : cjDataSourceTabInfoDtos) {
+            businessSystemNameShortName = cjDataSourceTabInfoDto.getBusinessSystemNameShortName();
+            dataSourceSchema = cjDataSourceTabInfoDto.getDataSourceSchema();
+            dataSourceTable = cjDataSourceTabInfoDto.getDataSourceTable();
+            odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+            dwTableName = CreateTableUtil.getDwTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+
+            String dwBakDdl = generateDwBakDdl(cjDataSourceTabInfoDto);
+
+            if(dwBakDdl != null && !dwBakDdl.equals("")){
+                /**
+                 * 将dw建表语句存入mysql中
+                 */
+                if (cjDataSourceTabInfoDto.getBusinessSystemId() == null) {
+                    CjDataSourceConnDefine cjDataSourceConnDefine = cjDataSourceConnDefineService.selectDataBaseType(cjDataSourceTabInfoDto.getBusinessSystemNameShortName(), cjDataSourceTabInfoDto.getDataSourceSchema());
+                    businessSystemId = cjDataSourceConnDefine.getBusinessSystemId();
+                } else {
+                    businessSystemId = cjDataSourceTabInfoDto.getBusinessSystemId();
+                }
+                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
+                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
+                cjDwCrtTabDdlInfoDto.setBusinessSystemId(businessSystemId);
+                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
+                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
+                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
+                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
+                CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
+                BeanUtils.copyProperties(cjDwCrtTabDdlInfoDto,cjDwCrtTabDdlInfo);
+                cjDwCrtTabDdlInfos.add(cjDwCrtTabDdlInfo);
+                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
+
+            } else {
+                CjDwCrtTabDdlInfoDto cjDwCrtTabDdlInfoDto = new CjDwCrtTabDdlInfoDto();
+                cjDwCrtTabDdlInfoDto.setIndex(cjDataSourceTabInfoDto.getIndex());
+                cjDwCrtTabDdlInfoDto.setBusinessSystemNameShortName(cjDataSourceTabInfoDto.getBusinessSystemNameShortName());
+                cjDwCrtTabDdlInfoDto.setDataSourceSchema(cjDataSourceTabInfoDto.getDataSourceSchema());
+                cjDwCrtTabDdlInfoDto.setDataSourceTable(cjDataSourceTabInfoDto.getDataSourceTable());
+                cjDwCrtTabDdlInfoDto.setOdsDataTable(odsTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTable(dwTableName);
+                cjDwCrtTabDdlInfoDto.setDwDataTableDdlInfo(dwBakDdl);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
+                cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
+            }
+
+            if(cjDwCrtTabDdlInfos != null && cjDwCrtTabDdlInfos.size()>0){
+                cjDwCrtTabDdlInfoService.insertBatch(cjDwCrtTabDdlInfos);
+            }
+        }
+
+        return cjDwCrtTabDdlInfoDtos;
     }
 
     /**
@@ -644,13 +652,13 @@ public class HiveCreateTableController {
 
         return dwddl.toString();
     }
-    public String generateOdsFullDdl(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
+    public String generateOdsFullDdl(String odsTableName,CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
         StringBuffer odsDDL = new StringBuffer();
         String odsTableComment = "";
         List<CjOdsTableColInfo> cjOdsTableColInfos = new ArrayList<>();
 
         //开始拼接ods建表语句
-        odsDDL.append("create external table if not exists " + Constant.ODS_HIVE_FULL_SCHEMA + "." + cjOdsTableLoadModeInfo.getOdsDataTable() + "\n");
+        odsDDL.append("create external table if not exists " + Constant.ODS_HIVE_FULL_SCHEMA + "." + odsTableName + "\n");
         odsDDL.append("(" + "\n");
 
         List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
@@ -764,9 +772,41 @@ public class HiveCreateTableController {
         return odsDDL.toString();
     }
 
+    public String generateOdstmpDdl(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
+        StringBuffer odsDDL = new StringBuffer();
+
+        //开始拼接ods建表语句
+        odsDDL.append("create external table if not exists " + Constant.ODS_HIVE_INCREMENT_SCHEMA + "." + cjOdsTableLoadModeInfo.getOdsDataTable()+"_tmp" + "\n");
+        odsDDL.append("(" + "\n");
+
+        List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
+                .findBySystemAndSchemaAndTab(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+                        cjOdsTableLoadModeInfo.getDataSourceSchema(),
+                        cjOdsTableLoadModeInfo.getDataSourceTable());
+        for (int i = 0; i < infoList.size(); i++) {
+            String colName = infoList.get(i).getDataSourceColName().toLowerCase();
+            String colComment = infoList.get(i).getDataSourceColComment();
+            if (colComment == null) {
+                colComment = "";
+            }
+            //判断colName中是否包含中文，若包含，则colName转为全拼，源colName赋值给colComment
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(colName);
+            if (m.find()) {
+                colComment = colName;
+                colName = PinyinUtil.getPinYin(colName);
+            }
+            odsDDL.append("    `" + colName + "`    " + Constant.ODS_COL_TYPE + "    " + "comment \"" + colComment + "\"" + ",\n");
+        }
+
+        odsDDL.append("    sysdate    string    comment \"etl处理时间\"\n");
+        odsDDL.append(")" + "\n");
+        odsDDL.append("row format delimited fields terminated by '\\001' lines terminated by '\\n'");
+        return odsDDL.toString();
+    }
 
     public List<TableOptionPojo> hiveCreateOdsTableBatch(List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos) {
-        GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
+        GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         TableOptionPojo tableOptionPojo = null;
@@ -802,7 +842,7 @@ public class HiveCreateTableController {
     }
 
     public List<TableOptionPojo> hiveCreateDwBakTableBatch(List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos) {
-        GroupPoolFactory instance = GroupPoolFactory.getInstance("DATALAKE-");
+        GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         TableOptionPojo tableOptionPojo;

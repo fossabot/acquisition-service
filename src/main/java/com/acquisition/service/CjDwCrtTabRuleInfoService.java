@@ -6,5 +6,6 @@ import org.springframework.stereotype.Service;
  * Created by zhangdongmao on 2019/5/29.
  */
 
-public interface ICjDwCrtTabRuleInfoService {
+public interface CjDwCrtTabRuleInfoService {
+    String findPolicyByTopic(String topic);
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * Created by zhangdongmao on 2019/5/29.
  */
 
-public interface ICjDwDataScriptDefInfoService {
+public interface CjDwDataScriptDefInfoService {
     String save(CjDwDataScriptDefInfo cjDwDataScriptDefInfo);
     String deleteByPrimaryKey(CjDwDataScriptDefInfoKey key);
     String selectDdlInfo(String businessSystemNameShortName,

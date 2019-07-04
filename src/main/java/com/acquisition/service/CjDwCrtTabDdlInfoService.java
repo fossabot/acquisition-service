@@ -14,4 +14,7 @@ public interface CjDwCrtTabDdlInfoService {
     int insertBatch(List<CjDwCrtTabDdlInfo> cjDwCrtTabDdlInfos);
     String updateByExampleSelective(CjDwCrtTabDdlInfo record,CjDwCrtTabDdlInfoExample example);
     String deleteByPrimaryKey(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
+    String findOdsDataTableByDwDataTable(String dwDataTable);
+    CjDwCrtTabDdlInfo findByDwDataTable(String dwDataTable);
+    int saveByOne(CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo);
 }

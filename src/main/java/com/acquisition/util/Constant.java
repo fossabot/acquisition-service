@@ -33,4 +33,13 @@ public class Constant {
     public static final String META_NOT_EXISTS="not_exists";
     public static final String META_EXISTS="exists";
     public static final String CONNECTION_NOT_EXISTS="con_not_exists";
+    public static final String DW_PARTITION_FLAG="Y";
+    public static final String DW_PARTITION_KEY="partition_key";
+    public static final String DW_PARTITION_DATATYPE="string";
+    public static final String DW_PARTITION_COMMENT="分区键";
+    public static final String DW_POLICY_F3="F3";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY="data_dt";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY_TYPE="string";
+    public static final String DW_F3_DEFAULT_PARTITION_KEY_COMMENT="数据日期";
+    public static final String HIVE_INSTANCE="DATALAKE-";
 }
