@@ -40,5 +40,5 @@ public interface ICjDataSourceTabColInfoService {
 
     List<String> findSplictColWithIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 
-
+    List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 }

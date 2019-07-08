@@ -34,4 +34,6 @@ public interface CjOdsTableColInfoMapper {
     int deleteBatch(List<CjOdsTableColInfo> list);
 
     List<String> selectFieldByOrder(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
+
+    String findOdsDataTable(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 }

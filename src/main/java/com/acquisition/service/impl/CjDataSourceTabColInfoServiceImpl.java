@@ -1,14 +1,11 @@
 package com.acquisition.service.impl;
 
 
-import com.acquisition.config.YiliPoolConfig;
 import com.acquisition.entity.CjDataSourceSystemInfo;
+import com.acquisition.entity.CjDataSourceTabColInfo;
 import com.acquisition.entity.pojo.CjDwCrtDdlColPojo;
 import com.acquisition.mapper.CjDataSourceTabColInfoMapper;
 import com.acquisition.service.ICjDataSourceTabColInfoService;
-import com.acquisition.entity.CjDataSourceTabColInfo;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -92,6 +89,11 @@ public class CjDataSourceTabColInfoServiceImpl implements ICjDataSourceTabColInf
     @Override
     public List<String> findSplictColWithIndex(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
         return cjDataSourceTabColInfoMapper.selectSplictColWithIndex(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
+    @Override
+    public List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjDataSourceTabColInfoMapper.selectFieldByOrder(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
 
 

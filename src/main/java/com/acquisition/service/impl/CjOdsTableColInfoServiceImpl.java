@@ -45,4 +45,9 @@ public class CjOdsTableColInfoServiceImpl implements CjOdsTableColInfoService {
         return cjOdsTableColInfoMapper.selectFieldByOrder(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
     }
 
+    @Override
+    public String findOdsDataTable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable) {
+        return cjOdsTableColInfoMapper.findOdsDataTable(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+    }
+
 }

@@ -18,10 +18,21 @@ public interface CjOdsTableColInfoService {
     int deleteByExample(CjOdsTableColInfoExample example);
 
     /**
-     * 按cj_ods_table_col_info表中ods_table_col_order字段序号排序
-     * @param etuInfo 封装系统源，系统简称和schema的实体类
-     * @return 排序好的字段
+     *
+     * @param businessSystemNameShortName 系统缩写
+     * @param dataSourceSchema schema
+     * @param dataSourceTable 源表名称
+     * @return 返回排序好的字段
      */
     List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
+    /**
+     *
+     * @param businessSystemNameShortName 系统缩写
+     * @param dataSourceSchema schema
+     * @param dataSourceTable 源表名称
+     * @return 返回OdsDataTable表名称
+     */
+    String findOdsDataTable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 
 }

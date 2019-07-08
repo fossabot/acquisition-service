@@ -50,10 +50,14 @@ public class GenerateScriptController {
     public ICjDataSourceConnDefineService iCjDataSourceConnDefineService;
 
     @Resource(name = "cjOdsTableLoadModeInfoServiceImpl")
-    public CjOdsTableLoadModeInfoService CjOdsTableLoadModeInfoService;
+    public CjOdsTableLoadModeInfoService cjOdsTableLoadModeInfoService;
 
     @Resource(name = "cjOdsTableColInfoServiceImpl")
     public CjOdsTableColInfoService cjOdsTableColInfoService;
+
+    @Resource(name = "cjDataSourceTabColInfoServiceImpl")
+    public ICjDataSourceTabColInfoService iCjDataSourceTabColInfoService;
+
     /**
     * @Author: zhangdongmao
     * @Date: 2019/6/10
@@ -355,7 +359,7 @@ public class GenerateScriptController {
         if (!reqParmsEtu.isEmpty()){
             // 遍历每个EtuInfo
             for (EtuInfo etuEnt:reqParmsEtu){
-                    CjOdsTableLoadModeInfo odsTableLoadModeInfo = CjOdsTableLoadModeInfoService.findAll(etuEnt);
+                    CjOdsTableLoadModeInfo odsTableLoadModeInfo = cjOdsTableLoadModeInfoService.findAll(etuEnt);
                     // 创建sqoop脚本
                     String odsInitSqoopScript = createSqoopInitShell(odsTableLoadModeInfo);
                     // 创建CjOdsDataScriptDefInfo实体类
@@ -379,6 +383,58 @@ public class GenerateScriptController {
         return result;
     }
 
+    @ApiOperation(value = "创建ods加载脚本", notes = "List<EtuInfo>", produces = "application/json")
+    @PostMapping("/createOdsLoad")
+    public Result createOdsLoad(@RequestBody List<EtuInfo> reqParmsEtu){
+        // 返回结果
+        Result result = new Result();
+        // 初始化sqoop
+        String SqoopScript = null;
+        // 初始化hive
+        String HiveScript = null;
+
+        // 保存CjOdsDataScriptDefInfo实体类
+        List<CjOdsDataScriptDefInfo> cjOdsDataScriptDefInfos = new ArrayList();
+        for(EtuInfo etuEnt : reqParmsEtu){
+            CjOdsTableLoadModeInfo odsTableLoadModeInfo = cjOdsTableLoadModeInfoService.findAll(etuEnt);
+            // 创建CjOdsDataScriptDefInfo实体类
+            CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo = new CjOdsDataScriptDefInfo();
+            cjOdsDataScriptDefInfo.setBusinessSystemId(odsTableLoadModeInfo.getBusinessSystemId());
+            cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(odsTableLoadModeInfo.getBusinessSystemNameShortName());
+            cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
+            cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
+            cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
+            cjOdsDataScriptDefInfo.setOdsDataScriptType(odsTableLoadModeInfo.getOdsDataLoadMode());
+            cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
+
+            // 全量
+            // 只有无分区的情况
+            if("full".equals(odsTableLoadModeInfo.getOdsDataLoadMode())){
+                // 创建脚本
+                 SqoopScript = createSqoopShell(odsTableLoadModeInfo);
+                cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(SqoopScript);
+                // 持久化
+                cjOdsDataScriptDefInfos.add(cjOdsDataScriptDefInfo);
+            }else{
+                // 增量
+                // 创建hive脚本
+                HiveScript = createHiveShell(odsTableLoadModeInfo);
+                // 创建sqoop脚本
+                SqoopScript = createSqoopShell(odsTableLoadModeInfo);
+
+                cjOdsDataScriptDefInfo.setOdsDataHivesqlDefine(HiveScript);
+                cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(SqoopScript);
+                cjOdsDataScriptDefInfos.add(cjOdsDataScriptDefInfo);
+            }
+
+        }
+        // 持久化每个对象
+        iCjOdsDataScriptDefInfoService.insertBatch(cjOdsDataScriptDefInfos);
+        result.setCode(200);
+        result.setMsg("ok！");
+        return result;
+    }
     /**
      *
      * @param cjOdsTableLoadModeInfo sqoop生成脚本所需字段数据
@@ -398,7 +454,7 @@ public class GenerateScriptController {
                     selectDataBaseType(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(), cjOdsTableLoadModeInfo.getDataSourceSchema());
             dataBaseType = connDefine.getDataBaseType();
             if(dataBaseType.equals(Constant.DATABASE_SQLSERVER) || dataBaseType.equals(Constant.DATABASE_MYSQL)){
-                 shellOrder = "ods_import.sh";
+                shellOrder = "ods_import.sh";
                 systemAndSchemaAndTab = cjOdsTableLoadModeInfo.getBusinessSystemNameShortName()+"~"+cjOdsTableLoadModeInfo.getDataSourceSchema()+" "+cjOdsTableLoadModeInfo.getDataSourceTable();
             }else {
                 shellOrder = "ods_import_new_etl.sh";
@@ -411,67 +467,163 @@ public class GenerateScriptController {
             result.error(400,e.toString());
         }
         // 是否为分区
-        if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() == null) {
+        if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()) {
             odsInitSqoopScript.append(" no "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" init \"\" \"\" ");
         } else {
             odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()
-            +" init_big \"\" \"\" ");
+                    +" init_big \"\" \"\" ");
         }
         // 字段按规则排序
-        List<String> colNames = cjOdsTableColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+        List<String> colNames = iCjDataSourceTabColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
                 cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
         // 去掉拼接字符串最后一个逗号
-        StringJoiner stringJoiner= new StringJoiner(",");
+        StringJoiner fields = new StringJoiner(",");
         for(String colName:colNames){
             // 不拼接etl_date和data_dt
             if (!colName.equals(Constant.ODS_ETL_DT_COL) && !colName.equals(Constant.ODS_PARTITION_KEY)){
-                stringJoiner.add(colName);
+                fields.add(colName);
             }
         }
-        odsInitSqoopScript.append("\"").append(stringJoiner).append("\"");
+        odsInitSqoopScript.append("\"").append(fields).append("\"");
         return odsInitSqoopScript.toString();
     }
 
 
-    @ApiOperation(value = "生成ods加载脚本", notes = "List<EtuInfo>", produces = "application/json")
-    @PostMapping("/createOdsLoad")
-    public Result createOdsLoad(@RequestBody List<EtuInfo> reqParmsEtu) {
+    /**
+     *
+     * @param cjOdsTableLoadModeInfo sqoop生成脚本所需字段数据
+     * @return sqoop脚本
+     */
+    private String createSqoopShell(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo){
         // 返回结果
-       Result result = new Result();
-        // 存储生成sqoop脚本后的对象
-        List<CjOdsDataScriptDefInfo> cjOdsDataScriptDefInfos = new ArrayList<>();
-        if(!reqParmsEtu.isEmpty()){
-            for(EtuInfo etuEnt:reqParmsEtu){
-                CjOdsTableLoadModeInfo odsTableLoadModeInfo = CjOdsTableLoadModeInfoService.findAll(etuEnt);
-                // 全量只有无分区情况
-                if ("full".equals(odsTableLoadModeInfo.getOdsDataLoadMode())) {
-                    // 创建sqoop脚本
-                    String odsInitSqoopScript = createSqoopInitShell(odsTableLoadModeInfo);
-                    // 创建CjOdsDataScriptDefInfo实体类
-                    CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo = new CjOdsDataScriptDefInfo();
-                    cjOdsDataScriptDefInfo.setBusinessSystemId(odsTableLoadModeInfo.getBusinessSystemId());
-                    cjOdsDataScriptDefInfo.setBusinessSystemNameShortName(odsTableLoadModeInfo.getBusinessSystemNameShortName());
-                    cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
-                    cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
-                    cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
-                    cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
-                    cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(odsInitSqoopScript);
-                    cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                    cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
-                    // 持久化实体类
-                    cjOdsDataScriptDefInfos.add(cjOdsDataScriptDefInfo);
-                    iCjOdsDataScriptDefInfoService.insertBatch(cjOdsDataScriptDefInfos);
-                    result.setCode(200);
-                    result.setMsg("ODS脚本初始化成功！");
-                    return result;
-                }else{
-                    // 增量
-                }
+        Result result = new Result();
+        // 拼接shell
+        StringBuffer odsInitSqoopScript = new StringBuffer();
+        String shellOrder = null;
+        String dataBaseType;
+        String systemAndSchemaAndTab;
+        // 判断增量还是全量
+        String splitFiled = null;
 
+        // 字段按规则排序
+        List<String> colNames = iCjDataSourceTabColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+                cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
+        // 去掉拼接字符串最后一个逗号
+        StringJoiner fields= new StringJoiner(",");
+        for(String colName:colNames){
+            // 不拼接etl_date和data_dt
+            if (!colName.equals(Constant.ODS_ETL_DT_COL) && !colName.equals(Constant.ODS_PARTITION_KEY)){
+                fields.add(colName);
             }
         }
 
-        return result;
+        try {
+            // 判断数据库类型
+            CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.
+                    selectDataBaseType(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(), cjOdsTableLoadModeInfo.getDataSourceSchema());
+            dataBaseType = connDefine.getDataBaseType();
+            if(dataBaseType.equals(Constant.DATABASE_SQLSERVER) || dataBaseType.equals(Constant.DATABASE_MYSQL)){
+                shellOrder = "ods_import.sh";
+                systemAndSchemaAndTab = cjOdsTableLoadModeInfo.getBusinessSystemNameShortName()+"~"+cjOdsTableLoadModeInfo.getDataSourceSchema()+" "+cjOdsTableLoadModeInfo.getDataSourceTable();
+            }else {
+                shellOrder = "ods_import_new_etl.sh";
+                systemAndSchemaAndTab = cjOdsTableLoadModeInfo.getBusinessSystemNameShortName()+" "+cjOdsTableLoadModeInfo.getDataSourceSchema()+"."+cjOdsTableLoadModeInfo.getDataSourceTable();
+            }
+            String location = "/home/infa/zwj/"+ shellOrder + " url username password ";
+            odsInitSqoopScript.append("sh ").append(location);
+            odsInitSqoopScript.append(systemAndSchemaAndTab);
+        } catch (NullPointerException e) {
+            result.error(400,e.toString());
+        }
+
+        // 判断增量或者是全量
+        if ("full".equals(cjOdsTableLoadModeInfo.getOdsDataLoadMode())){
+            splitFiled = "no";
+        }else{
+            splitFiled = cjOdsTableLoadModeInfo.getOdsTableIncrementColName();
+        }
+
+        // 是否为分区
+        if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()) {
+            odsInitSqoopScript.append(" ").append(splitFiled).append(" ").
+                    append(cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
+            odsInitSqoopScript.append("\"").append(fields).append("\"");
+        } else {
+            odsInitSqoopScript.append(" ").append(splitFiled).append(" ").
+                    append(cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
+            odsInitSqoopScript.append("\"").append(fields).append("\"").append(" \"\" \"\" \"true\"");
+        }
+        return odsInitSqoopScript.toString();
+    }
+
+
+    /**
+     *
+     * @return 拼接hive脚本
+     */
+    private String createHiveShell(CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo){
+
+        // 拼接hive字符串
+        StringBuffer odsHiveScript = new StringBuffer();
+
+        // 查询odsDataTable表名称
+        String odsDataTable = cjOdsTableColInfoService.findOdsDataTable(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+                cjOdsTableLoadModeInfo.getDataSourceSchema(),cjOdsTableLoadModeInfo.getDataSourceTable());
+        odsHiveScript.append("set hive.exec.dynamic.partition=true;\n");
+        odsHiveScript.append("set hive.exec.dynamic.partition.mode=nonstrict;\n");
+        odsHiveScript.append("set hive.exec.max.dynamic.partitions.pernode = 10000;\n\r");
+        odsHiveScript.append("insert overwrite table ");
+        odsHiveScript.append(Constant.ODS_HIVE_FULL_SCHEMA).append(".").append(odsDataTable);
+
+        // 字段按规则排序
+        List<String> colNames = cjOdsTableColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
+                cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
+        // 去掉拼接字符串最后一个逗号
+        StringJoiner fields = new StringJoiner(",");
+        for(String colName:colNames){
+            // 不拼接etl_date和data_dt
+            if (!colName.equals(Constant.ODS_ETL_DT_COL) && !colName.equals(Constant.ODS_PARTITION_KEY)){
+                fields.add(colName);
+            }
+        }
+
+        // 日期判断
+        String odsDate = cjOdsTableLoadModeInfo.getOdsTablePartitionUnit();
+        if ("month".equals(odsDate)){
+            odsDate = "yyyyMM";
+        }else{
+            odsDate = "yyyyMMdd";
+        }
+
+        // 切分ods_table_primary_col_name，可能有多个值
+        String[] odsTablePrimaryColNames = cjOdsTableLoadModeInfo.getOdsTablePrimaryColName().split(",");
+        StringBuffer condition = new StringBuffer();
+        for(String str : odsTablePrimaryColNames){
+            condition.append("and a.").append(str).append(" = ").append("b.").append(str).append("\n\t");
+        }
+
+        // 增量有分区
+        if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()){
+            // 增量无分区
+            odsHiveScript.append("\n").append("select\n    ").append(fields).append(",etl_dt").append("\n").append("from\n    ").append(Constant.ODS_HIVE_INCREMENT_SCHEMA).
+                    append(".").append(odsDataTable).append("\nwhere").append("\n    data_dt = '${DATA_DT}'\n").append("union all\n").append("select\n    ").
+                    append(fields).append(",etl_dt").append("\nfrom\n    ").append(Constant.ODS_HIVE_FULL_SCHEMA).append(".").append(odsDataTable).append(" a\n").
+                    append("where not exists\n").append("(\n    select 1 from ").append(Constant.ODS_HIVE_INCREMENT_SCHEMA).append(".").append(odsDataTable).
+                    append(" b\n    ").append("where 1 = 1\n    ").append(condition).append("and b.data_dt = '${DATA_DT}'\n").append(");");
+        }else{
+            // 增量有分区
+            odsHiveScript.append(" partition(data_dt)\n").append("select\n    ").append(fields).append(",etl_dt").
+                    append(",cast(data_format("+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+",\'").append(odsDate).append("\') as string)\n").
+                    append("from\n    ").append(Constant.ODS_HIVE_INCREMENT_SCHEMA).append(".").append(odsDataTable).append("\n").append("where\n    ").
+                    append("data_dt = '${DATA_DT}'\n").append("union all\n").append("select\n    ").append(fields).append(",etl_dt").append(",data_dt\n").
+                    append("from\n    ").append("(select * from ").append(Constant.ODS_HIVE_FULL_SCHEMA).append(".").append(odsDataTable).append("\n        ").
+                    append("where data_dt in\n        ").append("(\n        ").append("select distinct date_format("+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()
+                    +",\'").append(odsDate).append("\') as data_dt\n        ").append("from ").append(Constant.ODS_HIVE_INCREMENT_SCHEMA).append(".").append(odsDataTable).append(" b\n        ").
+                    append("where b.data_dt='${DATA_DT}'\n        ").append(")\n    ").append(")").append("a\n").append("where not exists\n").append("(\n    ").append("select 1 from ").
+                    append(Constant.ODS_HIVE_INCREMENT_SCHEMA).append(".").append(odsDataTable).append(" b\n    ").append("where 1 = 1\n    ").
+                    append(condition).append("and b.data_dt = '${DATA_DT}'\n").append(");");
+        }
+        return odsHiveScript.toString();
     }
 
 }
