@@ -4,6 +4,14 @@ package com.acquisition.util;
  * Created by Administrator on 2018/11/1.
  */
 public class Constant {
+//    public static final String DW_HIVE_SCHEMA="ac_test_dw";
+//    public static final String ODS_HIVE_FULL_SCHEMA="ac_test_ods";
+//    public static final String ODS_HIVE_INCREMENT_SCHEMA="ac_test_ods_inc";
+//    public static final int ODS_INCREMENT_TABLE_SIZE=5120;
+    public static final String DW_HIVE_SCHEMA="acquisition_dw";
+    public static final String ODS_HIVE_FULL_SCHEMA="acquisition_ods";
+    public static final String ODS_HIVE_INCREMENT_SCHEMA="acquisition_ods_inc";
+    public static final int ODS_INCREMENT_TABLE_SIZE=0;
     public static final int TABLE_LEVEL=1;
     public static final int OWNER_LEVEL=2;
     public static final int COLUMN_LEVEL=3;
@@ -15,13 +23,7 @@ public class Constant {
     public static final String DW_CRT_HIVE="1";
     public static final String DW_CRT_DDL="1";
     public static final String DW_CRT_SCRIPT="1";
-    public static final String DW_HIVE_SCHEMA="acquisition_dw";
-    public static final String ODS_HIVE_FULL_SCHEMA="acquisition_ods";
-    public static final String ODS_HIVE_INCREMENT_SCHEMA="acquisition_ods_inc";
-    public static final int ODS_INCREMENT_TABLE_SIZE=0;
-
     public static final String ODS_ETL_DT_COL="etl_dt";
-
     public static final String ODS_PARTITION_KEY="data_dt";
     public static final String ODS_PARTITION_UNIT="month";
     public static final String ODS_INCREMENT_EXTRACT="increment";
@@ -29,11 +31,9 @@ public class Constant {
     public static final String ODS_COL_TYPE="string";
     public static final String TABLE_OPTION_SUCCESS="success";
     public static final String TABLE_OPTION_FAILED="failed";
-
     public static final String DATABASE_SQLSERVER="sqlserver";
     public static final String DATABASE_MYSQL="mysql";
     public static final String DATABASE_ORACLE="oracle";
-
     public static final String TABLE_OPTION_AVAIL="avail";
     public static final String DW_BAK_DEFAULT_TOPIC_DOMAIN="nct";
     public static final String DW_BAK_DOMAIN="0";
@@ -50,5 +50,7 @@ public class Constant {
     public static final String DW_F3_DEFAULT_PARTITION_KEY_TYPE="string";
     public static final String DW_F3_DEFAULT_PARTITION_KEY_COMMENT="数据日期";
     public static final String HIVE_INSTANCE="DATALAKE-";
+    public static final String ODS_INIT_EXTRACT="init";
+
 
 }

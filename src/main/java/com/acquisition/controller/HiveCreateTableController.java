@@ -270,9 +270,13 @@ public class HiveCreateTableController {
                     //查询表的唯一索引
                     List<CjDataSourceUniqueIndexInfo> uniqueIndexs = cjDataSourceUniqueIndexInfoService.findUniqueIndexByTable(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
                     if (uniqueIndexs != null && uniqueIndexs.size() > 0) {
-                        MultiValueMap<String, String> uniqueIndexMap = new LinkedMultiValueMap();
+                        MultiValueMap<String, List<String>> uniqueIndexMap = new LinkedMultiValueMap();
                         for (CjDataSourceUniqueIndexInfo cjDataSourceUniqueIndexInfo : uniqueIndexs) {
-                            uniqueIndexMap.add(cjDataSourceUniqueIndexInfo.getUniqueIndexName(), cjDataSourceUniqueIndexInfo.getDataSourceColName());
+                            List<String> uniqueIndexList = new ArrayList<>();
+                            uniqueIndexList.add(cjDataSourceUniqueIndexInfo.getDataSourceColName());
+                            uniqueIndexList.add(cjDataSourceUniqueIndexInfo.getDataSourceColOrder());
+                            System.out.println(cjDataSourceUniqueIndexInfo.getDataSourceColOrder());
+                            uniqueIndexMap.add(cjDataSourceUniqueIndexInfo.getUniqueIndexName(), uniqueIndexList);
                         }
                         Set<String> keySet = uniqueIndexMap.keySet();
                         int size = 100;
@@ -284,15 +288,22 @@ public class HiveCreateTableController {
                                 indexKey = key;
                             }
                         }
-                        List<String> indexs = uniqueIndexMap.get(indexKey);
-                        String index = String.join(",", indexs);
-
+                        List<List<String>> indexs = uniqueIndexMap.get(indexKey);
+                        StringBuffer index = new StringBuffer();
+                        StringBuffer indexSeq = new StringBuffer();
+                        for(List<String> indexList:indexs){
+                            index.append(indexList.get(0)+",");
+                            indexSeq.append(indexList.get(1)+",");
+                        }
+                        index.deleteCharAt(index.length()-1);
+                        indexSeq.deleteCharAt(index.length()-1);
                         //满足所有的增量条件，定义为增量方式抽取
                         cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_INCREMENT_EXTRACT);
                         //取list中的第一个值做增量字段
                         cjOdsTableLoadModeInfo.setOdsTableIncrementColName(incrementCols.get(0).getDataSourceColName());
                         //设置唯一索引
-                        cjOdsTableLoadModeInfo.setOdsTablePrimaryColName(index);
+                        cjOdsTableLoadModeInfo.setOdsTablePrimaryColName(index.toString());
+                        cjOdsTableLoadModeInfo.setOdsTablePrimaryColSeqStr(indexSeq.toString());
                         //获取表的分区字段
                         List<CjDataSourceTabColInfo> partitionKeys = cjDataSourceTabColInfoService.findPartitionKey(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
                         if (partitionKeys != null && partitionKeys.size() > 0) {
@@ -374,6 +385,7 @@ public class HiveCreateTableController {
         String odsTmpDdl = "";
         String odsDdl = "";
         List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos = new ArrayList<>();
+        List<CjOdsCrtTabDdlInfo> hiveCrtTabDdlInfos = new ArrayList<>();
 
         //遍历从前端获取到表的列表，拼接字段，创建 Hive DDL
         for (CjDataSourceTabInfo cjDataSourceTabInfo : cjDataSourceTabInfos) {
@@ -404,6 +416,7 @@ public class HiveCreateTableController {
             //如果该表存在分区，需要建一张tmp表
             if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() != null) {
                 odsTmpDdl = generateOdstmpDdl(cjOdsTableLoadModeInfo);
+                odsFullDdl = odsFullDdl + ";\n" + odsTmpDdl;
                 odsDdl = odsDdl + ";\n" + odsTmpDdl;
             }
 
@@ -413,6 +426,7 @@ public class HiveCreateTableController {
             } else {
                 businessSystemId = cjDataSourceTabInfo.getBusinessSystemId();
             }
+            //生成待插入的全量表ddl列表(如果有tmp表，会将全量表和tmp表拼接为一条记录)
             CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo = new CjOdsCrtTabDdlInfo();
             cjOdsCrtTabDdlInfo.setBusinessSystemId(businessSystemId);
             cjOdsCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
@@ -425,6 +439,7 @@ public class HiveCreateTableController {
             cjOdsCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
 
             cjOdsCrtTabDdlInfos.add(cjOdsCrtTabDdlInfo);
+            //生成待插入的增量表ddl列表
             if(!odsIncrementDdl.equals("")){
                 CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfoInc = new CjOdsCrtTabDdlInfo();
                 cjOdsCrtTabDdlInfoInc.setBusinessSystemId(businessSystemId);
@@ -438,9 +453,22 @@ public class HiveCreateTableController {
                 cjOdsCrtTabDdlInfos.add(cjOdsCrtTabDdlInfoInc);
                 odsIncrementDdl = "";
             }
+
+            //生成hive建表列表
+            CjOdsCrtTabDdlInfo hiveCrtTabDdlInfo = new CjOdsCrtTabDdlInfo();
+            hiveCrtTabDdlInfo.setBusinessSystemId(businessSystemId);
+            hiveCrtTabDdlInfo.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
+            hiveCrtTabDdlInfo.setDataSourceSchema(cjDataSourceTabInfo.getDataSourceSchema());
+            hiveCrtTabDdlInfo.setDataSourceTable(cjDataSourceTabInfo.getDataSourceTable());
+            hiveCrtTabDdlInfo.setOdsDataSchema(Constant.ODS_HIVE_INCREMENT_SCHEMA);
+            hiveCrtTabDdlInfo.setOdsDataTable(odsTableName);
+            hiveCrtTabDdlInfo.setOdsDataTableDdlInfo(odsDdl);
+            hiveCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
+            hiveCrtTabDdlInfos.add(hiveCrtTabDdlInfo);
+
         }
         cjOdsCrtTabDdlInfoService.insertBatch(cjOdsCrtTabDdlInfos);
-        return cjOdsCrtTabDdlInfos;
+        return hiveCrtTabDdlInfos;
     }
 
     public List<CjDwCrtTabDdlInfoDto> saveDwBakTableInfos(List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos) {
@@ -809,30 +837,33 @@ public class HiveCreateTableController {
         GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        TableOptionPojo tableOptionPojo = null;
+        TableOptionPojo tableOptionPojo;
         List<TableOptionPojo> tableOptionPojos = new ArrayList<>();
 
         for (CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo : cjOdsCrtTabDdlInfos) {
-            try {
-                connection = instance.getConnection();
-                preparedStatement = connection.prepareStatement(cjOdsCrtTabDdlInfo.getOdsDataTableDdlInfo());
-                tableOptionPojo = new TableOptionPojo();
-                tableOptionPojo.setBusinessSystemNameShortName(cjOdsCrtTabDdlInfo.getBusinessSystemNameShortName());
-                tableOptionPojo.setDataSourceSchema(cjOdsCrtTabDdlInfo.getDataSourceSchema());
-                tableOptionPojo.setDataSourceTable(cjOdsCrtTabDdlInfo.getDataSourceTable());
-                tableOptionPojo.setOdsDataSchema(cjOdsCrtTabDdlInfo.getOdsDataSchema());
-                preparedStatement.execute();
-                tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
-            } catch (Exception e) {
-                tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    try {
-                        preparedStatement.close();
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+            tableOptionPojo = new TableOptionPojo();
+            tableOptionPojo.setBusinessSystemNameShortName(cjOdsCrtTabDdlInfo.getBusinessSystemNameShortName());
+            tableOptionPojo.setDataSourceSchema(cjOdsCrtTabDdlInfo.getDataSourceSchema());
+            tableOptionPojo.setDataSourceTable(cjOdsCrtTabDdlInfo.getDataSourceTable());
+            tableOptionPojo.setOdsDataSchema(cjOdsCrtTabDdlInfo.getOdsDataSchema());
+            tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
+            String[] odsDdl = cjOdsCrtTabDdlInfo.getOdsDataTableDdlInfo().split(";");
+            for(int i=0;i<odsDdl.length;i++){
+                try {
+                    connection = instance.getConnection();
+                    preparedStatement = connection.prepareStatement(odsDdl[i]);
+                    preparedStatement.execute();
+                } catch (Exception e) {
+                    tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            preparedStatement.close();
+                            connection.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

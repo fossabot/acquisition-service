@@ -1,13 +1,12 @@
 package com.acquisition.mapper;
 
+import java.util.List;
+
 import com.acquisition.entity.CjOdsTableLoadModeInfo;
 import com.acquisition.entity.CjOdsTableLoadModeInfoExample;
 import com.acquisition.entity.CjOdsTableLoadModeInfoKey;
 import com.acquisition.entity.excel.EtuInfo;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
 
 public interface CjOdsTableLoadModeInfoMapper {
     int countByExample(CjOdsTableLoadModeInfoExample example);
@@ -31,11 +30,12 @@ public interface CjOdsTableLoadModeInfoMapper {
     int updateByPrimaryKeySelective(CjOdsTableLoadModeInfo record);
 
     int updateByPrimaryKey(CjOdsTableLoadModeInfo record);
-
+    
     int insertBatch(List<CjOdsTableLoadModeInfo> list);
 
     int deleteBatch(List<CjOdsTableLoadModeInfo> list);
 
     CjOdsTableLoadModeInfo findAll(EtuInfo etuEnt);
+
     CjOdsTableLoadModeInfo selectByOdsDataTable(@Param("odsDataTable") String odsDataTable);
 }

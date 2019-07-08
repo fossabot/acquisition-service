@@ -4,6 +4,7 @@ import com.acquisition.entity.*;
 import com.acquisition.entity.dto.CjDwCrtTabDdlInfoDto;
 import com.acquisition.entity.dto.CjDwTableColInfoDto;
 import com.acquisition.entity.pojo.TableOptionPojo;
+import com.acquisition.entity.vo.DwModelDesign;
 import com.acquisition.service.*;
 import com.acquisition.util.Constant;
 import com.acquisition.util.Result;
@@ -22,6 +23,8 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.hibernate.boot.model.source.internal.hbm.CommaSeparatedStringHelper.split;
+
 /**
  * Created by zhangdongmao on 2019/7/2.
  */
@@ -33,6 +36,9 @@ public class DwModelDesignController {
     @Resource(name = "cjDwTableColInfoServiceImpl")
     CjDwTableColInfoService cjDwTableColInfoService;
 
+    @Resource(name = "cjOdsTableColInfoServiceImpl")
+    CjOdsTableColInfoService cjOdsTableColInfoService;
+
     @Resource(name = "cjDwCrtTabDdlInfoServiceImpl")
     CjDwCrtTabDdlInfoService cjDwCrtTabDdlInfoService;
 
@@ -41,6 +47,9 @@ public class DwModelDesignController {
 
     @Resource(name = "cjOdsTableLoadModeInfoServiceImpl")
     CjOdsTableLoadModeInfoService cjOdsTableLoadModeInfoService;
+
+    @Resource(name = "cjDwOdsMapInitInfoServiceImpl")
+    CjDwOdsMapInitInfoService cjDwOdsMapInitInfoService;
 
     @ApiOperation("按备用区表名查表")
     @GetMapping("/getTabByBakName")
@@ -67,6 +76,56 @@ public class DwModelDesignController {
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("cjDwTableColInfos", cjDwTableColInfos);
             resultMap.put("odsDataTable", odsDataTable);
+            resultMap.put("odsDataTable", odsDataTable);
+            result.success(JSON.toJSON(resultMap));
+        }
+        return result;
+    }
+    @ApiOperation("按在用区表名查表")
+    @GetMapping("/getTabByUsingName")
+    public Result getTabByUsingName(@RequestParam(value = "dwDataTable") String dwDataTable) {
+        Result result = new Result();
+        List<CjDwTableColInfo> cjDwTableColInfos = cjDwTableColInfoService.selectColInfoByTopicAndTab(Constant.DW_USEING_DOMAIN, dwDataTable);
+        if(cjDwTableColInfos.isEmpty()) {
+            result.setCode(500);
+            result.setMsg("在用区无此表");
+        } else {
+            String odsDataTable = cjDwCrtTabDdlInfoService.findOdsDataTableByDwDataTable(dwDataTable);
+            CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo = cjOdsTableLoadModeInfoService.findByOdsDataTable(odsDataTable);
+            String odsTablePartitionColName = cjOdsTableLoadModeInfo.getOdsTablePartitionColName();
+            String odsTablePrimaryCol = cjOdsTableLoadModeInfo.getOdsTablePrimaryColName();
+            String[] odsTablePrimaryCols = cjOdsTableLoadModeInfo.getOdsTablePrimaryColSeqStr().split(",");
+            List<String> dWPrimaryCols = cjDwTableColInfoService.findPrimaryCol(Constant.DW_USEING_DOMAIN, dwDataTable, odsTablePrimaryCols);
+            String dWPrimaryCol = String.join(",", dWPrimaryCols);
+            List<CjOdsTableColInfo> cjOdsTableColInfos = cjOdsTableColInfoService.findByColOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(), cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
+
+            List<DwModelDesign> dwModelDesigns = new ArrayList<>();
+            for(int i=0;i<(cjOdsTableColInfos.size()>cjDwTableColInfos.size() ? cjOdsTableColInfos.size() : cjDwTableColInfos.size());i++){
+                DwModelDesign dwModelDesign = new DwModelDesign();
+                if(i<cjOdsTableColInfos.size()){
+                    dwModelDesign.setSrcSchema(cjOdsTableColInfos.get(i).getOdsDataSchema());
+                    dwModelDesign.setSrcTableComment(cjOdsTableColInfos.get(i).getOdsTableComment());
+                    dwModelDesign.setSrcTableName(cjOdsTableColInfos.get(i).getOdsDataTable());
+                    dwModelDesign.setSrcColName(cjOdsTableColInfos.get(i).getOdsTableColName());
+                    dwModelDesign.setSrcColType(cjOdsTableColInfos.get(i).getOdsTableColType());
+                    dwModelDesign.setSrcColComment(cjOdsTableColInfos.get(i).getOdsTableColComment());
+                }
+                if(i<cjDwTableColInfos.size()){
+                    dwModelDesign.setTarTableName(cjDwTableColInfos.get(i).getDwDataTable());
+                    dwModelDesign.setTarTableComment(cjDwTableColInfos.get(i).getDwTableComment());
+                    dwModelDesign.setTarColName(cjDwTableColInfos.get(i).getDwTableColName());
+                    dwModelDesign.setTarColType(cjDwTableColInfos.get(i).getDwTableColType());
+                    dwModelDesign.setTarColComment(cjDwTableColInfos.get(i).getDwTableColComment());
+                }
+                dwModelDesigns.add(dwModelDesign);
+            }
+
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("dwModelDesigns", dwModelDesigns);
+            resultMap.put("odsDataTable", odsDataTable);
+            resultMap.put("dWPrimaryCol", dWPrimaryCol);
+            resultMap.put("odsTablePartitionColName", odsTablePartitionColName);
+            resultMap.put("odsTablePrimaryCol", odsTablePrimaryCol);
             result.success(JSON.toJSON(resultMap));
         }
         return result;
@@ -114,9 +173,11 @@ public class DwModelDesignController {
         Result result = new Result();
         result.setCode(200);
         result.setMsg("建表成功");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject jsonObject = JSONObject.parseObject(data);
         String dwUsingDataTable = jsonObject.getString("dwUsingDataTable");
         String dwBakTable = jsonObject.getString("dwBakTable");
+        String odsDataTable = jsonObject.getString("odsDataTable");
         List<CjDwTableColInfoDto> cjDwTableColInfoDtos = JSONObject.parseArray(jsonObject.getString("cjDwTableColInfoDtos"), CjDwTableColInfoDto.class);
         String dwBusinessTopicDomain = dwUsingDataTable.split("_")[1];
         String policy = cjDwCrtTabRuleInfoService.findPolicyByTopic(dwBusinessTopicDomain);
@@ -126,6 +187,7 @@ public class DwModelDesignController {
         }
         CjDwCrtTabDdlInfo dwBakTabDdlInfo = cjDwCrtTabDdlInfoService.findByDwDataTable(dwBakTable);
         CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
+
         if (policy.equals(Constant.DW_POLICY_F3)) {
             String dwDdl = generateDwDdl(dwUsingDataTable, cjDwTableColInfoDtos);
             String dwFullDdl = generateDwFullDdl(dwUsingDataTable, cjDwTableColInfoDtos);
@@ -137,7 +199,6 @@ public class DwModelDesignController {
             cjDwCrtTabDdlInfo.setOdsDataTable(dwBakTabDdlInfo.getOdsDataTable());
             cjDwCrtTabDdlInfo.setDwDataTable(dwUsingDataTable);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwDdl);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjDwCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
         } else {
             String dwDdl = generateDwDdl(dwUsingDataTable, cjDwTableColInfoDtos);
@@ -148,10 +209,17 @@ public class DwModelDesignController {
             cjDwCrtTabDdlInfo.setOdsDataTable(dwBakTabDdlInfo.getOdsDataTable());
             cjDwCrtTabDdlInfo.setDwDataTable(dwUsingDataTable);
             cjDwCrtTabDdlInfo.setDwDataTableDdlInfo(dwDdl);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjDwCrtTabDdlInfo.setLastModifyDt(df.format(new Date()));
         }
         cjDwCrtTabDdlInfoService.saveByOne(cjDwCrtTabDdlInfo);
+
+        CjDwOdsMapInitInfo cjDwOdsMapInitInfo = new CjDwOdsMapInitInfo();
+        cjDwOdsMapInitInfo.setOdsDataTable(odsDataTable);
+        cjDwOdsMapInitInfo.setDwSpareTable(dwBakTable);
+        cjDwOdsMapInitInfo.setDwDataTable(dwUsingDataTable);
+        cjDwOdsMapInitInfo.setDwBusinessTopicDomain(dwBusinessTopicDomain);
+        cjDwOdsMapInitInfo.setLastModifyDt(df.format(new Date()));
+        cjDwOdsMapInitInfoService.saveByOne(cjDwOdsMapInitInfo);
 
         //如果在用区表和备用区表表名一样，那么建在用区表之前要先删掉已存在的备用区表
         if(dwUsingDataTable.equals(dwBakTable)){
@@ -167,7 +235,6 @@ public class DwModelDesignController {
                 result.setMsg("删除重名表失败");
             }
         }
-
         return result;
     }
 

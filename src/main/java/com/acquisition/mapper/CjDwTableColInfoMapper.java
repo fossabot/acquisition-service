@@ -35,5 +35,6 @@ public interface CjDwTableColInfoMapper {
 
     int insertBatch(List<CjDwTableColInfo> list);
 
+    List<String> selectPrimaryCol(@Param("dwTableBelongDomain") String dwTableBelongDomain, @Param("dwDataTable") String dwDataTable, @Param("array") String[] array);
 
 }

@@ -357,4 +357,17 @@
     and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
     order by cast(dw_table_col_order as SIGNED) asc
   </select>
+
+  <select id="selectPrimaryCol" resultType="java.lang.String" >
+    select
+    dw_table_col_name
+    from cj_dw_table_col_info
+    where dw_table_belong_domain = #{dwTableBelongDomain,jdbcType=VARCHAR}
+    and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+    and dw_table_col_order in
+    <foreach collection="array" index="index" item="item" separator="," open="(" close =")">
+      #{item}
+    </foreach>
+    order by cast(dw_table_col_order as SIGNED) asc
+  </select>
 </mapper>

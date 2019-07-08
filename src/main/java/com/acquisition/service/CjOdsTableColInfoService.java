@@ -26,6 +26,8 @@ public interface CjOdsTableColInfoService {
      */
     List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 
+    List<CjOdsTableColInfo> findByColOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
     /**
      *
      * @param businessSystemNameShortName 系统缩写

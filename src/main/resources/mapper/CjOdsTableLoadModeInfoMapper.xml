@@ -1,42 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.acquisition.mapper.CjOdsTableLoadModeInfoMapper" >
-  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsTableLoadModeInfo" >
-    <id column="business_system_name_short_name" property="businessSystemNameShortName" jdbcType="VARCHAR" />
-    <id column="data_source_schema" property="dataSourceSchema" jdbcType="VARCHAR" />
-    <id column="data_source_table" property="dataSourceTable" jdbcType="VARCHAR" />
-    <id column="ods_data_table" property="odsDataTable" jdbcType="VARCHAR" />
-    <result column="business_system_ID" property="businessSystemId" jdbcType="VARCHAR" />
-    <result column="ods_data_schema" property="odsDataSchema" jdbcType="VARCHAR" />
-    <result column="ods_data_load_mode" property="odsDataLoadMode" jdbcType="VARCHAR" />
-    <result column="ods_table_partition_col_name" property="odsTablePartitionColName" jdbcType="VARCHAR" />
-    <result column="ods_table_partition_unit" property="odsTablePartitionUnit" jdbcType="VARCHAR" />
-    <result column="ods_table_primary_col_name" property="odsTablePrimaryColName" jdbcType="VARCHAR" />
-    <result column="ods_table_increment_col_name" property="odsTableIncrementColName" jdbcType="VARCHAR" />
-    <result column="ods_table_split_col_name" property="odsTableSplitColName" jdbcType="VARCHAR" />
-    <result column="ods_table_partition_col_name_source" property="odsTablePartitionColNameSource" jdbcType="VARCHAR" />
-    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
-    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.acquisition.mapper.CjOdsTableLoadModeInfoMapper">
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjOdsTableLoadModeInfo">
+    <id column="business_system_name_short_name" jdbcType="VARCHAR" property="businessSystemNameShortName" />
+    <id column="data_source_schema" jdbcType="VARCHAR" property="dataSourceSchema" />
+    <id column="data_source_table" jdbcType="VARCHAR" property="dataSourceTable" />
+    <id column="ods_data_table" jdbcType="VARCHAR" property="odsDataTable" />
+    <result column="business_system_ID" jdbcType="VARCHAR" property="businessSystemId" />
+    <result column="ods_data_schema" jdbcType="VARCHAR" property="odsDataSchema" />
+    <result column="ods_data_load_mode" jdbcType="VARCHAR" property="odsDataLoadMode" />
+    <result column="ods_table_partition_col_name" jdbcType="VARCHAR" property="odsTablePartitionColName" />
+    <result column="ods_table_partition_unit" jdbcType="VARCHAR" property="odsTablePartitionUnit" />
+    <result column="ods_table_primary_col_name" jdbcType="VARCHAR" property="odsTablePrimaryColName" />
+    <result column="ods_table_primary_col_seq_str" jdbcType="VARCHAR" property="odsTablePrimaryColSeqStr" />
+    <result column="ods_table_increment_col_name" jdbcType="VARCHAR" property="odsTableIncrementColName" />
+    <result column="ods_table_split_col_name" jdbcType="VARCHAR" property="odsTableSplitColName" />
+    <result column="ods_table_partition_col_name_source" jdbcType="VARCHAR" property="odsTablePartitionColNameSource" />
+    <result column="last_modify_dt" jdbcType="VARCHAR" property="lastModifyDt" />
+    <result column="last_modify_by" jdbcType="VARCHAR" property="lastModifyBy" />
   </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -47,25 +48,25 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -76,27 +77,28 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     business_system_name_short_name, data_source_schema, data_source_table, ods_data_table, 
     business_system_ID, ods_data_schema, ods_data_load_mode, ods_table_partition_col_name, 
-    ods_table_partition_unit, ods_table_primary_col_name, ods_table_increment_col_name, 
-    ods_table_split_col_name, ods_table_partition_col_name_source, last_modify_dt, last_modify_by
+    ods_table_partition_unit, ods_table_primary_col_name, ods_table_primary_col_seq_str, 
+    ods_table_increment_col_name, ods_table_split_col_name, ods_table_partition_col_name_source, 
+    last_modify_dt, last_modify_by
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample" >
+  <select id="selectByExample" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample" resultMap="BaseResultMap">
     select
-    <if test="distinct" >
+    <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
     from cj_ods_table_load_mode_info
-    <if test="_parameter != null" >
+    <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null" >
+    <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoKey" >
+  <select id="selectByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from cj_ods_table_load_mode_info
@@ -105,192 +107,201 @@
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoKey" >
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoKey">
     delete from cj_ods_table_load_mode_info
     where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
       and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample" >
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample">
     delete from cj_ods_table_load_mode_info
-    <if test="_parameter != null" >
+    <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo" >
+  <insert id="insert" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo">
     insert into cj_ods_table_load_mode_info (business_system_name_short_name, data_source_schema, 
       data_source_table, ods_data_table, business_system_ID, 
       ods_data_schema, ods_data_load_mode, ods_table_partition_col_name, 
       ods_table_partition_unit, ods_table_primary_col_name, 
-      ods_table_increment_col_name, ods_table_split_col_name, 
-      ods_table_partition_col_name_source, last_modify_dt, 
-      last_modify_by)
+      ods_table_primary_col_seq_str, ods_table_increment_col_name, 
+      ods_table_split_col_name, ods_table_partition_col_name_source, 
+      last_modify_dt, last_modify_by)
     values (#{businessSystemNameShortName,jdbcType=VARCHAR}, #{dataSourceSchema,jdbcType=VARCHAR}, 
       #{dataSourceTable,jdbcType=VARCHAR}, #{odsDataTable,jdbcType=VARCHAR}, #{businessSystemId,jdbcType=VARCHAR}, 
       #{odsDataSchema,jdbcType=VARCHAR}, #{odsDataLoadMode,jdbcType=VARCHAR}, #{odsTablePartitionColName,jdbcType=VARCHAR}, 
       #{odsTablePartitionUnit,jdbcType=VARCHAR}, #{odsTablePrimaryColName,jdbcType=VARCHAR}, 
-      #{odsTableIncrementColName,jdbcType=VARCHAR}, #{odsTableSplitColName,jdbcType=VARCHAR}, 
-      #{odsTablePartitionColNameSource,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, 
-      #{lastModifyBy,jdbcType=VARCHAR})
+      #{odsTablePrimaryColSeqStr,jdbcType=VARCHAR}, #{odsTableIncrementColName,jdbcType=VARCHAR}, 
+      #{odsTableSplitColName,jdbcType=VARCHAR}, #{odsTablePartitionColNameSource,jdbcType=VARCHAR}, 
+      #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo" >
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo">
     insert into cj_ods_table_load_mode_info
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="businessSystemNameShortName != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="businessSystemNameShortName != null">
         business_system_name_short_name,
       </if>
-      <if test="dataSourceSchema != null" >
+      <if test="dataSourceSchema != null">
         data_source_schema,
       </if>
-      <if test="dataSourceTable != null" >
+      <if test="dataSourceTable != null">
         data_source_table,
       </if>
-      <if test="odsDataTable != null" >
+      <if test="odsDataTable != null">
         ods_data_table,
       </if>
-      <if test="businessSystemId != null" >
+      <if test="businessSystemId != null">
         business_system_ID,
       </if>
-      <if test="odsDataSchema != null" >
+      <if test="odsDataSchema != null">
         ods_data_schema,
       </if>
-      <if test="odsDataLoadMode != null" >
+      <if test="odsDataLoadMode != null">
         ods_data_load_mode,
       </if>
-      <if test="odsTablePartitionColName != null" >
+      <if test="odsTablePartitionColName != null">
         ods_table_partition_col_name,
       </if>
-      <if test="odsTablePartitionUnit != null" >
+      <if test="odsTablePartitionUnit != null">
         ods_table_partition_unit,
       </if>
-      <if test="odsTablePrimaryColName != null" >
+      <if test="odsTablePrimaryColName != null">
         ods_table_primary_col_name,
       </if>
-      <if test="odsTableIncrementColName != null" >
+      <if test="odsTablePrimaryColSeqStr != null">
+        ods_table_primary_col_seq_str,
+      </if>
+      <if test="odsTableIncrementColName != null">
         ods_table_increment_col_name,
       </if>
-      <if test="odsTableSplitColName != null" >
+      <if test="odsTableSplitColName != null">
         ods_table_split_col_name,
       </if>
-      <if test="odsTablePartitionColNameSource != null" >
+      <if test="odsTablePartitionColNameSource != null">
         ods_table_partition_col_name_source,
       </if>
-      <if test="lastModifyDt != null" >
+      <if test="lastModifyDt != null">
         last_modify_dt,
       </if>
-      <if test="lastModifyBy != null" >
+      <if test="lastModifyBy != null">
         last_modify_by,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="businessSystemNameShortName != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="businessSystemNameShortName != null">
         #{businessSystemNameShortName,jdbcType=VARCHAR},
       </if>
-      <if test="dataSourceSchema != null" >
+      <if test="dataSourceSchema != null">
         #{dataSourceSchema,jdbcType=VARCHAR},
       </if>
-      <if test="dataSourceTable != null" >
+      <if test="dataSourceTable != null">
         #{dataSourceTable,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataTable != null" >
+      <if test="odsDataTable != null">
         #{odsDataTable,jdbcType=VARCHAR},
       </if>
-      <if test="businessSystemId != null" >
+      <if test="businessSystemId != null">
         #{businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataSchema != null" >
+      <if test="odsDataSchema != null">
         #{odsDataSchema,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataLoadMode != null" >
+      <if test="odsDataLoadMode != null">
         #{odsDataLoadMode,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionColName != null" >
+      <if test="odsTablePartitionColName != null">
         #{odsTablePartitionColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionUnit != null" >
+      <if test="odsTablePartitionUnit != null">
         #{odsTablePartitionUnit,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePrimaryColName != null" >
+      <if test="odsTablePrimaryColName != null">
         #{odsTablePrimaryColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTableIncrementColName != null" >
+      <if test="odsTablePrimaryColSeqStr != null">
+        #{odsTablePrimaryColSeqStr,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableIncrementColName != null">
         #{odsTableIncrementColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTableSplitColName != null" >
+      <if test="odsTableSplitColName != null">
         #{odsTableSplitColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionColNameSource != null" >
+      <if test="odsTablePartitionColNameSource != null">
         #{odsTablePartitionColNameSource,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifyDt != null" >
+      <if test="lastModifyDt != null">
         #{lastModifyDt,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifyBy != null" >
+      <if test="lastModifyBy != null">
         #{lastModifyBy,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample" resultType="java.lang.Integer" >
+  <select id="countByExample" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfoExample" resultType="java.lang.Integer">
     select count(*) from cj_ods_table_load_mode_info
-    <if test="_parameter != null" >
+    <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map" >
+  <update id="updateByExampleSelective" parameterType="map">
     update cj_ods_table_load_mode_info
-    <set >
-      <if test="record.businessSystemNameShortName != null" >
+    <set>
+      <if test="record.businessSystemNameShortName != null">
         business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataSourceSchema != null" >
+      <if test="record.dataSourceSchema != null">
         data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataSourceTable != null" >
+      <if test="record.dataSourceTable != null">
         data_source_table = #{record.dataSourceTable,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsDataTable != null" >
+      <if test="record.odsDataTable != null">
         ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
       </if>
-      <if test="record.businessSystemId != null" >
+      <if test="record.businessSystemId != null">
         business_system_ID = #{record.businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsDataSchema != null" >
+      <if test="record.odsDataSchema != null">
         ods_data_schema = #{record.odsDataSchema,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsDataLoadMode != null" >
+      <if test="record.odsDataLoadMode != null">
         ods_data_load_mode = #{record.odsDataLoadMode,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTablePartitionColName != null" >
+      <if test="record.odsTablePartitionColName != null">
         ods_table_partition_col_name = #{record.odsTablePartitionColName,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTablePartitionUnit != null" >
+      <if test="record.odsTablePartitionUnit != null">
         ods_table_partition_unit = #{record.odsTablePartitionUnit,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTablePrimaryColName != null" >
+      <if test="record.odsTablePrimaryColName != null">
         ods_table_primary_col_name = #{record.odsTablePrimaryColName,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTableIncrementColName != null" >
+      <if test="record.odsTablePrimaryColSeqStr != null">
+        ods_table_primary_col_seq_str = #{record.odsTablePrimaryColSeqStr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.odsTableIncrementColName != null">
         ods_table_increment_col_name = #{record.odsTableIncrementColName,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTableSplitColName != null" >
+      <if test="record.odsTableSplitColName != null">
         ods_table_split_col_name = #{record.odsTableSplitColName,jdbcType=VARCHAR},
       </if>
-      <if test="record.odsTablePartitionColNameSource != null" >
+      <if test="record.odsTablePartitionColNameSource != null">
         ods_table_partition_col_name_source = #{record.odsTablePartitionColNameSource,jdbcType=VARCHAR},
       </if>
-      <if test="record.lastModifyDt != null" >
+      <if test="record.lastModifyDt != null">
         last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
       </if>
-      <if test="record.lastModifyBy != null" >
+      <if test="record.lastModifyBy != null">
         last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
       </if>
     </set>
-    <if test="_parameter != null" >
+    <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
+  <update id="updateByExample" parameterType="map">
     update cj_ods_table_load_mode_info
     set business_system_name_short_name = #{record.businessSystemNameShortName,jdbcType=VARCHAR},
       data_source_schema = #{record.dataSourceSchema,jdbcType=VARCHAR},
@@ -302,49 +313,53 @@
       ods_table_partition_col_name = #{record.odsTablePartitionColName,jdbcType=VARCHAR},
       ods_table_partition_unit = #{record.odsTablePartitionUnit,jdbcType=VARCHAR},
       ods_table_primary_col_name = #{record.odsTablePrimaryColName,jdbcType=VARCHAR},
+      ods_table_primary_col_seq_str = #{record.odsTablePrimaryColSeqStr,jdbcType=VARCHAR},
       ods_table_increment_col_name = #{record.odsTableIncrementColName,jdbcType=VARCHAR},
       ods_table_split_col_name = #{record.odsTableSplitColName,jdbcType=VARCHAR},
       ods_table_partition_col_name_source = #{record.odsTablePartitionColNameSource,jdbcType=VARCHAR},
       last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
       last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
-    <if test="_parameter != null" >
+    <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo">
     update cj_ods_table_load_mode_info
-    <set >
-      <if test="businessSystemId != null" >
+    <set>
+      <if test="businessSystemId != null">
         business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataSchema != null" >
+      <if test="odsDataSchema != null">
         ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR},
       </if>
-      <if test="odsDataLoadMode != null" >
+      <if test="odsDataLoadMode != null">
         ods_data_load_mode = #{odsDataLoadMode,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionColName != null" >
+      <if test="odsTablePartitionColName != null">
         ods_table_partition_col_name = #{odsTablePartitionColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionUnit != null" >
+      <if test="odsTablePartitionUnit != null">
         ods_table_partition_unit = #{odsTablePartitionUnit,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePrimaryColName != null" >
+      <if test="odsTablePrimaryColName != null">
         ods_table_primary_col_name = #{odsTablePrimaryColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTableIncrementColName != null" >
+      <if test="odsTablePrimaryColSeqStr != null">
+        ods_table_primary_col_seq_str = #{odsTablePrimaryColSeqStr,jdbcType=VARCHAR},
+      </if>
+      <if test="odsTableIncrementColName != null">
         ods_table_increment_col_name = #{odsTableIncrementColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTableSplitColName != null" >
+      <if test="odsTableSplitColName != null">
         ods_table_split_col_name = #{odsTableSplitColName,jdbcType=VARCHAR},
       </if>
-      <if test="odsTablePartitionColNameSource != null" >
+      <if test="odsTablePartitionColNameSource != null">
         ods_table_partition_col_name_source = #{odsTablePartitionColNameSource,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifyDt != null" >
+      <if test="lastModifyDt != null">
         last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifyBy != null" >
+      <if test="lastModifyBy != null">
         last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
       </if>
     </set>
@@ -353,7 +368,7 @@
       and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
       and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjOdsTableLoadModeInfo">
     update cj_ods_table_load_mode_info
     set business_system_ID = #{businessSystemId,jdbcType=VARCHAR},
       ods_data_schema = #{odsDataSchema,jdbcType=VARCHAR},
@@ -361,6 +376,7 @@
       ods_table_partition_col_name = #{odsTablePartitionColName,jdbcType=VARCHAR},
       ods_table_partition_unit = #{odsTablePartitionUnit,jdbcType=VARCHAR},
       ods_table_primary_col_name = #{odsTablePrimaryColName,jdbcType=VARCHAR},
+      ods_table_primary_col_seq_str = #{odsTablePrimaryColSeqStr,jdbcType=VARCHAR},
       ods_table_increment_col_name = #{odsTableIncrementColName,jdbcType=VARCHAR},
       ods_table_split_col_name = #{odsTableSplitColName,jdbcType=VARCHAR},
       ods_table_partition_col_name_source = #{odsTablePartitionColNameSource,jdbcType=VARCHAR},
@@ -377,16 +393,16 @@
     data_source_table, ods_data_table, business_system_ID,
     ods_data_schema, ods_data_load_mode, ods_table_partition_col_name,
     ods_table_partition_unit, ods_table_primary_col_name,
-    ods_table_increment_col_name, ods_table_split_col_name,
-    ods_table_partition_col_name_source, last_modify_dt,
-    last_modify_by)
+    ods_table_primary_col_seq_str, ods_table_increment_col_name,
+    ods_table_split_col_name, ods_table_partition_col_name_source,
+    last_modify_dt, last_modify_by)
     values
     <foreach collection="list" index="index" item="item" separator=",">
       (#{item.businessSystemNameShortName,jdbcType=VARCHAR}, #{item.dataSourceSchema,jdbcType=VARCHAR},
       #{item.dataSourceTable,jdbcType=VARCHAR}, #{item.odsDataTable,jdbcType=VARCHAR}, #{item.businessSystemId,jdbcType=VARCHAR},
       #{item.odsDataSchema,jdbcType=VARCHAR}, #{item.odsDataLoadMode,jdbcType=VARCHAR}, #{item.odsTablePartitionColName,jdbcType=VARCHAR},
       #{item.odsTablePartitionUnit,jdbcType=VARCHAR}, #{item.odsTablePrimaryColName,jdbcType=VARCHAR},
-      #{item.odsTableIncrementColName,jdbcType=VARCHAR}, #{item.odsTableSplitColName,jdbcType=VARCHAR},
+      #{item.odsTablePrimaryColSeqStr,jdbcType=VARCHAR},#{item.odsTableIncrementColName,jdbcType=VARCHAR}, #{item.odsTableSplitColName,jdbcType=VARCHAR},
       #{item.odsTablePartitionColNameSource,jdbcType=VARCHAR}, #{item.lastModifyDt,jdbcType=VARCHAR},
       #{item.lastModifyBy,jdbcType=VARCHAR})
     </foreach>

@@ -13,6 +13,8 @@ public class CjOdsTableLoadModeInfo extends CjOdsTableLoadModeInfoKey {
 
     private String odsTablePrimaryColName;
 
+    private String odsTablePrimaryColSeqStr;
+
     private String odsTableIncrementColName;
 
     private String odsTableSplitColName;
@@ -69,6 +71,14 @@ public class CjOdsTableLoadModeInfo extends CjOdsTableLoadModeInfoKey {
 
     public void setOdsTablePrimaryColName(String odsTablePrimaryColName) {
         this.odsTablePrimaryColName = odsTablePrimaryColName == null ? null : odsTablePrimaryColName.trim();
+    }
+
+    public String getOdsTablePrimaryColSeqStr() {
+        return odsTablePrimaryColSeqStr;
+    }
+
+    public void setOdsTablePrimaryColSeqStr(String odsTablePrimaryColSeqStr) {
+        this.odsTablePrimaryColSeqStr = odsTablePrimaryColSeqStr == null ? null : odsTablePrimaryColSeqStr.trim();
     }
 
     public String getOdsTableIncrementColName() {

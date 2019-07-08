@@ -26,18 +26,15 @@ public class CjOdsDataScriptDefInfoServiceImpl implements ICjOdsDataScriptDefInf
     }
 
     @Override
-    public String selectScriptInfo(String businessSystemNameShortName,
-                                   String dataSourceSchema,
-                                   String dataSourceTable) {
+    public String selectScriptInfo(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable, String odsDataScriptType) {
         return  cjOdsDataScriptDefInfoMapper.selectScriptInfo(
-                businessSystemNameShortName,
-                dataSourceSchema,
-                dataSourceTable);
+                businessSystemNameShortName,dataSourceSchema,
+                dataSourceTable,odsDataScriptType);
     }
+
 
     @Override
     public int insertBatch(List<CjOdsDataScriptDefInfo> list) {
-//        cjOdsDataScriptDefInfoMapper.deleteBatch(list);
         return cjOdsDataScriptDefInfoMapper.insertBatch(list);
     }
 }

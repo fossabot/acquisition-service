@@ -34,7 +34,8 @@ public interface CjOdsDataScriptDefInfoMapper {
 
     String selectScriptInfo(@Param("businessSystemNameShortName") String businessSystemNameShortName,
                             @Param("dataSourceSchema") String dataSourceSchema,
-                            @Param("dataSourceTable") String dataSourceTable
+                            @Param("dataSourceTable") String dataSourceTable,
+                            @Param("odsDataScriptType") String odsDataScriptType
     );
 
     int insertBatch(List<CjOdsDataScriptDefInfo> list);

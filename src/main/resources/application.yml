@@ -1,8 +1,8 @@
 #默认使用配置
 spring:
   profiles:
-    #    active: prod
-    #    active: test
+#        active: prod
+#        active: test
     active: dev
 server:
   port: 6269
@@ -32,7 +32,7 @@ spring:
     mode: HTML5
   #kafka配置
   kafka:
-    bootstrap-servers: 10.30.140.21:9092
+    bootstrap-servers: 10.30.140.133:9092
     consumer:
       group-id: kafka2
       auto-offset-reset: earliest
@@ -45,7 +45,7 @@ spring:
       batch-size: 65536
       buffer-memory: 524288
   datasource:
-    url: jdbc:mysql://10.30.140.21:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.30.140.133:3306/datalake_meta?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

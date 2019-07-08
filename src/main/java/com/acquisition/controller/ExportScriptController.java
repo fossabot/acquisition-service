@@ -7,6 +7,7 @@ import com.acquisition.service.CjDwDataScriptDefInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
 import com.acquisition.service.ICjDwDataScriptDefInfoService;
 import com.acquisition.service.ICjOdsDataScriptDefInfoService;
+import com.acquisition.util.Constant;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -72,7 +73,7 @@ public class ExportScriptController {
     public void exportOdsScript(@RequestBody String data,
                                 HttpServletResponse response) {
         OutputStream output = null;
-        String ddl = new String();
+        String ddl;
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjOdsDataScriptDefInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjOdsDataScriptDefInfo.class);
@@ -93,7 +94,8 @@ public class ExportScriptController {
                 ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
                         table.getBusinessSystemNameShortName(),
                         table.getDataSourceSchema(),
-                        table.getDataSourceTable()
+                        table.getDataSourceTable(),
+                        Constant.ODS_INIT_EXTRACT
                 );
                 if (ddl == null) {
                     continue;

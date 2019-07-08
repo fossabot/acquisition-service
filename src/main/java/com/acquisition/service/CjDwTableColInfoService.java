@@ -19,4 +19,5 @@ public interface CjDwTableColInfoService {
 
     List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwTableBelongDomain, String dwDataTable);
 
+    List<String> findPrimaryCol(String dwTableBelongDomain, String dwDataTable, String[] array);
 }

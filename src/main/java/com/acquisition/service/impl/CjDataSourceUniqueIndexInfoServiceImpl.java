@@ -18,9 +18,7 @@ public class CjDataSourceUniqueIndexInfoServiceImpl implements CjDataSourceUniqu
 
     @Override
     public int insertBatch(List<CjDataSourceUniqueIndexInfo> list) {
-
-        cjDataSourceUniqueIndexInfoMapper.deleteBatch(list);
-        
+//        cjDataSourceUniqueIndexInfoMapper.deleteBatch(list);
         return cjDataSourceUniqueIndexInfoMapper.insertBatch(list);
     }
 
