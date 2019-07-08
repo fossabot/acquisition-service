@@ -47,7 +47,6 @@ public class CjDataSourceTabInfoServiceImpl implements ICjDataSourceTabInfoServi
 
     @Override
     public List<CjDataSourceTabInfo> findByExample(CjDataSourceTabInfoExample example) {
-//        return cjDataSourceTabInfoMapper.;
         return new ArrayList<>();
     }
 

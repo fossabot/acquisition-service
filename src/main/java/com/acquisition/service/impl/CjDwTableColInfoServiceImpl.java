@@ -1,7 +1,5 @@
 package com.acquisition.service.impl;
 
-import com.acquisition.entity.CjDwCrtTabDdlInfo;
-import com.acquisition.entity.CjDwCrtTabDdlInfoExample;
 import com.acquisition.entity.CjDwTableColInfo;
 import com.acquisition.entity.CjDwTableColInfoExample;
 import com.acquisition.mapper.CjDwTableColInfoMapper;
@@ -33,5 +31,10 @@ public class CjDwTableColInfoServiceImpl implements CjDwTableColInfoService{
     @Override
     public List<CjDwTableColInfo> selectColInfoByTopicAndTab(String dwTableBelongDomain, String dwDataTable) {
         return cjDwTableColInfoMapper.selectColInfoByTopicAndTab(dwTableBelongDomain,dwDataTable);
+    }
+
+    @Override
+    public List<String> findPrimaryCol(String dwTableBelongDomain, String dwDataTable, String[] array) {
+        return cjDwTableColInfoMapper.selectPrimaryCol(dwTableBelongDomain,dwDataTable,array);
     }
 }

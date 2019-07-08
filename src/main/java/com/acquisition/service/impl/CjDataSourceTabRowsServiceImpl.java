@@ -20,9 +20,6 @@ public class CjDataSourceTabRowsServiceImpl implements CjDataSourceTabRowsServic
 
     @Override
     public int insertBatch(List<CjDataSourceTabRows> list) {
-
-        cjDataSourceTabRowsMapper.deleteBatch(list);
-
         return cjDataSourceTabRowsMapper.insertBatch(list);
     }
 

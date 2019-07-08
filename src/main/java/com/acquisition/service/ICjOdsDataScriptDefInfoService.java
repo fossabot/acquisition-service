@@ -14,11 +14,7 @@ import java.util.List;
 public interface ICjOdsDataScriptDefInfoService {
     int saveSqoopScripts(CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo);
 
-    String selectScriptInfo(
-            @Param("businessSystemNameShortName") String businessSystemNameShortName ,
-            @Param("dataSourceSchema") String dataSourceSchema,
-            @Param("dataSourceTable") String dataSourceTable
-    );
+    String selectScriptInfo(String businessSystemNameShortName ,String dataSourceSchema,String dataSourceTable, String odsDataScriptType);
 
 
     int insertBatch(List<CjOdsDataScriptDefInfo> list);

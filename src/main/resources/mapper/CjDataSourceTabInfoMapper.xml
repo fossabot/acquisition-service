@@ -397,10 +397,10 @@
     <select id="selectBySystemAndSchema" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from datalake_meta.cj_v_get_prepare_crt_ods_tab_list
+        from cj_v_get_prepare_crt_ods_tab_list
     </select>
     <update id="updateDataFlagForCrtOdsDll">
-    update datalake_meta.cj_data_source_tab_info
+    update cj_data_source_tab_info
     set data_flag_for_crt_ods_dll=#{dataFlagForCrtOdsDll},
     data_flag_for_crt_ods_hive=#{dataFlagForCrtOdsHive}
     where business_system_name_short_name=#{businessSystemNameShortName}
@@ -410,18 +410,18 @@
     <select id="selectAllCjVGetPrepareCrtDwTabList" resultMap="BaseResultMap">
         select
         *
-        from datalake_meta.cj_v_get_prepare_crt_dw_tab_list
+        from cj_v_get_prepare_crt_dw_tab_list
     </select>
     <select id="selectAllCjVGetPrepareScriptForDwTabList" resultMap="BaseResultMap">
         select
         *
-        from datalake_meta.cj_v_get_prepare_script_for_dw_tab_list
+        from cj_v_get_prepare_script_for_dw_tab_list
     </select>
     <select id="selectODSTableInfo" resultMap="BaseResultMap">
         select * from cj_v_get_prepare_script_for_ods_tab_list
     </select>
     <update id="updateOdsScriptDefStatus">
-    update datalake_meta.cj_data_source_tab_info
+    update cj_data_source_tab_info
     set data_flag_for_crt_ods_script = #{dataFlagForCrtOdsScript}
     where business_system_name_short_name=#{businessSystemNameShortName}
     and data_source_schema = #{dataSourceSchema}
@@ -531,7 +531,7 @@
     SELECT DISTINCT(business_system_name_short_name)  from cj_v_get_prepare_summary_of_tables
   </select>
     <select id="selectSumOfTables" resultMap="ViewResultMap">
-    select t1.business_system_name_short_name,t1.data_source_schema,t1.table_count,IFNULL(t1.ods_count+t2.first_phase_table,'0') as 'ods_count',IFNULL(t1.dw_count+t2.first_phase_table,'0') as 'dw_count',t1.date
+    select t1.business_system_name_short_name,t1.data_source_schema,t1.table_count,IFNULL(t1.ods_count+IFNULL(t2.first_phase_table,'0'),'0') as 'ods_count',IFNULL(t1.dw_count+t2.first_phase_table,'0') as 'dw_count',t1.date
     from
     (
     select `cj_data_source_tab_info`.`business_system_name_short_name` AS `business_system_name_short_name`,

@@ -351,6 +351,7 @@ public class GenerateScriptController {
         Result result = new Result();
         // 存储生成sqoop脚本后的对象
         List<CjOdsDataScriptDefInfo> cjOdsDataScriptDefInfos = new ArrayList<>();
+        System.out.println(reqParmsEtu.get(0).getBusinessSystemNameShortName());
         // 判断传入参数是否为空
         if (!reqParmsEtu.isEmpty()){
             // 遍历每个EtuInfo
@@ -365,7 +366,7 @@ public class GenerateScriptController {
                     cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
                     cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
                     cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
-                    cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
+                    cjOdsDataScriptDefInfo.setOdsDataScriptType(Constant.ODS_INIT_EXTRACT);
                     cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(odsInitSqoopScript);
                     cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
                     cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
@@ -375,7 +376,7 @@ public class GenerateScriptController {
             iCjOdsDataScriptDefInfoService.insertBatch(cjOdsDataScriptDefInfos);
         }
         result.setCode(200);
-        result.setMsg("初始化脚本初始化成功！");
+        result.setMsg("生成脚本初始化成功！");
         return result;
     }
 
@@ -412,10 +413,19 @@ public class GenerateScriptController {
         }
         // 是否为分区
         if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() == null) {
-            odsInitSqoopScript.append(" no "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" init \"\" \"\" ");
+            if(cjOdsTableLoadModeInfo.getOdsTableSplitColName() != null){
+                odsInitSqoopScript.append(" no "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" init \"\" \"\" ");
+            } else {
+                odsInitSqoopScript.append(" no no init \"\" \"\" ");
+            }
+
         } else {
-            odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()
-            +" init_big \"\" \"\" ");
+            if(cjOdsTableLoadModeInfo.getOdsTableSplitColName() != null){
+                odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()
+                        +" init_big \"\" \"\" ");
+            } else {
+                odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" no init_big \"\" \"\" ");
+            }
         }
         // 字段按规则排序
         List<String> colNames = cjOdsTableColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),

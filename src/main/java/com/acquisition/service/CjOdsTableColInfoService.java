@@ -2,6 +2,7 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -23,5 +24,7 @@ public interface CjOdsTableColInfoService {
      * @return 排序好的字段
      */
     List<String> findFieldByOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+
+    List<CjOdsTableColInfo> findByColOrder(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
 
 }

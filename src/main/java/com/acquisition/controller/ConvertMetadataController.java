@@ -116,6 +116,8 @@ public class ConvertMetadataController {
                 model.setDataSourceSchema(etuInfo.getDataSourceSchema());
                 listSysEntity.add(model);
                 CjDataSourceConnDefine connDefine = iCjDataSourceConnDefineService.selectDataBaseType(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema());
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                 try {
                     GroupPoolFactory groupPoolFactory = GroupPoolFactory.getInstance((etuInfo.getBusinessSystemNameShortName() + (connDefine.getDataBaseType().equals("sqlserver") ? etuInfo.getDataSourceSchema() : "-")));
                     con = groupPoolFactory.getConnection();
@@ -162,7 +164,7 @@ public class ConvertMetadataController {
                                 ",cast(a.prec as varchar(200)) AS data_source_col_precision " +
                                 ",cast(a.xscale as varchar(200)) AS data_source_col_scale " +
                                 ",cast(g.value as varchar(800)) as data_source_col_comment " +
-                                "from sysobjects d inner join syscolumns a on a.id=d.id and d.xtype='U' " +
+                                "from sysobjects d left join syscolumns a on a.id=d.id and d.xtype='U' " +
                                 "left join systypes b on a.xusertype=b.xusertype " +
                                 "left join sys.extended_properties g on a.id=g.major_id and a.colid=g.minor_id " +
                                 "left join sys.extended_properties f on d.id=f.major_id and f.minor_id=0 where d.name='" + etuInfo.getDataSourceTable() + "'" +
@@ -180,7 +182,7 @@ public class ConvertMetadataController {
                                 ",CASE WHEN tab1.nullable='N' THEN '0' WHEN tab1.nullable='Y' THEN '1' ELSE tab1.nullable end AS isnullflag " +
                                 ",'' AS data_length,nvl(tab1.data_precision,tab1.data_length) AS data_precision,tab1.data_scale " +
                                 ",CASE WHEN tab3.primaryKEY IS NOT NULL THEN  'true' ELSE '' END  AS primaryKEY,tab1.OWNER  " +
-                                "from all_tab_columns tab1 JOIN all_tab_comments tab2  " +
+                                "from all_tab_columns tab1 left JOIN all_tab_comments tab2  " +
                                 "on (tab1.TABLE_name=tab2.TABLE_name AND tab1.owner=tab2.owner AND tab2.table_type<>'VIEW') " +
                                 "LEFT JOIN ( " +
                                 "SELECT DISTINCT  " +
@@ -214,6 +216,7 @@ public class ConvertMetadataController {
                         sourcetabcolinfo1.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
                         sourcetabcolinfo1.setDataSourceColScale(rs.getString("data_source_col_scale"));
                         sourcetabcolinfo1.setDataSourceColComment(rs.getString("data_source_col_comment"));
+                        sourcetabcolinfo1.setLastModifyDt(df.format(new Date()));
                         datasourcetabcolInfo.add(sourcetabcolinfo1);
                         while (rs.next()) {
                             CjDataSourceTabColInfo sourcetabcolinfo = new CjDataSourceTabColInfo();
@@ -233,6 +236,7 @@ public class ConvertMetadataController {
                             sourcetabcolinfo.setDataSourceColPrecision(rs.getString("data_source_col_precision"));
                             sourcetabcolinfo.setDataSourceColScale(rs.getString("data_source_col_scale"));
                             sourcetabcolinfo.setDataSourceColComment(rs.getString("data_source_col_comment"));
+                            sourcetabcolinfo.setLastModifyDt(df.format(new Date()));
                             datasourcetabcolInfo.add(sourcetabcolinfo);
                         }
                         iCjDataSourceTabColInfoService.deleteBySystemName(etuInfo.getBusinessSystemNameShortName(), etuInfo.getDataSourceSchema(), etuInfo.getDataSourceTable());
@@ -243,6 +247,7 @@ public class ConvertMetadataController {
                         cjDataSourceTabInfo.setDataSourceTable(etuInfo.getDataSourceTable());
                         cjDataSourceTabInfo.setDataSourceTableComment(dataSourceColComment);
                         cjDataSourceTabInfo.setDataFlagForGetCols("1");
+                        cjDataSourceTabInfo.setLastModifyDt(df.format(new Date()));
                         cjDataSourceTabInfos.add(cjDataSourceTabInfo);
                         etuInfo.setMetaStatus(Constant.META_EXISTS);
                     } else {
@@ -320,13 +325,9 @@ public class ConvertMetadataController {
                     }
 
                     st = con.createStatement();
-
                     String executeSql = reqSqlIndex(connDefine.getDataBaseType(), etuEnt);
-
                     rs = st.executeQuery(executeSql);
-
                     while (rs.next()) {
-
                         CjDataSourceUniqueIndexInfo model = new CjDataSourceUniqueIndexInfo();
                         model.setBusinessSystemId(connDefine.getBusinessSystemId());
                         model.setBusinessSystemNameShortName(etuEnt.getBusinessSystemNameShortName());
@@ -339,16 +340,13 @@ public class ConvertMetadataController {
                         /*model.setLastModifyBy(rs.getString("data_source_schema"));*/
                         listModel.add(model);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     if (con != null) {
                         try {
                             rs.close();
-
                             st.close();
-
                             con.close();
                         } catch (SQLException e) {
                             e.printStackTrace();
@@ -405,7 +403,7 @@ public class ConvertMetadataController {
                     "ON (tab1.owner=tab2.INDEX_owner AND tab1.table_name=tab2.table_name " +
                     "AND tab1.uniqueness='UNIQUE' AND tab1.index_name=tab2.index_name) " +
                     "WHERE tab2.INDEX_owner='" + etuEnt.getDataSourceSchema() + "' AND tab2.table_name='" + etuEnt.getDataSourceTable() + "'" +
-                    "ORDER BY tab1.owner,tab1.table_name,tab1.index_name,tab2.column_position;";
+                    "ORDER BY tab1.owner,tab1.table_name,tab1.index_name,tab2.column_position";
         }
         return sql;
     }
@@ -525,10 +523,11 @@ public class ConvertMetadataController {
                     "tab1.owner as data_source_schema, " +
                     "tab1.table_name as data_source_table, " +
                     "tab1.num_rows AS data_source_tab_rows, " +
-                    "round((tab1.num_rows * tab1.avg_row_len)/1024/1024,2) " +
+                    "round((tab1.num_rows * tab1.avg_row_len)/1024/1024,2) as data_source_tab_sizes " +
                     "FROM all_tables tab1 WHERE tab1.owner=UPPER('"+etuEnt.getDataSourceSchema()+"')  " +
                     "AND tab1.table_name=UPPER('"+etuEnt.getDataSourceTable()+"')";
         }
+        System.out.println(sql);
         return sql;
     }
 

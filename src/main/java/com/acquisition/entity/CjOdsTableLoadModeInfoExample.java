@@ -804,6 +804,76 @@ public class CjOdsTableLoadModeInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andOdsTablePrimaryColSeqStrIsNull() {
+            addCriterion("ods_table_primary_col_seq_str is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrIsNotNull() {
+            addCriterion("ods_table_primary_col_seq_str is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrEqualTo(String value) {
+            addCriterion("ods_table_primary_col_seq_str =", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrNotEqualTo(String value) {
+            addCriterion("ods_table_primary_col_seq_str <>", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrGreaterThan(String value) {
+            addCriterion("ods_table_primary_col_seq_str >", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrGreaterThanOrEqualTo(String value) {
+            addCriterion("ods_table_primary_col_seq_str >=", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrLessThan(String value) {
+            addCriterion("ods_table_primary_col_seq_str <", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrLessThanOrEqualTo(String value) {
+            addCriterion("ods_table_primary_col_seq_str <=", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrLike(String value) {
+            addCriterion("ods_table_primary_col_seq_str like", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrNotLike(String value) {
+            addCriterion("ods_table_primary_col_seq_str not like", value, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrIn(List<String> values) {
+            addCriterion("ods_table_primary_col_seq_str in", values, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrNotIn(List<String> values) {
+            addCriterion("ods_table_primary_col_seq_str not in", values, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrBetween(String value1, String value2) {
+            addCriterion("ods_table_primary_col_seq_str between", value1, value2, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
+        public Criteria andOdsTablePrimaryColSeqStrNotBetween(String value1, String value2) {
+            addCriterion("ods_table_primary_col_seq_str not between", value1, value2, "odsTablePrimaryColSeqStr");
+            return (Criteria) this;
+        }
+
         public Criteria andOdsTableIncrementColNameIsNull() {
             addCriterion("ods_table_increment_col_name is null");
             return (Criteria) this;
