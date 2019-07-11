@@ -193,7 +193,6 @@ public class HiveCreateTableController {
         JSONObject jsonObject = JSONObject.parseObject(data);
         data = jsonObject.getString("params");
         List<CjDataSourceTabInfoDto> cjDataSourceTabInfoDtos = JSONObject.parseArray(data, CjDataSourceTabInfoDto.class);
-        System.out.println(cjDataSourceTabInfoDtos.get(0).getIndex());
         List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = saveDwBakTableInfos(cjDataSourceTabInfoDtos);
         List<TableOptionPojo> tableOptionPojos = hiveCreateDwBakTableBatch(cjDwCrtTabDdlInfoDtos);
 
@@ -262,6 +261,18 @@ public class HiveCreateTableController {
             cjOdsTableLoadModeInfo.setDataSourceTable(dataSourceTable);
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             cjOdsTableLoadModeInfo.setLastModifyDt(df.format(new Date()));
+
+            //获取切割字段，可能不带索引
+            List<String> splictColWithIndex = cjDataSourceTabColInfoService.findSplictColWithIndex(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+            if (splictColWithIndex != null && splictColWithIndex.size() > 0) {
+                cjOdsTableLoadModeInfo.setOdsTableSplitColName(splictColWithIndex.get(0));
+            } else {
+                List<String> splictColNoIndex = cjDataSourceTabColInfoService.findSplictColNoIndex(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                if (splictColNoIndex != null && splictColNoIndex.size() > 0) {
+                    cjOdsTableLoadModeInfo.setOdsTableSplitColName(splictColNoIndex.get(0));
+                }
+            }
+
             Integer tableSize = cjDataSourceTabRowsService.findTabSizeBytable(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
             if (tableSize >= Constant.ODS_INCREMENT_TABLE_SIZE) {
                 List<CjDataSourceTabColInfo> incrementCols = cjDataSourceTabColInfoService.findIncrementCol(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
@@ -311,16 +322,7 @@ public class HiveCreateTableController {
                             cjOdsTableLoadModeInfo.setOdsTablePartitionUnit(Constant.ODS_PARTITION_UNIT);
                             cjOdsTableLoadModeInfo.setOdsTablePartitionColNameSource(partitionKeys.get(0).getDataSourceColName());
                         }
-                        //获取切割字段，可能不带索引
-                        List<String> splictColWithIndex = cjDataSourceTabColInfoService.findSplictColWithIndex(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-                        if (splictColWithIndex != null && splictColWithIndex.size() > 0) {
-                            cjOdsTableLoadModeInfo.setOdsTableSplitColName(splictColWithIndex.get(0));
-                        } else {
-                            List<String> splictColNoIndex = cjDataSourceTabColInfoService.findSplictColNoIndex(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-                            if (splictColNoIndex != null && splictColNoIndex.size() > 0) {
-                                cjOdsTableLoadModeInfo.setOdsTableSplitColName(splictColNoIndex.get(0));
-                            }
-                        }
+
                     } else {
                         //无索引，抽取方式为全量
                         cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_FULL_EXTRACT);
@@ -601,11 +603,11 @@ public class HiveCreateTableController {
                 cjDwTableColInfos.add(cjDwTableColInfo);
             }
 
-            dwddl.append("    `src_sys_row_id`    string    comment \"源系统pk\",\n");
-            dwddl.append("    `src_sys_cd`    string    comment \"源系统代码\",\n");
-            dwddl.append("    `src_table_name`    string    comment \"源表名\",\n");
-            dwddl.append("    `etl_dt`    string    comment \"etl处理时间\",\n");
-            dwddl.append("    `data_dt`    string    comment \"数据日期\"\n");
+            dwddl.append("    `"+Constant.DW_DEFAULT_COL_1+"`    string    comment \"源系统pk\",\n");
+            dwddl.append("    `"+Constant.DW_DEFAULT_COL_2+"`    string    comment \"源系统代码\",\n");
+            dwddl.append("    `"+Constant.DW_DEFAULT_COL_3+"`    string    comment \"源表名\",\n");
+            dwddl.append("    `"+Constant.DW_DEFAULT_COL_4+"`    string    comment \"etl处理时间\",\n");
+            dwddl.append("    `"+Constant.DW_DEFAULT_COL_5+"`    string    comment \"数据日期\"\n");
 
             CjDwTableColInfo srcSysRowIdInfo = new CjDwTableColInfo();
             srcSysRowIdInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);

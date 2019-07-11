@@ -113,12 +113,12 @@
       #{dwBusinessTopicDomain,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
       )
     ON DUPLICATE KEY UPDATE
-      ods_data_table = #{record.odsDataTable,jdbcType=VARCHAR},
-      dw_spare_table = #{record.dwSpareTable,jdbcType=VARCHAR},
-      dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
-      dw_business_topic_domain = #{record.dwBusinessTopicDomain,jdbcType=VARCHAR},
-      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
-      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+      ods_data_table = #{odsDataTable,jdbcType=VARCHAR},
+      dw_spare_table = #{dwSpareTable,jdbcType=VARCHAR},
+      dw_data_table = #{dwDataTable,jdbcType=VARCHAR},
+      dw_business_topic_domain = #{dwBusinessTopicDomain,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
   </insert>
   <insert id="insertSelective" parameterType="com.acquisition.entity.CjDwOdsMapInitInfo" >
     insert into cj_dw_ods_map_init_info

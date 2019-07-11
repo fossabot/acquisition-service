@@ -3,11 +3,12 @@ package com.acquisition.controller;
 import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjDwDataScriptDefInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
+import com.acquisition.entity.CjOdsDataScriptDefInfoKey;
 import com.acquisition.service.CjDwDataScriptDefInfoService;
 import com.acquisition.service.ICjDataSourceTabInfoService;
-import com.acquisition.service.ICjDwDataScriptDefInfoService;
 import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import com.acquisition.util.Constant;
+import com.acquisition.util.CreateTableUtil;
 import com.acquisition.util.Result;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -68,9 +69,9 @@ public class ExportScriptController {
     /**
      * 保存ODS脚本到本地文件夹
      */
-    @ApiOperation("导出ODS脚本")
-    @PostMapping(value = "/exportOdsScript")
-    public void exportOdsScript(@RequestBody String data,
+    @ApiOperation("导出ODS初始化脚本")
+    @PostMapping(value = "/exportOdsInitScript")
+    public void exportOdsInitScript(@RequestBody String data,
                                 HttpServletResponse response) {
         OutputStream output = null;
         String ddl;
@@ -91,12 +92,17 @@ public class ExportScriptController {
             output = new FileOutputStream(file);
             //遍历获取表的元数据并获取脚本信息,写到文件中
             for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos) {
-                ddl = iCjOdsDataScriptDefInfoService.selectScriptInfo(
-                        table.getBusinessSystemNameShortName(),
-                        table.getDataSourceSchema(),
-                        table.getDataSourceTable(),
-                        Constant.ODS_INIT_EXTRACT
-                );
+                String businessSystemNameShortName = table.getBusinessSystemNameShortName();
+                String dataSourceSchema = table.getDataSourceSchema();
+                String dataSourceTable = table.getDataSourceTable();
+                String odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                CjOdsDataScriptDefInfoKey key = new CjOdsDataScriptDefInfo();
+                key.setBusinessSystemNameShortName(table.getBusinessSystemNameShortName());
+                key.setDataSourceSchema(table.getDataSourceSchema());
+                key.setDataSourceTable(table.getDataSourceTable());
+                key.setOdsDataScriptType(Constant.ODS_INIT_EXTRACT);
+                key.setOdsDataTable(odsTableName);
+                ddl = iCjOdsDataScriptDefInfoService.findByPrimaryKey(key).getOdsDataSqoopDefine();
                 if (ddl == null) {
                     continue;
                 }
@@ -120,6 +126,66 @@ public class ExportScriptController {
         }
     }
 
+    /**
+     * 保存ODS脚本到本地文件夹
+     */
+    @ApiOperation("导出ODS调度脚本")
+    @PostMapping(value = "/exportOdsSchedulScript")
+    public void exportOdsSchedulScript(@RequestBody String data,
+                                HttpServletResponse response) {
+        OutputStream output = null;
+        String ddl;
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        String odsTableList = jsonObject.getString("params");
+        List<CjOdsDataScriptDefInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjOdsDataScriptDefInfo.class);
+
+        File path = new File("/data/acquisition/data/scripts");
+//        File path= new File("data\\");
+        if (!path.exists()) {
+            path.mkdir();
+        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String filename = "/ODS调度" + df.format(new Date()) + ".txt";
+        String file = path.getPath() + filename;
+
+        try {
+            output = new FileOutputStream(file);
+            //遍历获取表的元数据并获取脚本信息,写到文件中
+            for (CjOdsDataScriptDefInfo table : cjDataSourceTabInfos) {
+                String businessSystemNameShortName = table.getBusinessSystemNameShortName();
+                String dataSourceSchema = table.getDataSourceSchema();
+                String dataSourceTable = table.getDataSourceTable();
+                String odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
+                CjOdsDataScriptDefInfoKey key = new CjOdsDataScriptDefInfo();
+                key.setBusinessSystemNameShortName(table.getBusinessSystemNameShortName());
+                key.setDataSourceSchema(table.getDataSourceSchema());
+                key.setDataSourceTable(table.getDataSourceTable());
+                key.setOdsDataScriptType(Constant.ODS_INIT_EXTRACT);
+                key.setOdsDataTable(odsTableName);
+                ddl = iCjOdsDataScriptDefInfoService.selectSchedulScript(table.getBusinessSystemNameShortName(),
+                        table.getDataSourceSchema(),table.getDataSourceTable(),odsTableName,Constant.ODS_INIT_EXTRACT);
+                if (ddl == null) {
+                    continue;
+                }
+                output.write(ddl.concat("\n").getBytes());
+            }
+            //实现前端下载文件功能
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            response.setContentType("application/octet-stream");
+            response.setHeader("Access-Control-Expose-Headers", "FileName");
+            response.setHeader("FileName", URLEncoder.encode(filename, "UTF-8"));
+            FileInputStream fileInputStream = new FileInputStream(file);
+            servletOutputStream.write(IOUtils.toByteArray(fileInputStream));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * 保存DW脚本到本地文件夹
      */

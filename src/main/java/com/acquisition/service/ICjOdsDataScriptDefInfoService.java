@@ -1,9 +1,7 @@
 package com.acquisition.service;
 
-import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Service;
+import com.acquisition.entity.CjOdsDataScriptDefInfoKey;
 
 import java.util.List;
 
@@ -14,10 +12,12 @@ import java.util.List;
 public interface ICjOdsDataScriptDefInfoService {
     int saveSqoopScripts(CjOdsDataScriptDefInfo cjOdsDataScriptDefInfo);
 
-    String selectScriptInfo(String businessSystemNameShortName ,String dataSourceSchema,String dataSourceTable, String odsDataScriptType);
+    String selectSchedulScript(String businessSystemNameShortName ,String dataSourceSchema,String dataSourceTable,String odsDataTable, String odsDataScriptType);
 
 
     int insertBatch(List<CjOdsDataScriptDefInfo> list);
 
+    int deleteByPrimaryKey(CjOdsDataScriptDefInfoKey key);
 
+    CjOdsDataScriptDefInfo findByPrimaryKey(CjOdsDataScriptDefInfoKey key);
 }

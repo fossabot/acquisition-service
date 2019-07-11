@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDwTableMapRelInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDwTableMapRelInfo" >
+    <id column="dw_data_table" property="dwDataTable" jdbcType="VARCHAR" />
+    <id column="data_sql_group_unit" property="dataSqlGroupUnit" jdbcType="VARCHAR" />
+    <id column="source_table_name" property="sourceTableName" jdbcType="VARCHAR" />
+    <id column="table_join_type" property="tableJoinType" jdbcType="VARCHAR" />
+    <id column="join_table_name" property="joinTableName" jdbcType="VARCHAR" />
+    <result column="source_table_schema" property="sourceTableSchema" jdbcType="VARCHAR" />
+    <result column="source_table_alias_name" property="sourceTableAliasName" jdbcType="VARCHAR" />
+    <result column="join_table_schema" property="joinTableSchema" jdbcType="VARCHAR" />
+    <result column="join_table_alias_name" property="joinTableAliasName" jdbcType="VARCHAR" />
+    <result column="join_table_condition" property="joinTableCondition" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    dw_data_table, data_sql_group_unit, source_table_name, table_join_type, join_table_name, 
+    source_table_schema, source_table_alias_name, join_table_schema, join_table_alias_name, 
+    join_table_condition, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableMapRelInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_dw_table_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableMapRelInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_dw_table_map_rel_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and table_join_type = #{tableJoinType,jdbcType=VARCHAR}
+      and join_table_name = #{joinTableName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableMapRelInfoKey" >
+    delete from cj_dw_table_map_rel_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and table_join_type = #{tableJoinType,jdbcType=VARCHAR}
+      and join_table_name = #{joinTableName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDwTableMapRelInfoExample" >
+    delete from cj_dw_table_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDwTableMapRelInfo" >
+    insert into cj_dw_table_map_rel_info (dw_data_table, data_sql_group_unit, source_table_name, 
+      table_join_type, join_table_name, source_table_schema, 
+      source_table_alias_name, join_table_schema, 
+      join_table_alias_name, join_table_condition, 
+      last_modify_dt, last_modify_by)
+    values (#{dwDataTable,jdbcType=VARCHAR}, #{dataSqlGroupUnit,jdbcType=VARCHAR}, #{sourceTableName,jdbcType=VARCHAR}, 
+      #{tableJoinType,jdbcType=VARCHAR}, #{joinTableName,jdbcType=VARCHAR}, #{sourceTableSchema,jdbcType=VARCHAR}, 
+      #{sourceTableAliasName,jdbcType=VARCHAR}, #{joinTableSchema,jdbcType=VARCHAR}, 
+      #{joinTableAliasName,jdbcType=VARCHAR}, #{joinTableCondition,jdbcType=VARCHAR}, 
+      #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDwTableMapRelInfo" >
+    insert into cj_dw_table_map_rel_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        dw_data_table,
+      </if>
+      <if test="dataSqlGroupUnit != null" >
+        data_sql_group_unit,
+      </if>
+      <if test="sourceTableName != null" >
+        source_table_name,
+      </if>
+      <if test="tableJoinType != null" >
+        table_join_type,
+      </if>
+      <if test="joinTableName != null" >
+        join_table_name,
+      </if>
+      <if test="sourceTableSchema != null" >
+        source_table_schema,
+      </if>
+      <if test="sourceTableAliasName != null" >
+        source_table_alias_name,
+      </if>
+      <if test="joinTableSchema != null" >
+        join_table_schema,
+      </if>
+      <if test="joinTableAliasName != null" >
+        join_table_alias_name,
+      </if>
+      <if test="joinTableCondition != null" >
+        join_table_condition,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        #{dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSqlGroupUnit != null" >
+        #{dataSqlGroupUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableName != null" >
+        #{sourceTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableJoinType != null" >
+        #{tableJoinType,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableName != null" >
+        #{joinTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableSchema != null" >
+        #{sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableAliasName != null" >
+        #{sourceTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableSchema != null" >
+        #{joinTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableAliasName != null" >
+        #{joinTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableCondition != null" >
+        #{joinTableCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDwTableMapRelInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_dw_table_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_dw_table_map_rel_info
+    <set >
+      <if test="record.dwDataTable != null" >
+        dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSqlGroupUnit != null" >
+        data_sql_group_unit = #{record.dataSqlGroupUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableName != null" >
+        source_table_name = #{record.sourceTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableJoinType != null" >
+        table_join_type = #{record.tableJoinType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.joinTableName != null" >
+        join_table_name = #{record.joinTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableSchema != null" >
+        source_table_schema = #{record.sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableAliasName != null" >
+        source_table_alias_name = #{record.sourceTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.joinTableSchema != null" >
+        join_table_schema = #{record.joinTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.joinTableAliasName != null" >
+        join_table_alias_name = #{record.joinTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.joinTableCondition != null" >
+        join_table_condition = #{record.joinTableCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_dw_table_map_rel_info
+    set dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      data_sql_group_unit = #{record.dataSqlGroupUnit,jdbcType=VARCHAR},
+      source_table_name = #{record.sourceTableName,jdbcType=VARCHAR},
+      table_join_type = #{record.tableJoinType,jdbcType=VARCHAR},
+      join_table_name = #{record.joinTableName,jdbcType=VARCHAR},
+      source_table_schema = #{record.sourceTableSchema,jdbcType=VARCHAR},
+      source_table_alias_name = #{record.sourceTableAliasName,jdbcType=VARCHAR},
+      join_table_schema = #{record.joinTableSchema,jdbcType=VARCHAR},
+      join_table_alias_name = #{record.joinTableAliasName,jdbcType=VARCHAR},
+      join_table_condition = #{record.joinTableCondition,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDwTableMapRelInfo" >
+    update cj_dw_table_map_rel_info
+    <set >
+      <if test="sourceTableSchema != null" >
+        source_table_schema = #{sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableAliasName != null" >
+        source_table_alias_name = #{sourceTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableSchema != null" >
+        join_table_schema = #{joinTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableAliasName != null" >
+        join_table_alias_name = #{joinTableAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="joinTableCondition != null" >
+        join_table_condition = #{joinTableCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and table_join_type = #{tableJoinType,jdbcType=VARCHAR}
+      and join_table_name = #{joinTableName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableMapRelInfo" >
+    update cj_dw_table_map_rel_info
+    set source_table_schema = #{sourceTableSchema,jdbcType=VARCHAR},
+      source_table_alias_name = #{sourceTableAliasName,jdbcType=VARCHAR},
+      join_table_schema = #{joinTableSchema,jdbcType=VARCHAR},
+      join_table_alias_name = #{joinTableAliasName,jdbcType=VARCHAR},
+      join_table_condition = #{joinTableCondition,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and table_join_type = #{tableJoinType,jdbcType=VARCHAR}
+      and join_table_name = #{joinTableName,jdbcType=VARCHAR}
+  </update>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into cj_dw_table_map_rel_info (dw_data_table, data_sql_group_unit, source_table_name,
+    table_join_type, join_table_name, source_table_schema,
+    source_table_alias_name, join_table_schema,
+    join_table_alias_name, join_table_condition,
+    last_modify_dt, last_modify_by)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.dwDataTable,jdbcType=VARCHAR}, #{item.dataSqlGroupUnit,jdbcType=VARCHAR}, #{item.sourceTableName,jdbcType=VARCHAR},
+      #{item.tableJoinType,jdbcType=VARCHAR}, #{item.joinTableName,jdbcType=VARCHAR}, #{item.sourceTableSchema,jdbcType=VARCHAR},
+      #{item.sourceTableAliasName,jdbcType=VARCHAR}, #{item.joinTableSchema,jdbcType=VARCHAR},
+      #{item.joinTableAliasName,jdbcType=VARCHAR}, #{item.joinTableCondition,jdbcType=VARCHAR},
+      #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR})
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    dw_data_table = VALUES(dw_data_table),
+    data_sql_group_unit = VALUES(data_sql_group_unit),
+    source_table_name = VALUES(source_table_name),
+    table_join_type = VALUES(table_join_type),
+    join_table_name = VALUES(join_table_name),
+    source_table_schema = VALUES(source_table_schema),
+    source_table_alias_name = VALUES(source_table_alias_name),
+    join_table_schema = VALUES(join_table_schema),
+    join_table_alias_name = VALUES(join_table_alias_name),
+    join_table_condition = VALUES(join_table_condition),
+    last_modify_dt = VALUES(last_modify_dt),
+    last_modify_by = VALUES(last_modify_by)
+  </insert>
+
+  <select id="selectBydwDataTableOrderByGroupUnit" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableMapRelInfoKey" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_dw_table_map_rel_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+    order by cast(data_sql_group_unit as SIGNED)
+  </select>
+</mapper>

@@ -39,5 +39,5 @@ public interface CjOdsTableColInfoMapper {
 
     List<CjOdsTableColInfo> selectByColOrder(@Param("businessSystemNameShortName") String businessSystemNameShortName, @Param("dataSourceSchema") String dataSourceSchema, @Param("dataSourceTable") String dataSourceTable);
 
-
+    List<CjOdsTableColInfo> selectFieldByodsDataTable(String odsDataTable);
 }

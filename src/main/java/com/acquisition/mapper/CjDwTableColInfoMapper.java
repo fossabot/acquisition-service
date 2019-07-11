@@ -37,4 +37,6 @@ public interface CjDwTableColInfoMapper {
 
     List<String> selectPrimaryCol(@Param("dwTableBelongDomain") String dwTableBelongDomain, @Param("dwDataTable") String dwDataTable, @Param("array") String[] array);
 
+    List<String> selectPartitionCol(@Param("dwTableBelongDomain") String dwTableBelongDomain, @Param("dwDataTable") String dwDataTable);
+
 }

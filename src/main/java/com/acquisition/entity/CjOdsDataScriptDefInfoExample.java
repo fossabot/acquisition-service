@@ -384,76 +384,6 @@ public class CjOdsDataScriptDefInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andBusinessSystemIdIsNull() {
-            addCriterion("business_system_ID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdIsNotNull() {
-            addCriterion("business_system_ID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdEqualTo(String value) {
-            addCriterion("business_system_ID =", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdNotEqualTo(String value) {
-            addCriterion("business_system_ID <>", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdGreaterThan(String value) {
-            addCriterion("business_system_ID >", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdGreaterThanOrEqualTo(String value) {
-            addCriterion("business_system_ID >=", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdLessThan(String value) {
-            addCriterion("business_system_ID <", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdLessThanOrEqualTo(String value) {
-            addCriterion("business_system_ID <=", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdLike(String value) {
-            addCriterion("business_system_ID like", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdNotLike(String value) {
-            addCriterion("business_system_ID not like", value, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdIn(List<String> values) {
-            addCriterion("business_system_ID in", values, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdNotIn(List<String> values) {
-            addCriterion("business_system_ID not in", values, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdBetween(String value1, String value2) {
-            addCriterion("business_system_ID between", value1, value2, "businessSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andBusinessSystemIdNotBetween(String value1, String value2) {
-            addCriterion("business_system_ID not between", value1, value2, "businessSystemId");
-            return (Criteria) this;
-        }
-
         public Criteria andOdsDataScriptTypeIsNull() {
             addCriterion("ods_data_script_type is null");
             return (Criteria) this;
@@ -521,6 +451,76 @@ public class CjOdsDataScriptDefInfoExample {
 
         public Criteria andOdsDataScriptTypeNotBetween(String value1, String value2) {
             addCriterion("ods_data_script_type not between", value1, value2, "odsDataScriptType");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdIsNull() {
+            addCriterion("business_system_ID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdIsNotNull() {
+            addCriterion("business_system_ID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdEqualTo(String value) {
+            addCriterion("business_system_ID =", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdNotEqualTo(String value) {
+            addCriterion("business_system_ID <>", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdGreaterThan(String value) {
+            addCriterion("business_system_ID >", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdGreaterThanOrEqualTo(String value) {
+            addCriterion("business_system_ID >=", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdLessThan(String value) {
+            addCriterion("business_system_ID <", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdLessThanOrEqualTo(String value) {
+            addCriterion("business_system_ID <=", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdLike(String value) {
+            addCriterion("business_system_ID like", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdNotLike(String value) {
+            addCriterion("business_system_ID not like", value, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdIn(List<String> values) {
+            addCriterion("business_system_ID in", values, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdNotIn(List<String> values) {
+            addCriterion("business_system_ID not in", values, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdBetween(String value1, String value2) {
+            addCriterion("business_system_ID between", value1, value2, "businessSystemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBusinessSystemIdNotBetween(String value1, String value2) {
+            addCriterion("business_system_ID not between", value1, value2, "businessSystemId");
             return (Criteria) this;
         }
 

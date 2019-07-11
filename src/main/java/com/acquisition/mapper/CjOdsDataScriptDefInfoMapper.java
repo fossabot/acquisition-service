@@ -32,9 +32,10 @@ public interface CjOdsDataScriptDefInfoMapper {
 
     int updateByPrimaryKey(CjOdsDataScriptDefInfo record);
 
-    String selectScriptInfo(@Param("businessSystemNameShortName") String businessSystemNameShortName,
+    String selectSchedulScript(@Param("businessSystemNameShortName") String businessSystemNameShortName,
                             @Param("dataSourceSchema") String dataSourceSchema,
                             @Param("dataSourceTable") String dataSourceTable,
+                            @Param("odsDataTable") String odsDataTable,
                             @Param("odsDataScriptType") String odsDataScriptType
     );
 

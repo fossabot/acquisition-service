@@ -2,6 +2,7 @@ package com.acquisition.service;
 
 import com.acquisition.entity.CjOdsTableColInfo;
 import com.acquisition.entity.CjOdsTableColInfoExample;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -36,5 +37,6 @@ public interface CjOdsTableColInfoService {
      * @return 返回OdsDataTable表名称
      */
     String findOdsDataTable(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable);
+    List<CjOdsTableColInfo> findFieldByodsDataTable(String odsDataTable);
 
 }

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDwTableColMapRelInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDwTableColMapRelInfo" >
+    <id column="dw_data_table" property="dwDataTable" jdbcType="VARCHAR" />
+    <id column="data_sql_group_unit" property="dataSqlGroupUnit" jdbcType="VARCHAR" />
+    <id column="source_table_name" property="sourceTableName" jdbcType="VARCHAR" />
+    <id column="source_table_col_name" property="sourceTableColName" jdbcType="VARCHAR" />
+    <id column="target_table_col_name" property="targetTableColName" jdbcType="VARCHAR" />
+    <result column="source_table_schema" property="sourceTableSchema" jdbcType="VARCHAR" />
+    <result column="target_table_col_order" property="targetTableColOrder" jdbcType="VARCHAR" />
+    <result column="source_table_col_type" property="sourceTableColType" jdbcType="VARCHAR" />
+    <result column="target_table_col_type" property="targetTableColType" jdbcType="VARCHAR" />
+    <result column="source_table_col_comment" property="sourceTableColComment" jdbcType="VARCHAR" />
+    <result column="target_table_col_comment" property="targetTableColComment" jdbcType="VARCHAR" />
+    <result column="source_target_mapp_define" property="sourceTargetMappDefine" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    dw_data_table, data_sql_group_unit, source_table_name, source_table_col_name, target_table_col_name, 
+    source_table_schema, target_table_col_order, source_table_col_type, target_table_col_type, 
+    source_table_col_comment, target_table_col_comment, source_target_mapp_define, last_modify_dt, 
+    last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_map_rel_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and source_table_col_name = #{sourceTableColName,jdbcType=VARCHAR}
+      and target_table_col_name = #{targetTableColName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoKey" >
+    delete from cj_dw_table_col_map_rel_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and source_table_col_name = #{sourceTableColName,jdbcType=VARCHAR}
+      and target_table_col_name = #{targetTableColName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoExample" >
+    delete from cj_dw_table_col_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDwTableColMapRelInfo" >
+    insert into cj_dw_table_col_map_rel_info (dw_data_table, data_sql_group_unit, source_table_name, 
+      source_table_col_name, target_table_col_name, 
+      source_table_schema, target_table_col_order, 
+      source_table_col_type, target_table_col_type, 
+      source_table_col_comment, target_table_col_comment, 
+      source_target_mapp_define, last_modify_dt, last_modify_by
+      )
+    values (#{dwDataTable,jdbcType=VARCHAR}, #{dataSqlGroupUnit,jdbcType=VARCHAR}, #{sourceTableName,jdbcType=VARCHAR},
+      #{sourceTableColName,jdbcType=VARCHAR}, #{targetTableColName,jdbcType=VARCHAR},
+      #{sourceTableSchema,jdbcType=VARCHAR}, #{targetTableColOrder,jdbcType=VARCHAR},
+      #{sourceTableColType,jdbcType=VARCHAR}, #{targetTableColType,jdbcType=VARCHAR},
+      #{sourceTableColComment,jdbcType=VARCHAR}, #{targetTableColComment,jdbcType=VARCHAR},
+      #{sourceTargetMappDefine,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDwTableColMapRelInfo" >
+    insert into cj_dw_table_col_map_rel_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        dw_data_table,
+      </if>
+      <if test="dataSqlGroupUnit != null" >
+        data_sql_group_unit,
+      </if>
+      <if test="sourceTableName != null" >
+        source_table_name,
+      </if>
+      <if test="sourceTableColName != null" >
+        source_table_col_name,
+      </if>
+      <if test="targetTableColName != null" >
+        target_table_col_name,
+      </if>
+      <if test="sourceTableSchema != null" >
+        source_table_schema,
+      </if>
+      <if test="targetTableColOrder != null" >
+        target_table_col_order,
+      </if>
+      <if test="sourceTableColType != null" >
+        source_table_col_type,
+      </if>
+      <if test="targetTableColType != null" >
+        target_table_col_type,
+      </if>
+      <if test="sourceTableColComment != null" >
+        source_table_col_comment,
+      </if>
+      <if test="targetTableColComment != null" >
+        target_table_col_comment,
+      </if>
+      <if test="sourceTargetMappDefine != null" >
+        source_target_mapp_define,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        #{dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSqlGroupUnit != null" >
+        #{dataSqlGroupUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableName != null" >
+        #{sourceTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableColName != null" >
+        #{sourceTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColName != null" >
+        #{targetTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableSchema != null" >
+        #{sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColOrder != null" >
+        #{targetTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableColType != null" >
+        #{sourceTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColType != null" >
+        #{targetTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableColComment != null" >
+        #{sourceTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColComment != null" >
+        #{targetTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTargetMappDefine != null" >
+        #{sourceTargetMappDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_dw_table_col_map_rel_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_dw_table_col_map_rel_info
+    <set >
+      <if test="record.dwDataTable != null" >
+        dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSqlGroupUnit != null" >
+        data_sql_group_unit = #{record.dataSqlGroupUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableName != null" >
+        source_table_name = #{record.sourceTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableColName != null" >
+        source_table_col_name = #{record.sourceTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTableColName != null" >
+        target_table_col_name = #{record.targetTableColName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableSchema != null" >
+        source_table_schema = #{record.sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTableColOrder != null" >
+        target_table_col_order = #{record.targetTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableColType != null" >
+        source_table_col_type = #{record.sourceTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTableColType != null" >
+        target_table_col_type = #{record.targetTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTableColComment != null" >
+        source_table_col_comment = #{record.sourceTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetTableColComment != null" >
+        target_table_col_comment = #{record.targetTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceTargetMappDefine != null" >
+        source_target_mapp_define = #{record.sourceTargetMappDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_dw_table_col_map_rel_info
+    set dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      data_sql_group_unit = #{record.dataSqlGroupUnit,jdbcType=VARCHAR},
+      source_table_name = #{record.sourceTableName,jdbcType=VARCHAR},
+      source_table_col_name = #{record.sourceTableColName,jdbcType=VARCHAR},
+      target_table_col_name = #{record.targetTableColName,jdbcType=VARCHAR},
+      source_table_schema = #{record.sourceTableSchema,jdbcType=VARCHAR},
+      target_table_col_order = #{record.targetTableColOrder,jdbcType=VARCHAR},
+      source_table_col_type = #{record.sourceTableColType,jdbcType=VARCHAR},
+      target_table_col_type = #{record.targetTableColType,jdbcType=VARCHAR},
+      source_table_col_comment = #{record.sourceTableColComment,jdbcType=VARCHAR},
+      target_table_col_comment = #{record.targetTableColComment,jdbcType=VARCHAR},
+      source_target_mapp_define = #{record.sourceTargetMappDefine,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDwTableColMapRelInfo" >
+    update cj_dw_table_col_map_rel_info
+    <set >
+      <if test="sourceTableSchema != null" >
+        source_table_schema = #{sourceTableSchema,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColOrder != null" >
+        target_table_col_order = #{targetTableColOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableColType != null" >
+        source_table_col_type = #{sourceTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColType != null" >
+        target_table_col_type = #{targetTableColType,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTableColComment != null" >
+        source_table_col_comment = #{sourceTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTableColComment != null" >
+        target_table_col_comment = #{targetTableColComment,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTargetMappDefine != null" >
+        source_target_mapp_define = #{sourceTargetMappDefine,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and source_table_col_name = #{sourceTableColName,jdbcType=VARCHAR}
+      and target_table_col_name = #{targetTableColName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableColMapRelInfo" >
+    update cj_dw_table_col_map_rel_info
+    set source_table_schema = #{sourceTableSchema,jdbcType=VARCHAR},
+      target_table_col_order = #{targetTableColOrder,jdbcType=VARCHAR},
+      source_table_col_type = #{sourceTableColType,jdbcType=VARCHAR},
+      target_table_col_type = #{targetTableColType,jdbcType=VARCHAR},
+      source_table_col_comment = #{sourceTableColComment,jdbcType=VARCHAR},
+      target_table_col_comment = #{targetTableColComment,jdbcType=VARCHAR},
+      source_target_mapp_define = #{sourceTargetMappDefine,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and data_sql_group_unit = #{dataSqlGroupUnit,jdbcType=VARCHAR}
+      and source_table_name = #{sourceTableName,jdbcType=VARCHAR}
+      and source_table_col_name = #{sourceTableColName,jdbcType=VARCHAR}
+      and target_table_col_name = #{targetTableColName,jdbcType=VARCHAR}
+  </update>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into cj_dw_table_col_map_rel_info
+    (dw_data_table, data_sql_group_unit, source_table_name,
+    source_table_col_name, target_table_col_name,
+    source_table_schema, target_table_col_order,
+    source_table_col_type, target_table_col_type,
+    source_table_col_comment, target_table_col_comment,
+    source_target_mapp_define, last_modify_dt, last_modify_by
+    )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.dwDataTable,jdbcType=VARCHAR}, #{item.dataSqlGroupUnit,jdbcType=VARCHAR}, #{item.sourceTableName,jdbcType=VARCHAR},
+      #{item.sourceTableColName,jdbcType=VARCHAR}, #{item.targetTableColName,jdbcType=VARCHAR},
+      #{item.sourceTableSchema,jdbcType=VARCHAR}, #{item.targetTableColOrder,jdbcType=VARCHAR},
+      #{item.sourceTableColType,jdbcType=VARCHAR}, #{item.targetTableColType,jdbcType=VARCHAR},
+      #{item.sourceTableColComment,jdbcType=VARCHAR}, #{item.targetTableColComment,jdbcType=VARCHAR},
+      #{item.sourceTargetMappDefine,jdbcType=VARCHAR}, #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    dw_data_table = VALUES(dw_data_table),
+    data_sql_group_unit = VALUES(data_sql_group_unit),
+    source_table_name = VALUES(source_table_name),
+    source_table_col_name = VALUES(source_table_col_name),
+    target_table_col_name = VALUES(target_table_col_name),
+    source_table_schema = VALUES(source_table_schema),
+    target_table_col_order = VALUES(target_table_col_order),
+    source_table_col_type = VALUES(source_table_col_type),
+    target_table_col_type = VALUES(target_table_col_type),
+    target_table_col_comment = VALUES(target_table_col_comment),
+    source_target_mapp_define = VALUES(source_target_mapp_define),
+    last_modify_dt = VALUES(last_modify_dt),
+    last_modify_by = VALUES(last_modify_by)
+  </insert>
+  <select id="selectByDwTab" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableColMapRelInfoExample" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_dw_table_col_map_rel_info
+    where dw_data_table = #{dwDataTable}
+    order by data_sql_group_unit,cast(target_table_col_order as SIGNED)
+  </select>
+
+</mapper>

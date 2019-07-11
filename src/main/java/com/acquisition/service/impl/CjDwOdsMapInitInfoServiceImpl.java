@@ -19,6 +19,8 @@ public class CjDwOdsMapInitInfoServiceImpl implements CjDwOdsMapInitInfoService 
 
     @Override
     public int saveByOne(CjDwOdsMapInitInfo cjDwOdsMapInitInfo) {
+        System.out.println("--------pass-----------");
+        System.out.println(cjDwOdsMapInitInfo.getDwDataTable());
         return cjDwOdsMapInitInfoMapper.insert(cjDwOdsMapInitInfo);
     }
 }

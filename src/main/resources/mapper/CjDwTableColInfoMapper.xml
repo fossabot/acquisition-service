@@ -370,4 +370,14 @@
     </foreach>
     order by cast(dw_table_col_order as SIGNED) asc
   </select>
+
+  <select id="selectPartitionCol" resultType="java.lang.String" >
+    select
+    dw_table_col_name
+    from cj_dw_table_col_info
+    where dw_table_belong_domain = #{dwTableBelongDomain,jdbcType=VARCHAR}
+    and dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+    and dw_table_partition_flag = 'Y'
+    order by cast(dw_table_col_order as SIGNED) asc
+  </select>
 </mapper>

@@ -369,7 +369,7 @@ public class GenerateScriptController {
                 cjOdsDataScriptDefInfo.setDataSourceSchema(odsTableLoadModeInfo.getDataSourceSchema());
                 cjOdsDataScriptDefInfo.setDataSourceTable(odsTableLoadModeInfo.getDataSourceTable());
                 cjOdsDataScriptDefInfo.setOdsDataTable(odsTableLoadModeInfo.getOdsDataTable());
-                cjOdsDataScriptDefInfo.setOdsDataScriptType("init");
+                cjOdsDataScriptDefInfo.setOdsDataScriptType(Constant.ODS_INIT_EXTRACT);
                 cjOdsDataScriptDefInfo.setOdsDataSqoopDefine(odsInitSqoopScript);
                 cjOdsDataScriptDefInfo.setLastModifyDt(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 cjOdsDataScriptDefInfo.setLastModifyBy(odsTableLoadModeInfo.getLastModifyBy());
@@ -467,10 +467,16 @@ public class GenerateScriptController {
             result.error(400,e.toString());
         }
         // 是否为分区
-        if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()) {
-            odsInitSqoopScript.append(" no "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" init \"\" \"\" ");
+        String odsTableSplitColName;
+        if(cjOdsTableLoadModeInfo.getOdsTableSplitColName()!=null){
+            odsTableSplitColName = cjOdsTableLoadModeInfo.getOdsTableSplitColName();
         } else {
-            odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+cjOdsTableLoadModeInfo.getOdsTableSplitColName()
+            odsTableSplitColName = "no";
+        }
+        if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()) {
+            odsInitSqoopScript.append(" no "+odsTableSplitColName+" init \"\" \"\" ");
+        } else {
+            odsInitSqoopScript.append(" "+cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource()+" "+odsTableSplitColName
                     +" init_big \"\" \"\" ");
         }
         // 字段按规则排序
@@ -503,8 +509,8 @@ public class GenerateScriptController {
         String dataBaseType;
         String systemAndSchemaAndTab;
         // 判断增量还是全量
+        String incrementFiled = null;
         String splitFiled = null;
-
         // 字段按规则排序
         List<String> colNames = iCjDataSourceTabColInfoService.findFieldByOrder(cjOdsTableLoadModeInfo.getBusinessSystemNameShortName(),
                 cjOdsTableLoadModeInfo.getDataSourceSchema(), cjOdsTableLoadModeInfo.getDataSourceTable());
@@ -538,19 +544,26 @@ public class GenerateScriptController {
 
         // 判断增量或者是全量
         if ("full".equals(cjOdsTableLoadModeInfo.getOdsDataLoadMode())){
-            splitFiled = "no";
+            incrementFiled = "no";
         }else{
-            splitFiled = cjOdsTableLoadModeInfo.getOdsTableIncrementColName();
+            incrementFiled = cjOdsTableLoadModeInfo.getOdsTableIncrementColName();
         }
-
+        //定义切割字段
+        if(cjOdsTableLoadModeInfo.getOdsTableSplitColName() != null){
+            splitFiled = cjOdsTableLoadModeInfo.getOdsTableSplitColName();
+        } else {
+            splitFiled = "no";
+        }
         // 是否为分区
         if(null == cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() || cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource().isEmpty()) {
-            odsInitSqoopScript.append(" ").append(splitFiled).append(" ").
-                    append(cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
+
+
+            odsInitSqoopScript.append(" ").append(incrementFiled).append(" ").
+                    append(splitFiled+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
             odsInitSqoopScript.append("\"").append(fields).append("\"");
         } else {
-            odsInitSqoopScript.append(" ").append(splitFiled).append(" ").
-                    append(cjOdsTableLoadModeInfo.getOdsTableSplitColName()+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
+            odsInitSqoopScript.append(" ").append(incrementFiled).append(" ").
+                    append(splitFiled+" "+cjOdsTableLoadModeInfo.getOdsDataLoadMode()+" \"\" \"\" ");
             odsInitSqoopScript.append("\"").append(fields).append("\"").append(" \"\" \"\" \"true\"");
         }
         return odsInitSqoopScript.toString();

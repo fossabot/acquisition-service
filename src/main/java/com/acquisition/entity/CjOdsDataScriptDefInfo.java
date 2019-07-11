@@ -3,8 +3,6 @@ package com.acquisition.entity;
 public class CjOdsDataScriptDefInfo extends CjOdsDataScriptDefInfoKey {
     private String businessSystemId;
 
-    private String odsDataScriptType;
-
     private String odsDataSqoopDefine;
 
     private String odsDataHivesqlDefine;
@@ -19,14 +17,6 @@ public class CjOdsDataScriptDefInfo extends CjOdsDataScriptDefInfoKey {
 
     public void setBusinessSystemId(String businessSystemId) {
         this.businessSystemId = businessSystemId == null ? null : businessSystemId.trim();
-    }
-
-    public String getOdsDataScriptType() {
-        return odsDataScriptType;
-    }
-
-    public void setOdsDataScriptType(String odsDataScriptType) {
-        this.odsDataScriptType = odsDataScriptType == null ? null : odsDataScriptType.trim();
     }
 
     public String getOdsDataSqoopDefine() {

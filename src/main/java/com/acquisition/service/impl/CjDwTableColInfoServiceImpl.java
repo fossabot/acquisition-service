@@ -37,4 +37,9 @@ public class CjDwTableColInfoServiceImpl implements CjDwTableColInfoService{
     public List<String> findPrimaryCol(String dwTableBelongDomain, String dwDataTable, String[] array) {
         return cjDwTableColInfoMapper.selectPrimaryCol(dwTableBelongDomain,dwDataTable,array);
     }
+
+    @Override
+    public List<String> findPartitionCol(String dwTableBelongDomain, String dwDataTable) {
+        return cjDwTableColInfoMapper.selectPartitionCol(dwTableBelongDomain,dwDataTable);
+    }
 }

@@ -402,4 +402,10 @@
     #{dataSourceTable} order by cast(ods_table_col_order as SIGNED)
   </select>
 
+  <select id="selectFieldByodsDataTable" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from cj_ods_table_col_info
+    where ods_data_table = #{odsDataTable}
+    order by cast(ods_table_col_order as SIGNED)
+  </select>
 </mapper>

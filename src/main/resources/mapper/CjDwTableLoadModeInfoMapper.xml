@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.acquisition.mapper.CjDwTableLoadModeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    <id column="dw_data_table" property="dwDataTable" jdbcType="VARCHAR" />
+    <id column="dw_table_partition_col_name" property="dwTablePartitionColName" jdbcType="VARCHAR" />
+    <result column="data_source_tab_primary_col" property="dataSourceTabPrimaryCol" jdbcType="VARCHAR" />
+    <result column="dw_tab_primary_col" property="dwTabPrimaryCol" jdbcType="VARCHAR" />
+    <result column="dw_data_load_mode" property="dwDataLoadMode" jdbcType="VARCHAR" />
+    <result column="last_modify_dt" property="lastModifyDt" jdbcType="VARCHAR" />
+    <result column="last_modify_by" property="lastModifyBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    dw_data_table, dw_table_partition_col_name, data_source_tab_primary_col, dw_tab_primary_col, 
+    dw_data_load_mode, last_modify_dt, last_modify_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cj_dw_table_load_mode_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from cj_dw_table_load_mode_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_partition_col_name = #{dwTablePartitionColName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoKey" >
+    delete from cj_dw_table_load_mode_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_partition_col_name = #{dwTablePartitionColName,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoExample" >
+    delete from cj_dw_table_load_mode_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    insert into cj_dw_table_load_mode_info (dw_data_table, dw_table_partition_col_name, 
+      data_source_tab_primary_col, dw_tab_primary_col, 
+      dw_data_load_mode, last_modify_dt, last_modify_by
+      )
+    values (#{dwDataTable,jdbcType=VARCHAR}, #{dwTablePartitionColName,jdbcType=VARCHAR}, 
+      #{dataSourceTabPrimaryCol,jdbcType=VARCHAR}, #{dwTabPrimaryCol,jdbcType=VARCHAR}, 
+      #{dwDataLoadMode,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    insert into cj_dw_table_load_mode_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        dw_data_table,
+      </if>
+      <if test="dwTablePartitionColName != null" >
+        dw_table_partition_col_name,
+      </if>
+      <if test="dataSourceTabPrimaryCol != null" >
+        data_source_tab_primary_col,
+      </if>
+      <if test="dwTabPrimaryCol != null" >
+        dw_tab_primary_col,
+      </if>
+      <if test="dwDataLoadMode != null" >
+        dw_data_load_mode,
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt,
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dwDataTable != null" >
+        #{dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTablePartitionColName != null" >
+        #{dwTablePartitionColName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceTabPrimaryCol != null" >
+        #{dataSourceTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTabPrimaryCol != null" >
+        #{dwTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="dwDataLoadMode != null" >
+        #{dwDataLoadMode,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoExample" resultType="java.lang.Integer" >
+    select count(*) from cj_dw_table_load_mode_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cj_dw_table_load_mode_info
+    <set >
+      <if test="record.dwDataTable != null" >
+        dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTablePartitionColName != null" >
+        dw_table_partition_col_name = #{record.dwTablePartitionColName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceTabPrimaryCol != null" >
+        data_source_tab_primary_col = #{record.dataSourceTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwTabPrimaryCol != null" >
+        dw_tab_primary_col = #{record.dwTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dwDataLoadMode != null" >
+        dw_data_load_mode = #{record.dwDataLoadMode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyDt != null" >
+        last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyBy != null" >
+        last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cj_dw_table_load_mode_info
+    set dw_data_table = #{record.dwDataTable,jdbcType=VARCHAR},
+      dw_table_partition_col_name = #{record.dwTablePartitionColName,jdbcType=VARCHAR},
+      data_source_tab_primary_col = #{record.dataSourceTabPrimaryCol,jdbcType=VARCHAR},
+      dw_tab_primary_col = #{record.dwTabPrimaryCol,jdbcType=VARCHAR},
+      dw_data_load_mode = #{record.dwDataLoadMode,jdbcType=VARCHAR},
+      last_modify_dt = #{record.lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{record.lastModifyBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    update cj_dw_table_load_mode_info
+    <set >
+      <if test="dataSourceTabPrimaryCol != null" >
+        data_source_tab_primary_col = #{dataSourceTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="dwTabPrimaryCol != null" >
+        dw_tab_primary_col = #{dwTabPrimaryCol,jdbcType=VARCHAR},
+      </if>
+      <if test="dwDataLoadMode != null" >
+        dw_data_load_mode = #{dwDataLoadMode,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyDt != null" >
+        last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyBy != null" >
+        last_modify_by = #{lastModifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_partition_col_name = #{dwTablePartitionColName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    update cj_dw_table_load_mode_info
+    set data_source_tab_primary_col = #{dataSourceTabPrimaryCol,jdbcType=VARCHAR},
+      dw_tab_primary_col = #{dwTabPrimaryCol,jdbcType=VARCHAR},
+      dw_data_load_mode = #{dwDataLoadMode,jdbcType=VARCHAR},
+      last_modify_dt = #{lastModifyDt,jdbcType=VARCHAR},
+      last_modify_by = #{lastModifyBy,jdbcType=VARCHAR}
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+      and dw_table_partition_col_name = #{dwTablePartitionColName,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertByOne" parameterType="com.acquisition.entity.CjDwTableLoadModeInfo" >
+    insert into cj_dw_table_load_mode_info (dw_data_table, dw_table_partition_col_name,
+    data_source_tab_primary_col, dw_tab_primary_col,
+    dw_data_load_mode, last_modify_dt, last_modify_by
+    )
+    values (#{dwDataTable,jdbcType=VARCHAR}, #{dwTablePartitionColName,jdbcType=VARCHAR},
+    #{dataSourceTabPrimaryCol,jdbcType=VARCHAR}, #{dwTabPrimaryCol,jdbcType=VARCHAR},
+    #{dwDataLoadMode,jdbcType=VARCHAR}, #{lastModifyDt,jdbcType=VARCHAR}, #{lastModifyBy,jdbcType=VARCHAR}
+    )
+  </insert>
+  <select id="selectByDwDataTable" resultMap="BaseResultMap" parameterType="com.acquisition.entity.CjDwTableLoadModeInfoKey" >
+    select
+    <include refid="Base_Column_List" />
+    from cj_dw_table_load_mode_info
+    where dw_data_table = #{dwDataTable,jdbcType=VARCHAR}
+  </select>
+</mapper>

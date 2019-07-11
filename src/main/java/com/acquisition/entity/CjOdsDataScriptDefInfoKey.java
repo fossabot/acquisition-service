@@ -9,6 +9,8 @@ public class CjOdsDataScriptDefInfoKey {
 
     private String odsDataTable;
 
+    private String odsDataScriptType;
+
     public String getBusinessSystemNameShortName() {
         return businessSystemNameShortName;
     }
@@ -39,5 +41,13 @@ public class CjOdsDataScriptDefInfoKey {
 
     public void setOdsDataTable(String odsDataTable) {
         this.odsDataTable = odsDataTable == null ? null : odsDataTable.trim();
+    }
+
+    public String getOdsDataScriptType() {
+        return odsDataScriptType;
+    }
+
+    public void setOdsDataScriptType(String odsDataScriptType) {
+        this.odsDataScriptType = odsDataScriptType == null ? null : odsDataScriptType.trim();
     }
 }

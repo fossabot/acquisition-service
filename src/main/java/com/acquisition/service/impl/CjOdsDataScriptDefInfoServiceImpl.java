@@ -1,8 +1,7 @@
 package com.acquisition.service.impl;
 
-import com.acquisition.entity.CjDataSourceTabInfo;
 import com.acquisition.entity.CjOdsDataScriptDefInfo;
-import com.acquisition.mapper.CjDataSourceTabInfoMapper;
+import com.acquisition.entity.CjOdsDataScriptDefInfoKey;
 import com.acquisition.mapper.CjOdsDataScriptDefInfoMapper;
 import com.acquisition.service.ICjOdsDataScriptDefInfoService;
 import org.springframework.stereotype.Service;
@@ -26,15 +25,25 @@ public class CjOdsDataScriptDefInfoServiceImpl implements ICjOdsDataScriptDefInf
     }
 
     @Override
-    public String selectScriptInfo(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable, String odsDataScriptType) {
-        return  cjOdsDataScriptDefInfoMapper.selectScriptInfo(
+    public String selectSchedulScript(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable, String odsDataTable, String odsDataScriptType) {
+        return  cjOdsDataScriptDefInfoMapper.selectSchedulScript(
                 businessSystemNameShortName,dataSourceSchema,
-                dataSourceTable,odsDataScriptType);
+                dataSourceTable,odsDataTable,odsDataScriptType);
     }
 
 
     @Override
     public int insertBatch(List<CjOdsDataScriptDefInfo> list) {
         return cjOdsDataScriptDefInfoMapper.insertBatch(list);
+    }
+
+    @Override
+    public int deleteByPrimaryKey(CjOdsDataScriptDefInfoKey key) {
+        return cjOdsDataScriptDefInfoMapper.deleteByPrimaryKey(key);
+    }
+
+    @Override
+    public CjOdsDataScriptDefInfo findByPrimaryKey(CjOdsDataScriptDefInfoKey key) {
+        return cjOdsDataScriptDefInfoMapper.selectByPrimaryKey(key);
     }
 }
