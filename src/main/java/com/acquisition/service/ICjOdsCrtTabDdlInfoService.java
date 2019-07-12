@@ -16,4 +16,5 @@ public interface ICjOdsCrtTabDdlInfoService {
     String getODSTableInfo(List<CjDataSourceTabInfo> CjDataSourceTabInfos);
     boolean saveDDLAndCreateTable(CjOdsCrtTabDdlInfo CjDataSourceTabInfos);
     int insertBatch(List<CjOdsCrtTabDdlInfo> list);
+    List selectByParams(String businessSystemNameShortName, String dataSourceSchema ,String dataSourceTable, String  odsDataTable);
 }

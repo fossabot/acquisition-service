@@ -67,6 +67,7 @@ public class HiveCreateTableController {
 
     @Resource(name = "cjDwTableColInfoServiceImpl")
     public CjDwTableColInfoService cjDwTableColInfoService;
+
     /**
      * @Author: zhangdongmao
      * @Date: 2019/6/5
@@ -196,8 +197,8 @@ public class HiveCreateTableController {
         List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos = saveDwBakTableInfos(cjDataSourceTabInfoDtos);
         List<TableOptionPojo> tableOptionPojos = hiveCreateDwBakTableBatch(cjDwCrtTabDdlInfoDtos);
 
-        for(TableOptionPojo tableOptionPojo : tableOptionPojos){
-            if(tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)){
+        for (TableOptionPojo tableOptionPojo : tableOptionPojos) {
+            if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)) {
                 CjDataSourceTabInfo cjDataSourceTabInfo = new CjDataSourceTabInfo();
 //                生成DW建表语句成功，设置状态表中的相应状态字段
                 cjDataSourceTabInfo.setDataFlagForCrtDwDll(Constant.DW_CRT_DDL);
@@ -210,7 +211,7 @@ public class HiveCreateTableController {
                 criteria.andDataSourceSchemaEqualTo(tableOptionPojo.getDataSourceSchema());
                 criteria.andDataSourceTableEqualTo(tableOptionPojo.getDataSourceTable());
                 cjDataSourceTabInfoService.updateByExampleSelective(cjDataSourceTabInfo, cjDataSourceTabInfoExample);
-            } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED) || tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_AVAIL)){
+            } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED) || tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_AVAIL)) {
                 result.setCode(500);
                 result.setMsg("部分表建表失败");
             }
@@ -218,6 +219,7 @@ public class HiveCreateTableController {
         result.setData(tableOptionPojos);
         return result;
     }
+
     /**
      * @return 返回已经导入清单，但没有在ODS建表的表
      */
@@ -252,7 +254,7 @@ public class HiveCreateTableController {
             String businessSystemNameShortName = cjDataSourceTabInfo.getBusinessSystemNameShortName();
             String dataSourceSchema = cjDataSourceTabInfo.getDataSourceSchema();
             String dataSourceTable = cjDataSourceTabInfo.getDataSourceTable();
-            odsTableName=CreateTableUtil.getOdsTableName(businessSystemNameShortName,dataSourceSchema,dataSourceTable);
+            odsTableName = CreateTableUtil.getOdsTableName(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
             cjOdsTableLoadModeInfo.setBusinessSystemId(businessSystemId);
             cjOdsTableLoadModeInfo.setBusinessSystemNameShortName(businessSystemNameShortName);
             cjOdsTableLoadModeInfo.setDataSourceSchema(dataSourceSchema);
@@ -302,12 +304,12 @@ public class HiveCreateTableController {
                         List<List<String>> indexs = uniqueIndexMap.get(indexKey);
                         StringBuffer index = new StringBuffer();
                         StringBuffer indexSeq = new StringBuffer();
-                        for(List<String> indexList:indexs){
-                            index.append(indexList.get(0)+",");
-                            indexSeq.append(indexList.get(1)+",");
+                        for (List<String> indexList : indexs) {
+                            index.append(indexList.get(0) + ",");
+                            indexSeq.append(indexList.get(1) + ",");
                         }
-                        index.deleteCharAt(index.length()-1);
-                        indexSeq.deleteCharAt(index.length()-1);
+                        index.deleteCharAt(index.length() - 1);
+                        indexSeq.deleteCharAt(index.length() - 1);
                         //满足所有的增量条件，定义为增量方式抽取
                         cjOdsTableLoadModeInfo.setOdsDataLoadMode(Constant.ODS_INCREMENT_EXTRACT);
                         //取list中的第一个值做增量字段
@@ -349,34 +351,117 @@ public class HiveCreateTableController {
     }
 
     /**
-     * @return 获取前端传来的需要去ODS创建的表信息
+     * 将 ODS 建表语句保存到数据库中
+     *
+     * @param data eg:[{
+     *             "businessSystemNameShortName": "MLGX",
+     *             "dataSourceSchema": "datalake_meta",
+     *             "dataSourceTable": "cj_import_source_tab_list"
+     *             }]
+     * @return 返回包含ODS DDL的CjDataSourceTabInfo对象
      */
-    @ApiOperation("ods建表接口")
-    @PostMapping("/createODSTable")
-    public Result createODSTable(@RequestBody String data) {
+    @ApiOperation("保存ODS DDL")
+    @PostMapping(value = "/saveOdsDdlInfo")
+    public Result saveOdsDdlInfo(@RequestBody String data) {
         Result result = new Result();
         result.setCode(200);
         result.setMsg("建表成功");
         JSONObject jsonObject = JSONObject.parseObject(data);
         String odsTableList = jsonObject.getString("params");
         List<CjDataSourceTabInfo> cjDataSourceTabInfos = JSONObject.parseArray(odsTableList, CjDataSourceTabInfo.class);
-        List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos = saveOdsTableInfos(cjDataSourceTabInfos);
-        List<TableOptionPojo> tableOptionPojos = hiveCreateOdsTableBatch(cjOdsCrtTabDdlInfos);
-        for (TableOptionPojo tableOptionPojo : tableOptionPojos) {
-            if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)){
-                cjDataSourceTabInfoService.updateODSFlg(
-                        "1", "1",
-                        tableOptionPojo.getBusinessSystemNameShortName(),
-                        tableOptionPojo.getDataSourceSchema(),
-                        tableOptionPojo.getDataSourceTable());
-            } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED)){
-                result.setCode(500);
-                result.setMsg("部分表建表失败");
-            }
-        }
-        result.setData(tableOptionPojos);
+        result.setData(saveOdsTableInfos(cjDataSourceTabInfos));
+        result.setCode(200);
         return result;
     }
+
+    /**
+     * 执行建ODS表语句并更新建表状态
+     *
+     * @param params eg: [{
+     *                   "businessSystemNameShortName": "MLGX",
+     *                   "dataSourceSchema": "datalake_meta",
+     *                   "dataSourceTable": "cj_import_source_tab_list"
+     *                  }]
+     * @return 返回执行状态
+     */
+    @ApiOperation("执行ODS建表语句")
+    @PostMapping(value = "/createOdsTable")
+    public Result createOdsTable(@RequestBody List<CjOdsCrtTabDdlInfo> params) {
+        Result result = new Result();
+
+        for (CjOdsCrtTabDdlInfo param : params) {
+            List<CjOdsCrtTabDdlInfo> ddlInfosList = cjOdsCrtTabDdlInfoService.selectByParams(
+                    param.getBusinessSystemNameShortName(),
+                    param.getDataSourceSchema(),
+                    param.getDataSourceTable(),
+                    CreateTableUtil.getOdsTableName(param.getBusinessSystemNameShortName(), param.getDataSourceSchema(), param.getDataSourceTable())
+            );
+
+            List<TableOptionPojo> tableOptionPojos = hiveCreateOdsTableBatch(ddlInfosList);
+
+            for (TableOptionPojo tableOptionPojo : tableOptionPojos) {
+                if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_SUCCESS)) {
+                    cjDataSourceTabInfoService.updateODSFlg(
+                            "1", "1",
+                            tableOptionPojo.getBusinessSystemNameShortName(),
+                            tableOptionPojo.getDataSourceSchema(),
+                            tableOptionPojo.getDataSourceTable());
+                } else if (tableOptionPojo.getResult().equals(Constant.TABLE_OPTION_FAILED)) {
+                    result.setCode(500);
+                    result.setMsg("建表状态更新失败，请重新建表！");
+                }
+            }
+        }
+        result.setData("ODS表建表成功");
+        result.setCode(200);
+        return result;
+    }
+
+    /**
+     * 执行生成的ODS DDL ，去 Hive 中建表
+     *
+     * @param cjOdsCrtTabDdlInfos 传入CjOdsCrtTabDdlInfo实体列表
+     * @return 返回 tableOptionPojos
+     */
+    public List<TableOptionPojo> hiveCreateOdsTableBatch(List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos) {
+        GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        TableOptionPojo tableOptionPojo;
+        List<TableOptionPojo> tableOptionPojos = new ArrayList<>();
+
+        for (CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo : cjOdsCrtTabDdlInfos) {
+            tableOptionPojo = new TableOptionPojo();
+            tableOptionPojo.setBusinessSystemNameShortName(cjOdsCrtTabDdlInfo.getBusinessSystemNameShortName());
+            tableOptionPojo.setDataSourceSchema(cjOdsCrtTabDdlInfo.getDataSourceSchema());
+            tableOptionPojo.setDataSourceTable(cjOdsCrtTabDdlInfo.getDataSourceTable());
+            tableOptionPojo.setOdsDataSchema(cjOdsCrtTabDdlInfo.getOdsDataSchema());
+            tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
+            String[] odsDdl = cjOdsCrtTabDdlInfo.getOdsDataTableDdlInfo().split(";");
+            for (int i = 0; i < odsDdl.length; i++) {
+                try {
+                    connection = instance.getConnection();
+                    preparedStatement = connection.prepareStatement(odsDdl[i]);
+                    preparedStatement.execute();
+                } catch (Exception e) {
+                    tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            preparedStatement.close();
+                            connection.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            tableOptionPojos.add(tableOptionPojo);
+        }
+        return tableOptionPojos;
+    }
+
     /**
      * @return 拼接并保存SQL, 返回状态码
      */
@@ -405,18 +490,18 @@ public class HiveCreateTableController {
             cjOdsTableLoadModeInfoKey.setOdsDataTable(odsTableName);
             CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo = cjOdsTableLoadModeInfoService.findByPrimaryKey(cjOdsTableLoadModeInfoKey);
 
-            if(cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_INCREMENT_EXTRACT)){
+            if (cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_INCREMENT_EXTRACT)) {
                 //如果是增量抽取，生成ODS全量表和增量表建表
-                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(),cjOdsTableLoadModeInfo);
+                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(), cjOdsTableLoadModeInfo);
                 odsIncrementDdl = generateOdsIncrementDdl(cjOdsTableLoadModeInfo);
                 odsDdl = odsFullDdl + ";\n" + odsIncrementDdl;
-            } else if(cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_FULL_EXTRACT)){
+            } else if (cjOdsTableLoadModeInfo.getOdsDataLoadMode().equals(Constant.ODS_FULL_EXTRACT)) {
                 //如果是增量抽取，生成ODS全量表和增量表建表
-                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(),cjOdsTableLoadModeInfo);
+                odsFullDdl = generateOdsFullDdl(cjOdsTableLoadModeInfo.getOdsDataTable(), cjOdsTableLoadModeInfo);
                 odsDdl = odsFullDdl;
             }
             //如果该表存在分区，需要建一张tmp表
-            if(cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() != null) {
+            if (cjOdsTableLoadModeInfo.getOdsTablePartitionColNameSource() != null) {
                 odsTmpDdl = generateOdstmpDdl(cjOdsTableLoadModeInfo);
                 odsFullDdl = odsFullDdl + ";\n" + odsTmpDdl;
                 odsDdl = odsDdl + ";\n" + odsTmpDdl;
@@ -442,7 +527,7 @@ public class HiveCreateTableController {
 
             cjOdsCrtTabDdlInfos.add(cjOdsCrtTabDdlInfo);
             //生成待插入的增量表ddl列表
-            if(!odsIncrementDdl.equals("")){
+            if (!odsIncrementDdl.equals("")) {
                 CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfoInc = new CjOdsCrtTabDdlInfo();
                 cjOdsCrtTabDdlInfoInc.setBusinessSystemId(businessSystemId);
                 cjOdsCrtTabDdlInfoInc.setBusinessSystemNameShortName(cjDataSourceTabInfo.getBusinessSystemNameShortName());
@@ -493,7 +578,7 @@ public class HiveCreateTableController {
 
             String dwBakDdl = generateDwBakDdl(cjDataSourceTabInfoDto);
 
-            if(dwBakDdl != null && !dwBakDdl.equals("")){
+            if (dwBakDdl != null && !dwBakDdl.equals("")) {
                 /**
                  * 将dw建表语句存入mysql中
                  */
@@ -515,7 +600,7 @@ public class HiveCreateTableController {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 cjDwCrtTabDdlInfoDto.setLastModifyDt(df.format(new Date()));
                 CjDwCrtTabDdlInfo cjDwCrtTabDdlInfo = new CjDwCrtTabDdlInfo();
-                BeanUtils.copyProperties(cjDwCrtTabDdlInfoDto,cjDwCrtTabDdlInfo);
+                BeanUtils.copyProperties(cjDwCrtTabDdlInfoDto, cjDwCrtTabDdlInfo);
                 cjDwCrtTabDdlInfos.add(cjDwCrtTabDdlInfo);
                 cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
 
@@ -533,7 +618,7 @@ public class HiveCreateTableController {
                 cjDwCrtTabDdlInfoDtos.add(cjDwCrtTabDdlInfoDto);
             }
 
-            if(cjDwCrtTabDdlInfos != null && cjDwCrtTabDdlInfos.size()>0){
+            if (cjDwCrtTabDdlInfos != null && cjDwCrtTabDdlInfos.size() > 0) {
                 cjDwCrtTabDdlInfoService.insertBatch(cjDwCrtTabDdlInfos);
             }
         }
@@ -543,6 +628,7 @@ public class HiveCreateTableController {
 
     /**
      * 生成dw备用区建表语句
+     *
      * @param cjDataSourceTabInfoDto
      * @return
      */
@@ -551,7 +637,7 @@ public class HiveCreateTableController {
         String dataSourceSchema;
         String dataSourceTable;
         String dwTableName;
-        String tableComment="";
+        String tableComment = "";
         String colName;
         String colType;
         String colComment;
@@ -566,7 +652,7 @@ public class HiveCreateTableController {
         StringBuffer dwddl = new StringBuffer();
         //通过系统名、数据模式、表名获取表的字段信息
         List<CjDwCrtDdlColPojo> cjDwCrtDdlColPojos = cjDataSourceTabColInfoService.selectCjDwCrtDdlColPojoBySysAndSchemaAndTab(businessSystemNameShortName, dataSourceSchema, dataSourceTable);
-        if(cjDwCrtDdlColPojos != null && cjDwCrtDdlColPojos.size()>0){
+        if (cjDwCrtDdlColPojos != null && cjDwCrtDdlColPojos.size() > 0) {
             dwddl.append("create external table if not exists " + Constant.DW_HIVE_SCHEMA + "." + dwTableName + "\n");
             dwddl.append("(" + "\n");
             for (int i = 0; i < cjDwCrtDdlColPojos.size(); i++) {
@@ -603,11 +689,11 @@ public class HiveCreateTableController {
                 cjDwTableColInfos.add(cjDwTableColInfo);
             }
 
-            dwddl.append("    `"+Constant.DW_DEFAULT_COL_1+"`    string    comment \"源系统pk\",\n");
-            dwddl.append("    `"+Constant.DW_DEFAULT_COL_2+"`    string    comment \"源系统代码\",\n");
-            dwddl.append("    `"+Constant.DW_DEFAULT_COL_3+"`    string    comment \"源表名\",\n");
-            dwddl.append("    `"+Constant.DW_DEFAULT_COL_4+"`    string    comment \"etl处理时间\",\n");
-            dwddl.append("    `"+Constant.DW_DEFAULT_COL_5+"`    string    comment \"数据日期\"\n");
+            dwddl.append("    `" + Constant.DW_DEFAULT_COL_1 + "`    string    comment \"源系统pk\",\n");
+            dwddl.append("    `" + Constant.DW_DEFAULT_COL_2 + "`    string    comment \"源系统代码\",\n");
+            dwddl.append("    `" + Constant.DW_DEFAULT_COL_3 + "`    string    comment \"源表名\",\n");
+            dwddl.append("    `" + Constant.DW_DEFAULT_COL_4 + "`    string    comment \"etl处理时间\",\n");
+            dwddl.append("    `" + Constant.DW_DEFAULT_COL_5 + "`    string    comment \"数据日期\"\n");
 
             CjDwTableColInfo srcSysRowIdInfo = new CjDwTableColInfo();
             srcSysRowIdInfo.setDwBusinessTopicDomain(Constant.DW_BAK_DEFAULT_TOPIC_DOMAIN);
@@ -617,7 +703,7 @@ public class HiveCreateTableController {
             srcSysRowIdInfo.setDwTableColName("src_sys_row_id");
             srcSysRowIdInfo.setDwTableColType("string");
             srcSysRowIdInfo.setDwTableColComment("源系统pk");
-            srcSysRowIdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+1+"");
+            srcSysRowIdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size() + 1 + "");
             srcSysRowIdInfo.setDwTableComment(tableComment);
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             srcSysRowIdInfo.setLastModifyDt(df.format(new Date()));
@@ -631,7 +717,7 @@ public class HiveCreateTableController {
             srcSysCdInfo.setDwTableColName("src_sys_cd");
             srcSysCdInfo.setDwTableColType("string");
             srcSysCdInfo.setDwTableColComment("源系统代码");
-            srcSysCdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+2+"");
+            srcSysCdInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size() + 2 + "");
             srcSysCdInfo.setDwTableComment(tableComment);
             srcSysCdInfo.setLastModifyDt(df.format(new Date()));
             cjDwTableColInfos.add(srcSysCdInfo);
@@ -644,7 +730,7 @@ public class HiveCreateTableController {
             srcTableNameInfo.setDwTableColName("src_table_name");
             srcTableNameInfo.setDwTableColType("string");
             srcTableNameInfo.setDwTableColComment("源表名");
-            srcTableNameInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+3+"");
+            srcTableNameInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size() + 3 + "");
             srcTableNameInfo.setDwTableComment(tableComment);
             srcTableNameInfo.setLastModifyDt(df.format(new Date()));
             cjDwTableColInfos.add(srcTableNameInfo);
@@ -657,7 +743,7 @@ public class HiveCreateTableController {
             etlDtInfo.setDwTableColName("etl_dt");
             etlDtInfo.setDwTableColType("string");
             etlDtInfo.setDwTableColComment("etl处理时间");
-            etlDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+4+"");
+            etlDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size() + 4 + "");
             etlDtInfo.setDwTableComment(tableComment);
             etlDtInfo.setLastModifyDt(df.format(new Date()));
             cjDwTableColInfos.add(etlDtInfo);
@@ -670,7 +756,7 @@ public class HiveCreateTableController {
             dataDtInfo.setDwTableColName("data_dt");
             dataDtInfo.setDwTableColType("string");
             dataDtInfo.setDwTableColComment("数据日期");
-            dataDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size()+5+"");
+            dataDtInfo.setDwTableColOrder(cjDwCrtDdlColPojos.size() + 5 + "");
             dataDtInfo.setDwTableComment(tableComment);
             dataDtInfo.setLastModifyDt(df.format(new Date()));
             cjDwTableColInfos.add(dataDtInfo);
@@ -682,7 +768,8 @@ public class HiveCreateTableController {
 
         return dwddl.toString();
     }
-    public String generateOdsFullDdl(String odsTableName,CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
+
+    public String generateOdsFullDdl(String odsTableName, CjOdsTableLoadModeInfo cjOdsTableLoadModeInfo) {
         StringBuffer odsDDL = new StringBuffer();
         String odsTableComment = "";
         List<CjOdsTableColInfo> cjOdsTableColInfos = new ArrayList<>();
@@ -806,7 +893,7 @@ public class HiveCreateTableController {
         StringBuffer odsDDL = new StringBuffer();
 
         //开始拼接ods建表语句
-        odsDDL.append("create external table if not exists " + Constant.ODS_HIVE_INCREMENT_SCHEMA + "." + cjOdsTableLoadModeInfo.getOdsDataTable()+"_tmp" + "\n");
+        odsDDL.append("create external table if not exists " + Constant.ODS_HIVE_INCREMENT_SCHEMA + "." + cjOdsTableLoadModeInfo.getOdsDataTable() + "_tmp" + "\n");
         odsDDL.append("(" + "\n");
 
         List<CjDataSourceTabColInfo> infoList = cjDataSourceTabColInfoService
@@ -835,45 +922,6 @@ public class HiveCreateTableController {
         return odsDDL.toString();
     }
 
-    public List<TableOptionPojo> hiveCreateOdsTableBatch(List<CjOdsCrtTabDdlInfo> cjOdsCrtTabDdlInfos) {
-        GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        TableOptionPojo tableOptionPojo;
-        List<TableOptionPojo> tableOptionPojos = new ArrayList<>();
-
-        for (CjOdsCrtTabDdlInfo cjOdsCrtTabDdlInfo : cjOdsCrtTabDdlInfos) {
-            tableOptionPojo = new TableOptionPojo();
-            tableOptionPojo.setBusinessSystemNameShortName(cjOdsCrtTabDdlInfo.getBusinessSystemNameShortName());
-            tableOptionPojo.setDataSourceSchema(cjOdsCrtTabDdlInfo.getDataSourceSchema());
-            tableOptionPojo.setDataSourceTable(cjOdsCrtTabDdlInfo.getDataSourceTable());
-            tableOptionPojo.setOdsDataSchema(cjOdsCrtTabDdlInfo.getOdsDataSchema());
-            tableOptionPojo.setResult(Constant.TABLE_OPTION_SUCCESS);
-            String[] odsDdl = cjOdsCrtTabDdlInfo.getOdsDataTableDdlInfo().split(";");
-            for(int i=0;i<odsDdl.length;i++){
-                try {
-                    connection = instance.getConnection();
-                    preparedStatement = connection.prepareStatement(odsDdl[i]);
-                    preparedStatement.execute();
-                } catch (Exception e) {
-                    tableOptionPojo.setResult(Constant.TABLE_OPTION_FAILED);
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        try {
-                            preparedStatement.close();
-                            connection.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            tableOptionPojos.add(tableOptionPojo);
-        }
-        return tableOptionPojos;
-    }
-
     public List<TableOptionPojo> hiveCreateDwBakTableBatch(List<CjDwCrtTabDdlInfoDto> cjDwCrtTabDdlInfoDtos) {
         GroupPoolFactory instance = GroupPoolFactory.getInstance(Constant.HIVE_INSTANCE);
         Connection connection = null;
@@ -888,7 +936,7 @@ public class HiveCreateTableController {
             tableOptionPojo.setDataSourceSchema(cjDwCrtTabDdlInfoDto.getDataSourceSchema());
             tableOptionPojo.setDataSourceTable(cjDwCrtTabDdlInfoDto.getDataSourceTable());
             tableOptionPojo.setIndex(cjDwCrtTabDdlInfoDto.getIndex());
-            if(cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo() != null && cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo().length()>0){
+            if (cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo() != null && cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo().length() > 0) {
                 try {
                     connection = instance.getConnection();
                     preparedStatement = connection.prepareStatement(cjDwCrtTabDdlInfoDto.getDwDataTableDdlInfo());

@@ -287,8 +287,6 @@
       #{item.lastModifyDt,jdbcType=VARCHAR}, #{item.lastModifyBy,jdbcType=VARCHAR})
     </foreach>
   </insert>
-
-
   <delete id="deleteBatch" parameterType="java.util.List">
     delete from cj_ods_crt_tab_ddl_info where
     (business_system_name_short_name,data_source_schema,data_source_table) in
@@ -296,4 +294,13 @@
       (#{item.businessSystemNameShortName},#{item.dataSourceSchema},#{item.dataSourceTable})
     </foreach>
   </delete>
+  <select id="selectByParams" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cj_ods_crt_tab_ddl_info
+    where business_system_name_short_name = #{businessSystemNameShortName,jdbcType=VARCHAR}
+    and data_source_schema = #{dataSourceSchema,jdbcType=VARCHAR}
+    and data_source_table = #{dataSourceTable,jdbcType=VARCHAR}
+    and ods_data_table = #{odsDataTable,jdbcType=VARCHAR}
+  </select>
 </mapper>

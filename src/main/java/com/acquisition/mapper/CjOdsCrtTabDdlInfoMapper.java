@@ -34,4 +34,10 @@ public interface CjOdsCrtTabDdlInfoMapper {
     int insertBatch(List<CjOdsCrtTabDdlInfo> list);
 
     int deleteBatch(List<CjOdsCrtTabDdlInfo> list);
+
+    List selectByParams(@Param("businessSystemNameShortName") String businessSystemNameShortName,
+                        @Param("dataSourceSchema") String dataSourceSchema,
+                        @Param("dataSourceTable") String cjOdsCrtTabDdlInfo,
+                        @Param("odsDataTable") String odsDataTable
+    );
 }

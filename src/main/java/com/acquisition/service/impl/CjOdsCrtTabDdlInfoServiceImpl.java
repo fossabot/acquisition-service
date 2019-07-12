@@ -60,5 +60,13 @@ public class CjOdsCrtTabDdlInfoServiceImpl implements ICjOdsCrtTabDdlInfoService
         return cjOdsCrtTabDdlInfoMapper.insertBatch(list);
     }
 
-
+    @Override
+    public List selectByParams(String businessSystemNameShortName, String dataSourceSchema, String dataSourceTable, String odsDataTable) {
+        return cjOdsCrtTabDdlInfoMapper.selectByParams(
+                businessSystemNameShortName,
+                dataSourceSchema,
+                dataSourceTable,
+                odsDataTable
+        );
+    }
 }
